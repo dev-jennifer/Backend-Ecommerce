@@ -29,16 +29,28 @@ routerProductos.get("/:id", function (req, res) {
   } catch (error) {
     res.send({
       code: 400,
-      failed: "Error",
+      failed: { error: "producto no encontrado" },
     });
   }
 });
 
+//POST '/api/productos' -> recibe y agrega un producto, y lo devuelve con su id asignado.
+
 routerProductos.post("/", (req, res) => {
-  let mascota = req.body;
-  mascotas.push(mascota);
-  console.log("Post mascotas");
-  res.status(200).json({ msg: "Agregado!", data: mascota });
+  let productos = {
+    title: req.body.title,
+    price: req.body.price,
+    thumbnail: req.body.thumbnail,
+  };
+  res.send(archivo.save(productos));
+ 
+  res.end();
+ 
 });
 
 module.exports = routerProductos;
+
+
+
+
+

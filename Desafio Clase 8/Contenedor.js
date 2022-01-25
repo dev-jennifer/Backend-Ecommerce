@@ -1,4 +1,3 @@
- 
 const fs = require("fs");
 class Contenedor {
   constructor(nombreArchivo) {
@@ -7,21 +6,12 @@ class Contenedor {
 
   getAll() {
     let contenidoExistente;
-
-    if (!fs.existsSync(this.ruta)|| fs.readFileSync(this.ruta, "utf-8")=="") {
-      contenidoExistente = [];
-      
-    } else {
       try {
-        contenidoExistente = fs.readFileSync(this.ruta, "utf-8");
-        contenidoExistente = JSON.parse(contenidoExistente)
-
+        contenidoExistente = JSON.parse(fs.readFileSync( this.ruta, "utf-8"));
       } catch (error) {
-        throw new Error("Error");
-      }
-    } 
-    return contenidoExistente
-      
+        contenidoExistente=[]
+    }
+    return contenidoExistente;
   }
 
   save(objeto) {
@@ -33,17 +23,15 @@ class Contenedor {
 
     fs.writeFile(this.ruta, JSON.stringify(contenido, null, 2), (error) => {
       if (error) {
-        throw new Error(error);
-      } else {
-        console.log("Nuevo ID: " + id);
-        return id;
-      }
+        throw new Error("Error: ", error);
+      } 
     });
+    return  nuevoObjeto
   }
 
   getById(numero) {
-    const contenidoExistente = this.getAll();
-    const index = contenidoExistente.findIndex((x) => x.id === numero);
+    let contenidoExistente = this.getAll();
+    const index = this.getAll().findIndex((x) => x.id === numero);
     let mensaje;
     if (index == -1) {
       mensaje = "No hay valores para ese ID";
@@ -79,7 +67,7 @@ class Contenedor {
 
   deleteAll() {
     let borrar = [];
-  
+
     fs.writeFile(this.ruta, JSON.stringify(borrar), (error) => {
       if (error) {
         throw new Error(error);
@@ -90,5 +78,4 @@ class Contenedor {
   }
 }
 
-module.exports = Contenedor
-
+module.exports = Contenedor;
