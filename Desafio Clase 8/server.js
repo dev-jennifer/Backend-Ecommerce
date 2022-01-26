@@ -3,7 +3,7 @@ const express = require('express');
 const morgan = require('morgan');
 
 const bodyParser = require('body-parser');
-const routerProductos = require('./rutas/productos.rutas');//Segmento de rutas 1
+const routerProductos = require('./rutas/productos.rutas');
 /* ---------------------- Instancia de express ----------------------*/
 const app = express();
 /* ---------------------- Middlewares ---------------------- */
@@ -17,9 +17,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 /*Agregamos routers a la app*/
 app.use('/api/productos', routerProductos);
 
+app.get('/', function(req,res){
+    res.sendFile(__dirname + 'index.html')
+})
 
-
-  
 /* ---------------------- Servidor ----------------------*/
 const PORT = 8080;
 const server = app.listen(PORT, ()=>{

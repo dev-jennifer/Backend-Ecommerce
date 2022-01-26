@@ -9,23 +9,25 @@
 </head>
 <body>
     <div class="container">
-<h2>Agregar Productos</h2>
+    <h2>Agregar Productos</h2>
 
     <form action="/api/productos" method="post">
     <div class="mb-3">
         <label for="title" class="form-label">Title</label>
-        <input type="text" name="title" class="form-control" id="title">
+        <input type="text" name="title" class="form-control" id="title" required>
       </div>
       <div class="mb-3">
         <label for="price" class="form-label">Price</label>
-        <input type="text" name="price" class="form-control" id="price">
+        <input type="text" name="price" class="form-control" id="price" required>
       </div>
       <div class="mb-3">
         <label for="thumbnail" class="form-label">Thumbnail</label>
-        <input type="text" name="thumbnail" class="form-control" id="thumbnail">
+        <input type="text" name="thumbnail" class="form-control" id="thumbnail" required>
       </div>
-      <button type="submit">Enviar</button>
+      <button type="submit">Agregar Producto</button>
     </form>
+
+  
 </div>
 </body>
 </html>
