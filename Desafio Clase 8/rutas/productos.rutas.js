@@ -64,7 +64,7 @@ routerProductos.put("/:id", function (req, res) {
       productosActualizar[key]
         ? (productos[index][key] = productosActualizar[key])
         : productos[index][key];
-      console.log(productosActualizar[key]);
+
     }
    res.send({
       code: 200,
