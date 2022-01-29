@@ -1,0 +1,24 @@
+extends  partials/layouts
+
+block form 
+    h1( style="color:blue;") Ingrese Producto
+    br
+    form(action="/productos" method="post")
+        div(class="form-group")
+            label(for="nombre")
+                b Nombre 
+            input(id="nombre" class="form-control" type="text" name="nombre")
+
+        div(class="form-group")
+            label(for="precio")
+                b Precio 
+            input(id="precio" class="form-control" type="number" name="precio")
+
+        div(class="form-group")
+            label(for="foto")
+                b URL Foto 
+            input(id="foto" class="form-control" type="text" name="foto")   
+
+        button(class="btn btn-success mt-3 mb-5") Enviar
+    button( class="btn btn-light" type="button") 
+     a(href="/resultados") Resultados
