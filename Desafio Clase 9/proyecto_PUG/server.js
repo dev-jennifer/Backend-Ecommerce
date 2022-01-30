@@ -12,16 +12,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const productos = []
 
-
 app.set('views', './views');
 app.set('view engine', 'pug');
 
 app.get('/', (req, res) => {
-    res.render('formulario.pug', productos);
+    res.render('formulario.pug', {productos});
 });
 
 app.get('/resultados', (req, res) => {
-    res.render('resultados.pug', productos);
+    res.render('result.pug', {productos});
 });
 
 app.post('/productos', (req, res) => {
@@ -29,7 +28,7 @@ app.post('/productos', (req, res) => {
     res.redirect('/')
 });
 
-const PORT = 9091
+const PORT = 9092
 const server = app.listen(PORT, () => {
     console.log(`Servidor escuchando en el puerto ${server.address().port}`)
 })
