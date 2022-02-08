@@ -1,4 +1,6 @@
 /* ---------------------- Modulos ----------------------*/
+const fs = require('fs')
+var handlebars = require("handlebars");
 const express = require("express");
 const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
@@ -50,13 +52,27 @@ io.on("connection", (socket) => {
   });
 });
 
-/* ---------------------- Rutas ----------------------*/
+/* ---------------------- Websocket ---------------------- */
+const mensajes = [];
 
-app.register('.html', require('handlebars'));
-app.get('/', (req, res) => {
-    res.render('index.html', productos)
+io.on("connection", (socket) => {
+  /*Enviar historico*/
+  socket.emit("mensajes", mensajes);
+  /*Escuchar nuevo mensajes*/
+  socket.on("mensajeNuevo", (data) => {
+    mensajes.push(data);
+    /*se actualiza vista */
+    io.sockets.emit("mensajes", mensajes);
+  });
 });
 
+
+/* ---------------------- Rutas ----------------------*/
+
+// app.get('/', (req, res) => {
+//   // get data from the other site
+//   res.render('index', productos)
+// });
 
 /* ---------------------- Servidor ----------------------*/
 const PORT = 8080;

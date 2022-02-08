@@ -1,3 +1,35 @@
-{{> formulario}}
-<hr/>
-{{> result}}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sala de chat</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+      integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+      <br>
+    <div class="jumbotron jumbotron-fluid">
+      <div class="container">
+        <h2 class="display-10">Centro de Mensajes</h2>
+
+        <form onsubmit="return enviarMensaje()">
+          <input type="email" id="email" placeholder="email" required />
+
+          <div id="contenedorMensaje" style="min-height: 100px"></div>
+
+          <input type="text" id="mensaje" placeholder="mensaje" />
+          <input type="submit" value="Enviar" />
+        </form>
+      </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+  </body>
+</html>
