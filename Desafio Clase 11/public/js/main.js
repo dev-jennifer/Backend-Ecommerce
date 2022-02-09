@@ -10,20 +10,22 @@ function enviarProducto() {
     foto: foto.value,
   });
 }
+const productos = [{nombre:"hola", precio:1}]
 
 function makeHtmlTable(productos) {
-
-  return fetch("./../../views/index.hbs")
-    .then((res) => 
-    console.log(res))
-    // .then((res) => res.text(),
+  return fetch("./views/partials/result.hbs")
+    .then((res) => res.text())
     .then((plantilla) => {
       const template = Handlebars.compile(plantilla);
       const html = template({ productos });
+      console.log(productos)
       document.getElementById("app").innerHTML = html;
       return html;
     });
 }
+makeHtmlTable()
+
+
 
 /* ---------------------- Chat ----------------------*/
 function enviarMensaje() {
@@ -53,7 +55,6 @@ function enviarMensaje() {
 }
 
 socket.on("mensajes", (mensajes) => {
-  console.log(mensajes);
   let constMensajeHtml = "";
 
   mensajes.forEach((mensaje) => {
@@ -64,5 +65,5 @@ socket.on("mensajes", (mensajes) => {
         <span style="color:green; font-style:italic";>${mensaje.fecha}</span>
         <br>`;
   });
-  // document.getElementById("contenedorMensaje").innerHTML = constMensajeHtml;
+  document.getElementById("contenedorMensaje").innerHTML = constMensajeHtml;
 });
