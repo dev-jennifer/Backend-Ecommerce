@@ -1,5 +1,5 @@
 const socket = io.connect();
-
+ 
 function enviarProducto() {
   const nombre = document.querySelector("#nombreProducto");
   const precio = document.querySelector("#precioProducto");
@@ -11,30 +11,25 @@ function enviarProducto() {
   });
 }
 
-socket.on("productos", (productos) => {
-  let html = "";
-  if (productos.length) {
-    html +=
-      "<table class='table table-dark'><tr><th>Nombre</th><th>Precio</th><th>Foto URL</th></tr>";
-    productos.forEach((productoIndiv) => {
-      html += `<tr>
-        <td>${productoIndiv.nombre}</td>
-        <td>${productoIndiv.precio}</td>
-        <td> <img
-          style="display: inline-flex; width: 40px; height: 40px"
-          src=" ${productoIndiv.foto}"/>
-       </td></tr>`;
-    });
-    html += "</table>";
-    console.log(html);
-    document.getElementById("contenedor").innerHTML = html;
-  }
-});
+function makeHtmlTable(productos) {
 
+  return fetch("./../../views/index.hbs")
+    .then((res) => 
+    console.log(res))
+    // .then((res) => res.text(),
+    .then((plantilla) => {
+      const template = Handlebars.compile(plantilla);
+      const html = template({ productos });
+      document.getElementById("app").innerHTML = html;
+      return html;
+    });
+}
+
+/* ---------------------- Chat ----------------------*/
 function enviarMensaje() {
   const email = document.querySelector("#email");
   const mensaje = document.querySelector("#mensaje");
- 
+
   const date = new Date();
   const dateStr =
     ("00" + (date.getMonth() + 1)).slice(-2) +
@@ -52,7 +47,7 @@ function enviarMensaje() {
   socket.emit("mensajeNuevo", {
     email: email.value,
     texto: mensaje.value,
-    fecha: dateStr
+    fecha: dateStr,
   });
   return false;
 }
@@ -69,5 +64,5 @@ socket.on("mensajes", (mensajes) => {
         <span style="color:green; font-style:italic";>${mensaje.fecha}</span>
         <br>`;
   });
-  document.getElementById("contenedorMensaje").innerHTML = constMensajeHtml;
+  // document.getElementById("contenedorMensaje").innerHTML = constMensajeHtml;
 });

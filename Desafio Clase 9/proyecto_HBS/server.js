@@ -17,11 +17,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('views', path.join(__dirname, 'views'));
 
 
-app.engine('hbs', exphbs.engine({
-    defaultLayout: 'main',
-    layoutsDir: path.join(app.get('views'), 'layouts'),
-    extname: 'hbs'
-}));
+app.engine( 'hbs', exphbs.engine( { 
+    extname: 'hbs', 
+    defaultLayout: 'main', 
+    layoutsDir: __dirname + '/views/layouts/',
+    partialsDir: __dirname + '/views/partials/'
+  } ) );
 
 app.set('view engine', 'hbs');
 

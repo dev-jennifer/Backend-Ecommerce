@@ -1,10 +1,7 @@
 /* ---------------------- Modulos ----------------------*/
-const fs = require('fs')
-var handlebars = require("handlebars");
 const express = require("express");
 const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
-
 
 /* ---------------------- Instancia de express ----------------------*/
 const app = express();
@@ -23,18 +20,19 @@ app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 
 /* ---------------------- Conf Motor ----------------------*/
+
+app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
 
 
 app.engine( 'hbs', exphbs.engine( { 
-    extname: 'hbs', 
-    defaultLayout: 'main', 
-    layoutsDir: __dirname + '/views/layouts/',
-    partialsDir: __dirname + '/views/partials/'
-  } ) );
-  
-app.set('views', __dirname + '/views');
-app.set('view engine', 'hbs');
+  extname: 'hbs', 
+  defaultLayout: 'main', 
+  layoutsDir: __dirname + '/views/layouts/',
+  partialsDir: __dirname + '/views/partials/'
+} ) );
+
+
 
 /* ---------------------- Websocket ---------------------- */
 const productos = []
@@ -67,15 +65,17 @@ io.on("connection", (socket) => {
 });
 
 
+ 
 /* ---------------------- Rutas ----------------------*/
 
-// app.get('/', (req, res) => {
-//   // get data from the other site
-//   res.render('index', productos)
-// });
+app.get('/', (req, res) => {
+    res.render('index', {productos});
+});
+
+
 
 /* ---------------------- Servidor ----------------------*/
-const PORT = 8080;
+const PORT = 8081;
 const server = httpServer.listen(PORT, () => {
   console.log(`Servidor escuchando en puerto ${PORT}`);
 });
