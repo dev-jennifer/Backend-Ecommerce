@@ -1,9 +1,8 @@
 /* ---------------------- Modulos ----------------------*/
 const express = require("express");
-const Handlebars = require("handlebars");
 const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
-const https = require("https");
+
 /* ---------------------- Instancia de express ----------------------*/
 const app = express();
 const httpServer = new HttpServer(app);
@@ -21,33 +20,27 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 /* ---------------------- Conf Motor ----------------------*/
-
-app.set("view engine", "hbs");
-
+app.set('view engine', 'hbs');
+ 
 app.set("views", __dirname + "/public/views"); //Folder views (templates)
 
-app.engine(
-  "hbs",
-  hbs.engine({
-    extname: "hbs",
-    defaultLayout: "main",
-    layoutDir: __dirname + "/views/layouts",
-    partialsDir: path.join(__dirname, "/views/partials"),
-  })
-);
+app.engine( 'hbs', hbs.engine( { 
+  extname: 'hbs', 
+  defaultLayout: 'main', 
+  layoutsDir: __dirname + '/views/layouts/',
+  partialsDir: __dirname + '/views/partials/'
+} ) );
 
 /* ---------------------- Websocket ---------------------- */
-const productos = [{ nombre: "hola", precio: 1 }];
+const productos = [];
 
 io.on("connection", (socket) => {
   console.log(`Nuevo cliente conectado! >${socket.id}`);
 
   /*Enviar historico*/
   socket.emit("productos", productos);
-  /*Escuchar nuevo mensajes*/
   socket.on("productoNuevo", (data) => {
     productos.push(data);
-    /*se actualiza vista */
     io.sockets.emit("productos", productos);
   });
 });
@@ -63,16 +56,7 @@ io.on("connection", (socket) => {
   });
 });
 
-/* ---------------------- Rutas ----------------------*/
-//app.get('/', (req, res) => res.send( {productos}));
-// app.get('/', (req, res) => {
-//   res.render('index', {productos});
-// });
-
-// app.get("/", (req, res) => {
-//   res.render = (index,makeHtmlTable({ productos }) )
-// });
-
+ 
 /* ---------------------- Servidor ----------------------*/
 const PORT = 8081;
 const server = httpServer.listen(PORT, () => {

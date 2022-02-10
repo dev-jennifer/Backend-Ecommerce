@@ -1,5 +1,5 @@
 const socket = io.connect();
- 
+
 function enviarProducto() {
   const nombre = document.querySelector("#nombreProducto");
   const precio = document.querySelector("#precioProducto");
@@ -10,23 +10,24 @@ function enviarProducto() {
     foto: foto.value,
   });
 }
-const productos = [{nombre:"hola", precio:1}]
 
-function makeHtmlTable(productos) {
-  return fetch("./views/partials/result.hbs")
+ function makeHtmlTable(productos) {
+  return fetch("../views/partials/result.hbs")
     .then((res) => res.text())
     .then((plantilla) => {
       const template = Handlebars.compile(plantilla);
       const html = template({ productos });
-      console.log(productos)
-      document.getElementById("app").innerHTML = html;
+      console.log("productos",productos);
       return html;
+      
     });
 }
-makeHtmlTable()
 
-
-
+socket.on("productos", productos => {
+    makeHtmlTable(productos).then(d => {
+  document.getElementById("app").innerHTML = d
+})
+})
 /* ---------------------- Chat ----------------------*/
 function enviarMensaje() {
   const email = document.querySelector("#email");
@@ -66,4 +67,5 @@ socket.on("mensajes", (mensajes) => {
         <br>`;
   });
   document.getElementById("contenedorMensaje").innerHTML = constMensajeHtml;
-});
+})
+
