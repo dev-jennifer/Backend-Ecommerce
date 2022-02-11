@@ -2,7 +2,7 @@
 const express = require("express");
 const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
-
+const fs = require("fs");
 /* ---------------------- Instancia de express ----------------------*/
 const app = express();
 const httpServer = new HttpServer(app);
@@ -47,12 +47,23 @@ io.on("connection", (socket) => {
 
 /* ---------------------- Websocket ---------------------- */
 const mensajes = [];
+const ruta="public/data/mensaje.txt";
 
 io.on("connection", (socket) => {
   socket.emit("mensajes", mensajes);
   socket.on("mensajeNuevo", (data) => {
+    
     mensajes.push(data);
     io.sockets.emit("mensajes", mensajes);
+
+    fs.writeFile(ruta,JSON.stringify(mensajes, null, 2), error=>{
+      if (error){
+          throw new Error (error);
+      }else{
+          console.log('Data actualizada a .txt!')
+      }
+     })
+    
   });
 });
 
