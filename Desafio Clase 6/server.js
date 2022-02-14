@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const express = require("express");
 const Contenedor = require("./Contenedor.js");
 
@@ -17,14 +16,13 @@ const getProductos = () => {
     throw new Error("No se ha podido leer el archivo");
   }
 };
-=======
+ 
 /* ---------------------- Modulos ----------------------*/
 const express = require('express');
 const morgan = require('morgan');
 
 const bodyParser = require('body-parser');
->>>>>>> d5d3da0b12ff1df564eb85a2f0e89156f69b16eb
-
+ 
 const routerProductos = require('./rutas/productos.rutas');//Segmento de rutas 1
 
 /* ---------------------- Instancia de express ----------------------*/
