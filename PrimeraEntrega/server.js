@@ -1,31 +1,46 @@
-const express = require('express');
-const config = require('./config.js');
-const app = express()
-const routerProductos = require('./rutas/productosRutas');//Segmento de rutas 1
-const bodyParser = require('body-parser');
+const express = require("express");
+const morgan = require("morgan");
+const bodyParser = require("body-parser");
 
-/* ---------------------- Middlewares ---------------------- */
 
+const routerProductos = require("./rutas/productosRutas");
+const routerCarrito = require("./rutas/carritoRutas"); //Segmento de rutas 1
+
+const app = express();
+const hbs = require('hbs');
+const path = require("path");
 app.use(express.static('public'));
-// app.use(morgan('tiny'));
-routerProductos.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+
+app.set("view engine", "hbs");
+app.set("views", __dirname + "/public/views"); //Folder views (templates)
+hbs.registerPartials(__dirname + "/public/views/partials", function (err) {});
+app.use(express.static(__dirname));
 
 /* ---------------------- Rutas ----------------------*/
-/*Agregamos routers a la app*/
-app.use('/api/productos', routerProductos);
 
-app.get('/', function(req,res){
-    res.sendFile(__dirname + '/index.html')
-})
+
+
+/* ---------------------- Middlewares ---------------------- */
+app.use(morgan('tiny'));
+routerProductos.use(express.json());
+routerCarrito.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
+
+
+
+/*Agregamos routers a la app*/
+app.use("/productos", routerProductos);
+app.use("/api/carrito", routerCarrito);
+
+
 
 /* ---------------------- Servidor ----------------------*/
-
-console.log(`NODE_ENV=${config.NODE_ENV}`);
-
-const server = app.listen(config.PORT, config.HOST, ()=>{
-    console.log(`Servidor escuchando http://${config.HOST}:${config.PORT}`);
-})
-server.on('error', error=>{
-    console.error(`Error en el servidor ${error}`);
-})
+const PORT = 8080;
+const server = app.listen(PORT, () => {
+  console.log(`Servidor escuchando en puerto ${PORT}`);
+});
+server.on("error", (error) => {
+  console.error(`Error en el servidor ${error}`);
+});

@@ -1,12 +1,35 @@
 const express = require("express");
 const routerProductos = express.Router();
+const methodOverride = require('method-override');
+routerProductos.use(methodOverride('_method'));
 
-const productos = [];
-//GET '/api/productos' -> devuelve todos los productos.
+const Productos = require("../Productos.js");
+const archivo = new Productos()
+
 routerProductos.get("/", (req, res) => {
   try {
-    res.status(200).json(productos);
-    res.end();
+    let data= {productos: archivo.getAll()}
+    res.render('productos', data )
+  } catch (error) {
+    res.send({
+      code: 400,
+      failed: "Error",
+    });
+
+  }
+});
+routerProductos.get("/nuevo", function(req, res) {
+  res.render('nuevoProducto');
+});
+//GET: '/:id?' - 
+//Me permite listar todos los productos disponibles ó un producto por su id 
+//(disponible para usuarios y administradores)
+
+routerProductos.get("/:id?", function (req, res) {
+  const valueID = req.params.id;
+  try {
+    let seleccion= archivo.getById(parseInt(valueID))
+    res.render('productoDetalle',seleccion )
   } catch (error) {
     res.send({
       code: 400,
@@ -15,77 +38,29 @@ routerProductos.get("/", (req, res) => {
   }
 });
 
-//GET '/api/productos/:id' -> devuelve un producto según su id.
-routerProductos.get("/:id", function (req, res) {
-  const valueID = req.params.id;
-
-  const index = productos.findIndex((x) => x.id === parseInt(valueID));
-  if (index !== -1) {
-    res.status(200).json(productos[index]);
-  } else {
-    res.send({
-      code: 400,
-      error: "producto no encontrado",
-    });
-  }
-});
-
-//POST '/api/productos' -> recibe y agrega un producto, y lo devuelve con su id asignado.
+//POST: '/' - Para incorporar productos al listado 
+//(disponible para administradores)
 routerProductos.post("/", (req, res) => {
   let productoNuevo = {
-    title: req.body.title,
-    price: req.body.price,
-    thumbnail: req.body.thumbnail,
+    nombreProducto: req.body.nombreProducto,
+    descripcion: req.body.descripcion,
+    codigo: req.body.codigo,
+    fotoProducto: req.body.fotoProducto,
+    precio: req.body.precio,
+    stock: req.body.stock
   };
-
-  let id = productos.length + 1;
-  let nuevoObjeto = { ...productoNuevo, id };
-  productos.push(nuevoObjeto);
-
-  res.status(200).json({ msg: "Agregado!", datos: productos });
-  res.end();
+  archivo.save(productoNuevo)
 });
 
-//PUT '/api/productos/:id' -> recibe y actualiza un producto según su id.
-routerProductos.put("/:id", function (req, res) {
-  const valueID = req.params.id;
-  const index = productos.findIndex((x) => x.id === parseInt(valueID));
 
-  let productosActualizar = {
-    title: req.body.title,
-    price: req.body.price,
-    thumbnail: req.body.thumbnail
-  };
+//DELETE  '/:id' - Borra un producto por su id (disponible para administradores)
 
-  if (index == -1) {
-    res.send({ code: 400, failed: "Producto no Encontrado" });
-  } else {
-    for (let key of Object.keys(productosActualizar)) {
-      productosActualizar[key]
-        ? (productos[index][key] = productosActualizar[key])
-        : productos[index][key];
-
-    }
-   res.send({
-      code: 200,
-      mensaje: "Producto Actualizado",
-      data: productos[index],
-    });
-  }
-});
-
-//DELETE '/api/productos/:id' -> elimina un producto según su id.
 routerProductos.delete("/:id", function (req, res) {
+  console.log("Borrar")
   const valueID = req.params.id;
-  const index = productos.findIndex((x) => x.id === parseInt(valueID));
-
-  if (index == -1) {
-    res.send({ code: 400, failed: "Producto no Encontrado" });
-  } else {
-    productos.splice(index, 1);
-    res.send({ code: 200, mensaje: "Producto Eliminado" });
-  }
+  res.send(archivo.deleteById(parseInt(valueID)))
 });
 
 module.exports = routerProductos;
+
 

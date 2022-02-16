@@ -1,0 +1,60 @@
+{{> headers title="Productos"}}
+
+<div class="table-responsive">
+  <div id="contenedor">
+    <h2 style="color: blue">Vista de Productos</h2>
+      <div
+        class="container-fluid bg-trasparent my-4 p-3"
+        style="position: relative;">
+        <div
+          class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-4 g-3">
+          <!-- filas -->
+          {{#each productos }}
+            <div class="col">
+              <div class="card h-100 shadow-sm">
+                <img
+                  src="{{fotoProducto}}"
+                  class="card-img-top"
+                  alt="..."
+                />
+                <div class="card-body">
+                  <div class="clearfix mb-3">
+                    <span
+                      class="float-start badge rounded-pill bg-primary"
+                    >{{nombreProducto}}</span>
+                    <span class="float-end price-hp">{{precio}}</span>
+                  </div>
+                  <h5 class="card-title">{{descripcion}}</h5>
+                  <h5>Stock:
+                    {{stock}}
+                    || Cod:
+                    {{codigo}}
+                  </h5>
+
+ 
+
+<button class="delete-button" onclick="deleting({{id}})">X</button>
+
+ 
+
+<form action="/productos/{{id}}?_method=PUT" method="post">
+<input type="hidden" name="_method" value="PUT">
+</form>
+                  {{!-- a(href='http://yourwesite/cart/delete?item='+item.itemname --}}
+                  <div class="text-center my-4">
+                    <a href="#" class="btn btn-warning">Comprar</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {{/each}}
+        </div>
+      </div>
+
+
+  </div>
+</div>
+{{> footer year=2020}}
+
+<script src="./../js/main.js"></script>

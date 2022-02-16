@@ -1,0 +1,75 @@
+{{> headers title="Productos"}}
+
+    <div className="container mt-3">
+      <div className="jumbotron">
+        <h2 style="color: blue">Ingrese Producto</h2>
+        <br />
+
+        <form method="post" action="/productos">
+          <div class="form-group">
+            <label for="nombreProducto"><b>Nombre</b></label>
+            <input
+              id="nombreProducto"
+              className="form-control"
+              type="text"
+              name="nombreProducto"
+            />
+          </div>
+          <div className="form-group">
+            <label for="descripcion"><b>Descripción</b></label>
+            <textarea
+              id="descripcion"
+              className="form-control"
+              name="descripcion"></textarea>
+          </div>
+          <div className="form-group">
+            <label for="codigo"><b>Codigo</b></label>
+            <input
+              id="codigo"
+              className="form-control"
+              type="text"
+              name="codigo"
+            />
+          </div>
+         
+          <div className="form-group">
+            <label for="fotoProducto"><b>Foto URL</b></label>
+            <input
+              id="fotoProducto"
+              className="form-control"
+              type="text"
+              name="fotoProducto"
+            />
+          </div>
+
+          <div className="form-group">
+            <label for="precio"><b>Precio</b></label>
+            <input
+              id="precioProducto"
+              className="form-control"
+              type="number"
+              name="precioProducto"
+            />
+          </div>
+          <div className="form-group">
+            <label for="stock"><b>Stock</b></label>
+            <input
+              id="stock"
+              className="form-control"
+              type="number"
+              name="stock"
+            />
+          </div>
+          <input type="submit" value="Enviar" />
+        </form>
+      </div>
+    </div>
+
+    <!-- <div className="container mt-3">
+        <div id="app"></div>
+    </div> -->
+
+    
+
+    {{!-- <script src="/js/main.js"></script> --}}
+{{> footer year="2022"}}
