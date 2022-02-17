@@ -1,5 +1,6 @@
 const fs = require("fs");
-class Productos {
+
+module.exports = class Productos {
   constructor() {
     this.ruta = "./public/data/productos.txt";
   }
@@ -41,8 +42,27 @@ class Productos {
     } else {
       mensaje = contenidoExistente[index];
     }
-    return mensaje;
+    return contenidoExistente;
   }
+
+  encontrarYactualizar(numero, body){
+    const ExistenteID = this.getById(parseInt(numero));
+
+    const productosActualizar = {
+      title: body.title,
+      price: body.price,
+      thumbnail: body.thumbnail
+    };
+  
+    if (!ExistenteID) {
+      res.send({ code: 400, failed: "Producto no Encontrado" });
+    } else {
+      for (let key of Object.keys(productosActualizar)) {
+        productosActualizar[key]
+          ? (ExistenteID[index][key] = productosActualizar[key])
+          : ExistenteID[index][key];
+      }
+  }}
 
   deleteById(numero) {
     const contenidoExistente = this.getAll();
@@ -68,17 +88,4 @@ class Productos {
     return mensaje;
   }
 
-  //   deleteAll() {
-  //     let borrar = [];
-
-  //     fs.writeFile(this.ruta, JSON.stringify(borrar), (error) => {
-  //       if (error) {
-  //         throw new Error(error);
-  //       } else {
-  //         console.log("Se ha borrado todo su contenido");
-  //       }
-  //     });
-  //   }
 }
-
-module.exports = Productos;

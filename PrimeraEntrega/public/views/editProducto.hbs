@@ -1,16 +1,15 @@
-{{> headers title="Productos"}}
+ {{> headers title="Productos"}}
 
-<div className="container mt-4">
-  <h2 style="color: blue">Ingrese Producto</h2>
-
-  <form method="POST" action="/productos">
-    <div class="form-group">
+{{#if error}}
+ <form id="editar" data-id={{producto.id}}>
+     <div class="form-group">
       <input
         id="nombreProducto"
         placeholder="Nombre"
         className="form-control"
         type="text"
         name="nombreProducto"
+        value="{{producto.nombre}}"
       />
     </div>
     <div class="form-group">
@@ -19,6 +18,7 @@
         className="form-control"
         name="descripcion"
         placeholder="Descripción"
+         value="{{producto.descripcion}}"
       ></textarea>
     </div>
     <div class="form-group">
@@ -28,6 +28,7 @@
         type="text"
         name="fotoProducto"
         placeholder="Foto URL"
+         value="{{producto.fotoProducto}}"
       />
     </div>
     <div class="form-group">
@@ -37,6 +38,7 @@
         type="text"
         name="codigo"
         placeholder="Codigo"
+          value="{{producto.codigo}}"
       />
 
       <input
@@ -45,6 +47,7 @@
         type="number"
         name="precioProducto"
         placeholder="Precio"
+         value="{{producto.precio}}"
       />
 
       <input
@@ -53,12 +56,21 @@
         type="number"
         name="stock"
         placeholder="Stock"
+                 value="{{producto.stock}}"
       />
     </div>
+        <a
+            class="btn btn-warning"
+            onclick="edit({{id}})"
+            type="submit">
+            Editar
+        </a>
+    </form>
 
-    <input type="submit" class="btn btn-dark btn-block" value="Agregar" />
-  </form>
+    <hr>
+                     <a  class="btn btn-warning" onclick="deleting({{id}})">Eliminar</a>
 
-</div>
+{{/if}}
 
-{{> footer year="2022"}}
+    {{> footer year=2020}}
+

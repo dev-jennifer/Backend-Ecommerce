@@ -1,8 +1,15 @@
 {{> headers title="Detalle"}}
 
 <div class="table-responsive">
-  <div id="contenedor">
-    <h2 style="color: blue">Vista Detalle</h2>
+   <div class="container">
+
+    <h2 style="color: blue">Detalle</h2>
+
+    {{#if error}} 
+        {{mensaje}}
+        <a href="/productos" class="btn btn-dark btn-block my-2">Volver</a>
+ 
+    {{else}} 
       <div
         class="container-fluid bg-trasparent my-4 p-3"
         style="position: relative;">
@@ -12,7 +19,7 @@
             <div class="col">
               <div class="card h-100 shadow-sm">
                 <img
-                  src="{{fotoProducto}}"
+                  src="{{producto.fotoProducto}}"
                   class="card-img-top"
                   alt="..."
                 />
@@ -20,15 +27,16 @@
                   <div class="clearfix mb-3">
                     <span
                       class="float-start badge rounded-pill bg-primary"
-                    >{{nombreProducto}}</span>
-                    <span class="float-end price-hp">{{precio}}</span>
+                    >{{producto.nombreProducto}}</span>
+                    <span class="float-end price-hp">{{producto.precio}}</span>
                   </div>
-                  <h5 class="card-title">{{descripcion}}</h5>
+                  <h5 class="card-title">{{producto.descripcion}}</h5>
                   <h5>Stock:
-                    {{stock}}
+                    {{producto.stock}}
                     || Cod:
-                    {{codigo}}
+                    {{producto.codigo}}
                   </h5>
+                     
                   <div class="text-center my-4">
                     <a href="#" class="btn btn-warning">Comprar</a>
                   </div>
@@ -39,7 +47,7 @@
 
         </div>
       </div>
-
+    {{/if}} 
 
   </div>
 </div>

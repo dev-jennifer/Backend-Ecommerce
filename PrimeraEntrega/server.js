@@ -34,6 +34,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/productos", routerProductos);
 app.use("/api/carrito", routerCarrito);
 
+app.get('/', (req, res) => {
+  res.render('inicio.hbs');
+});
 
 
 /* ---------------------- Servidor ----------------------*/

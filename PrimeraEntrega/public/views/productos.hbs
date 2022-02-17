@@ -20,29 +20,22 @@
                 <div class="card-body">
                   <div class="clearfix mb-3">
                     <span
-                      class="float-start badge rounded-pill bg-primary"
-                    >{{nombreProducto}}</span>
+                      class="float-start bg-primary"
+                    >COD {{codigo}}</span>
                     <span class="float-end price-hp">{{precio}}</span>
                   </div>
-                  <h5 class="card-title">{{descripcion}}</h5>
-                  <h5>Stock:
-                    {{stock}}
-                    || Cod:
-                    {{codigo}}
-                  </h5>
+                  <h5 class="card-title">{{nombreProducto}}</h5>
+                    <p>{{descripcion}}</p>
 
+                    <div class="text-center my-4">
+                      <a  class="btn btn-warning" onclick="detail({{id}})">Detalle</a>
+                       <a href="#" class="btn btn-warning">Comprar</a>
  
+                      <a  class="btn btn-warning" onclick="deleting({{id}})">Eliminar</a>
+                      <a class="btn btn-warning" onclick="edit({{id}})">Editar</a>
 
-<button class="delete-button" onclick="deleting({{id}})">X</button>
+                                        
 
- 
-
-<form action="/productos/{{id}}?_method=PUT" method="post">
-<input type="hidden" name="_method" value="PUT">
-</form>
-                  {{!-- a(href='http://yourwesite/cart/delete?item='+item.itemname --}}
-                  <div class="text-center my-4">
-                    <a href="#" class="btn btn-warning">Comprar</a>
                   </div>
                 </div>
               </div>
@@ -57,4 +50,3 @@
 </div>
 {{> footer year=2020}}
 
-<script src="./../js/main.js"></script>
