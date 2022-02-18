@@ -1,7 +1,7 @@
 [
   {
-    "nombreProducto": "Masa",
-    "descripcion": " m",
+    "nombreProducto": "yjyjy",
+    "descripcion": "",
     "fotoProducto": "",
     "codigo": "",
     "precioProducto": "",

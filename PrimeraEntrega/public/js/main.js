@@ -1,20 +1,3 @@
-// const buttonProductos = document.getElementById("homeButton");
-// buttonProductos.addEventListener("click", productosGet);
-
-// function productosGet() {
-//   fetch('/productos', { method: "GET"})
-
-//   .then(function (response) {
-//     if (response.ok) {
-//       console.log("hola");
-//     }
-//     throw new Error("Request failed.");
-//   })
-//   .catch(function (error) {
-//     console.log(error);
-//   });
-// }
-
 async function detail(value) {
   await fetch(`/productos/${value}`, { method: "GET" })
     .then(function (response) {
