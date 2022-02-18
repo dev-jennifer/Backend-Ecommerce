@@ -2,7 +2,7 @@ const express = require("express");
 const routerProductos = express.Router();
 
 const Productos = require("../public/modulos/Productos.js");
-const claseProducto = new Productos();
+const ProductClass = new Productos();
 
 routerProductos.get("/nuevo", function (req, res) {
   res.render("nuevoProducto");
@@ -10,7 +10,7 @@ routerProductos.get("/nuevo", function (req, res) {
 
 routerProductos.get("/", (req, res) => {
   try {
-    let data = { productos: claseProducto.getAll() };
+    let data = { productos: ProductClass.getAll() };
     res.render("productos", data);
   } catch (error) {
     res.send({
@@ -27,7 +27,7 @@ routerProductos.get("/", (req, res) => {
 routerProductos.get("/:id?", async (req, res) => {
   const id = req.params.id;
   try {
-    const seleccion = await claseProducto.getById(parseInt(id));
+    const seleccion = await ProductClass.getById(parseInt(id));
     console.log(seleccion);
     res.render("productoDetalle", {
       producto: seleccion,
@@ -49,7 +49,7 @@ routerProductos.post("/", async (req, res) => {
   const body = req.body;
   console.log(body);
   try {
-    await claseProducto.save(body);
+    await ProductClass.save(body);
     res.redirect("/productos");
   } catch (error) {
     console.log("error", error);
@@ -63,7 +63,7 @@ routerProductos.delete("/:id", async (req, res) => {
   console.log("id desde backend", valueID);
 
   try {
-    const productoEliminar = await claseProducto.deleteById(parseInt(valueID));
+    const productoEliminar = await ProductClass.deleteById(parseInt(valueID));
 
     if (!productoEliminar) {
       res.json({
@@ -84,7 +84,7 @@ routerProductos.delete("/:id", async (req, res) => {
 routerProductos.get("/edit/:id", async (req, res) => {
   const id = req.params.id;
   try {
-    let data = { producto: claseProducto.getById(parseInt(id)) };
+    let data = { producto: ProductClass.getById(parseInt(id)) };
     res.render("editProduct", data);
   } catch (error) {
     res.send({
@@ -102,7 +102,7 @@ routerProductos.put("/:id", async (req, res) => {
   const body = req.body;
 
   try {
-    const prodModificar = await claseProducto.actualizarDato(id, body);
+    const prodModificar = await ProductClass.actualizarDato(id, body);
     res.json({
       mensaje: "Producto actualizado",
     });
