@@ -54,7 +54,7 @@ routerProductos.put("/:id", function (req, res) {
   let productosActualizar = {
     title: req.body.title,
     price: req.body.price,
-    thumbnail: req.body.thumbnail
+    thumbnail: req.body.thumbnail,
   };
 
   if (index == -1) {
@@ -64,9 +64,8 @@ routerProductos.put("/:id", function (req, res) {
       productosActualizar[key]
         ? (productos[index][key] = productosActualizar[key])
         : productos[index][key];
-
     }
-   res.send({
+    res.send({
       code: 200,
       mensaje: "Producto Actualizado",
       data: productos[index],

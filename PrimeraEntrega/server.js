@@ -15,7 +15,7 @@ app.set("view engine", "hbs");
 app.set("views", __dirname + "/public/views"); //Folder views (templates)
 hbs.registerPartials(__dirname + "/public/views/partials", function (err) {});
 app.use(express.static(__dirname));
-
+app.use(bodyParser.json())
 /* ---------------------- Rutas ----------------------*/
 
 

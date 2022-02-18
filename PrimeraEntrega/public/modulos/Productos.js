@@ -44,13 +44,11 @@ module.exports = class Productos {
     return mensaje;
   }
 
-  actualizar(numero, body) {
-    console.log("paso2")
-    const ExistenteID = this.getById(numero);
-    console.log(body);
+  actualizarDato(numero, body) {
+    const ExistenteID = this.getById(parseInt(numero));
 
-    let nuevo = JSON.parse(body);
-    console.log(nuevo);
+    let nuevo = JSON.parse(JSON.stringify(body));
+ 
 
     let productosActualizar = {
       nombreProducto: nuevo.nombreProducto,
@@ -60,15 +58,26 @@ module.exports = class Productos {
       precioProducto: nuevo.precioProducto,
       stock: nuevo.stock,
     };
-    // console.log("prod actualizar", productosActualizar)// Uncaught SyntaxError: Unexpected token o in JSON at position 1
-    console.log(productosActualizar);
 
-    if (ExistenteID != false) {
+    console.log("nombre", productosActualizar);
+    let contenido = this.getAll();
+    const index = contenido.findIndex((x) => x.id === parseInt(numero));
+
+    if (index == -1) {
+      res.send({ code: 400, failed: "Producto no Encontrado" });
+    } else {
       for (let key of Object.keys(productosActualizar)) {
         productosActualizar[key]
-          ? (ExistenteID[numero][key] = productosActualizar[key])
-          : ExistenteID[numero][key];
+          ? (contenido[index][key] = productosActualizar[key])
+          : contenido[index][key];
       }
+      fs.writeFile(this.ruta, JSON.stringify(contenido, null, 2), (error) => {
+        if (error) {
+          throw new Error(error);
+        } else {
+          console.log("actualizado");
+        }
+      });
     }
   }
 

@@ -1,29 +1,11 @@
 [
   {
-    "nombreProducto": "Fran",
-    "descripcion": "",
-    "fotoProducto": "https://fotografias.lasexta.com/clipping/cmsimages02/2020/09/21/86828440-B1FB-43AC-9E9C-A94AC6A4B8BD/default.jpg?crop=1300,731,x0,y0&width=1900&height=1069&optimize=low",
-    "codigo": "1",
-    "precioProducto": "4",
-    "stock": "3",
-    "id": 1
-  },
-  {
-    "nombreProducto": "manzana",
-    "descripcion": "",
-    "fotoProducto": "https://fotografias.lasexta.com/clipping/cmsimages02/2020/09/21/86828440-B1FB-43AC-9E9C-A94AC6A4B8BD/default.jpg?crop=1300,731,x0,y0&width=1900&height=1069&optimize=low",
-    "codigo": "Hola",
-    "precioProducto": "",
-    "stock": "",
-    "id": 2
-  },
-  {
     "nombreProducto": "Masa",
-    "descripcion": "5626",
+    "descripcion": " m",
     "fotoProducto": "",
-    "codigo": "111",
+    "codigo": "",
     "precioProducto": "",
     "stock": "",
-    "id": 3
+    "id": 1
   }
 ]

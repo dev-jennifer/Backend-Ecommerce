@@ -98,25 +98,21 @@ routerProductos.get("/edit/:id", async (req, res) => {
 
 routerProductos.put("/:id", async (req, res) => {
 
-  console.log("paso1")
   const id = req.params.id;
   const body = req.body;
-  console.log(id)
-  console.log("body",JSON.parse(body))
-  try {
-    const prodModificar = await claseProducto.actualizar(id, body);
-   
-    res.json({
-        estado: true,
-        mensaje: 'Producto editado'
-    })
-  } catch (error) {
-    console.log(error);
 
+  try {
+    const prodModificar = await claseProducto.actualizarDato(id, body);
+    res.json({
+      mensaje: "Producto actualizado",
+    });
+  } catch (error) {
     res.json({
       estado: false,
       mensaje: "Producto falla",
     });
   }
 });
+
+
 module.exports = routerProductos;
