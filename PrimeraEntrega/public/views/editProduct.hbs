@@ -1,6 +1,5 @@
- {{> headers title="Productos"}}
-
-{{#if error}}
+{{> headers title="Productos"}}
+ 
  <form id="editar" data-id={{producto.id}}>
      <div class="form-group">
       <input
@@ -9,7 +8,7 @@
         className="form-control"
         type="text"
         name="nombreProducto"
-        value="{{producto.nombre}}"
+        value="{{producto.nombreProducto}}"
       />
     </div>
     <div class="form-group">
@@ -59,18 +58,9 @@
                  value="{{producto.stock}}"
       />
     </div>
-        <a
-            class="btn btn-warning"
-            onclick="edit({{id}})"
-            type="submit">
-            Editar
-        </a>
+     <a  class="btn btn-warning" onclick="deleting({{producto.id}})">Eliminar</a>
+    <a class="btn btn-warning"  onclick="actualizar({{producto.id}})">Actualizar</a>
     </form>
 
-    <hr>
-                     <a  class="btn btn-warning" onclick="deleting({{id}})">Eliminar</a>
-
-{{/if}}
-
-    {{> footer year=2020}}
+{{> footer year=2020}}
 

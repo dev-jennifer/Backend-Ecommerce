@@ -36,56 +36,65 @@ module.exports = class Productos {
   getById(numero) {
     const contenidoExistente = this.getAll();
     const index = contenidoExistente.findIndex((x) => x.id === numero);
-    let mensaje;
-    if (index == -1) {
-      mensaje = "No hay valores para ese ID";
-    } else {
+    let mensaje = false;
+
+    if (index != -1) {
       mensaje = contenidoExistente[index];
     }
-    return contenidoExistente;
+    return mensaje;
   }
 
-  encontrarYactualizar(numero, body){
-    const ExistenteID = this.getById(parseInt(numero));
+  actualizar(numero, body) {
+    console.log("paso2")
+    const ExistenteID = this.getById(numero);
+    console.log(body);
 
-    const productosActualizar = {
-      title: body.title,
-      price: body.price,
-      thumbnail: body.thumbnail
+    let nuevo = JSON.parse(body);
+    console.log(nuevo);
+
+    let productosActualizar = {
+      nombreProducto: nuevo.nombreProducto,
+      descripcion: nuevo.descripcion,
+      fotoProducto: nuevo.fotoProducto,
+      codigo: nuevo.codigo,
+      precioProducto: nuevo.precioProducto,
+      stock: nuevo.stock,
     };
-  
-    if (!ExistenteID) {
-      res.send({ code: 400, failed: "Producto no Encontrado" });
-    } else {
+    // console.log("prod actualizar", productosActualizar)// Uncaught SyntaxError: Unexpected token o in JSON at position 1
+    console.log(productosActualizar);
+
+    if (ExistenteID != false) {
       for (let key of Object.keys(productosActualizar)) {
         productosActualizar[key]
-          ? (ExistenteID[index][key] = productosActualizar[key])
-          : ExistenteID[index][key];
+          ? (ExistenteID[numero][key] = productosActualizar[key])
+          : ExistenteID[numero][key];
       }
-  }}
+    }
+  }
 
   deleteById(numero) {
     const contenidoExistente = this.getAll();
 
     const index = contenidoExistente.findIndex((x) => x.id === numero);
-    console.log(contenidoExistente)
-    console.log("id:", numero)
+    console.log(contenidoExistente);
+    console.log("id:", numero);
 
     let mensaje;
     if (index != -1) {
       contenidoExistente.splice(index, 1);
-      console.log(contenidoExistente)
-      fs.writeFile(this.ruta, JSON.stringify(contenidoExistente, null, 2), (error) => {
-        if (error) {
-          throw new Error(error);
+      console.log(contenidoExistente);
+      fs.writeFile(
+        this.ruta,
+        JSON.stringify(contenidoExistente, null, 2),
+        (error) => {
+          if (error) {
+            throw new Error(error);
           } else {
-             mensaje = "Se ha eliminado el ID:" 
+            mensaje = "Se ha eliminado el ID:";
           }
         }
-        
-      )
-    } 
+      );
+    }
     return mensaje;
   }
-
-}
+};

@@ -11,7 +11,6 @@ routerProductos.get("/nuevo", function (req, res) {
 routerProductos.get("/", (req, res) => {
   try {
     let data = { productos: claseProducto.getAll() };
-    console.log(data);
     res.render("productos", data);
   } catch (error) {
     res.send({
@@ -59,50 +58,65 @@ routerProductos.post("/", async (req, res) => {
 
 //DELETE  '/:id' - Borra un producto por su id (disponible para administradores)
 
-routerProductos.delete("/:id", async (req, res) =>{
- 
+routerProductos.delete("/:id", async (req, res) => {
   const valueID = req.params.id;
-  console.log('id desde backend', valueID)
+  console.log("id desde backend", valueID);
 
   try {
-    const productoEliminar = await claseProducto.deleteById(parseInt(valueID))
+    const productoEliminar = await claseProducto.deleteById(parseInt(valueID));
 
     if (!productoEliminar) {
       res.json({
-          estado: false,
-          mensaje: 'No se puede eliminar'
-      }) 
-     } else {
-        res.json({
-            estado: true,
-            mensaje: 'eliminado!'
-        })
+        estado: false,
+        mensaje: "No se puede eliminar",
+      });
+    } else {
+      res.json({
+        estado: true,
+        mensaje: "eliminado!",
+      });
     }
   } catch (error) {
-    console.log(error)
-}
+    console.log(error);
+  }
+});
+
+routerProductos.get("/edit/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    let data = { producto: claseProducto.getById(parseInt(id)) };
+    res.render("editProduct", data);
+  } catch (error) {
+    res.send({
+      code: 400,
+      failed: "Error",
+    });
+  }
 });
 
 //PUT '/api/productos/:id' -> recibe y actualiza un producto según su id.
-routerProductos.put("/:id", async (req, res) => {
-  const valueID = req.params.id;
-  const body = req.body;
 
-  console.log(valueID)
-  console.log('body', body)
+routerProductos.put("/:id", async (req, res) => {
+
+  console.log("paso1")
+  const id = req.params.id;
+  const body = req.body;
+  console.log(id)
+  console.log("body",JSON.parse(body))
   try {
-    const prodModificar = await claseProducto.encontrarYactualizar(valueID, body) 
-    console.log(prodModificar)
+    const prodModificar = await claseProducto.actualizar(id, body);
+   
     res.json({
         estado: true,
         mensaje: 'Producto editado'
     })
-} catch (error) {
-    console.log(error)
+  } catch (error) {
+    console.log(error);
+
     res.json({
-        estado: false,
-        mensaje: 'Producto falla'
-    })
-}
-})
+      estado: false,
+      mensaje: "Producto falla",
+    });
+  }
+});
 module.exports = routerProductos;

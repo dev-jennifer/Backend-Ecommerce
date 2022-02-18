@@ -10,6 +10,7 @@
         <a href="/productos" class="btn btn-dark btn-block my-2">Volver</a>
  
     {{else}} 
+    
       <div
         class="container-fluid bg-trasparent my-4 p-3"
         style="position: relative;">
@@ -40,6 +41,9 @@
                   <div class="text-center my-4">
                     <a href="#" class="btn btn-warning">Comprar</a>
                   </div>
+<a class="btn btn-warning" onclick="edit({{producto.id}})">Editar</a>
+
+
                 </div>
               </div>
             </div>

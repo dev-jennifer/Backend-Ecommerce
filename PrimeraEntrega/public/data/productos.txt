@@ -9,30 +9,21 @@
     "id": 1
   },
   {
-    "nombreProducto": "Masa",
+    "nombreProducto": "manzana",
     "descripcion": "",
     "fotoProducto": "https://fotografias.lasexta.com/clipping/cmsimages02/2020/09/21/86828440-B1FB-43AC-9E9C-A94AC6A4B8BD/default.jpg?crop=1300,731,x0,y0&width=1900&height=1069&optimize=low",
-    "codigo": "111",
-    "precioProducto": "4",
+    "codigo": "Hola",
+    "precioProducto": "",
     "stock": "",
     "id": 2
   },
   {
-    "nombreProducto": "manzana",
-    "descripcion": "",
+    "nombreProducto": "Masa",
+    "descripcion": "5626",
     "fotoProducto": "",
-    "codigo": "1",
-    "precioProducto": "6",
+    "codigo": "111",
+    "precioProducto": "",
     "stock": "",
     "id": 3
-  },
-  {
-    "nombreProducto": "Masa",
-    "descripcion": "gikn",
-    "fotoProducto": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHCBIWFRUVFRUYGRgYGBwZGBoYGBgaGBgaGBgZGRgYGBgcIS4lHB4rHxgYJjgmKy8xNTU1GiQ7QDs0Py40NTEBDAwMEA8QHhISHjQkJCQ0NDQ0NDQ0NDQxNDQxNDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0MTQ0NP/AABEIALsBDQMBIgACEQEDEQH/xAAbAAABBQEBAAAAAAAAAAAAAAAFAQIDBAYAB//EAEsQAAIBAgQDBAYGBQkFCQAAAAECAAMRBBIhMQVBUQYiYXETMoGRobFCUpLB0dIUYnKi8BUWIzNTgpPh8SRUc7LTJTQ1Q6OktMLD/8QAGQEAAwEBAQAAAAAAAAAAAAAAAAECAwQF/8QAJREAAgICAgICAgMBAAAAAAAAAAECEQMhEjFBUQRhIjJCcYEz/9oADAMBAAIRAxEAPwDA4ZwjhhrudIuIxbu3eJtKaNrJLE7DaaGBpKOMIRslmyAanfWS8Cxbmpdje416CBMBVtaw30a+xhDCVAma/uB+ElopM3iai8kCyjwaoXpgnfp0hJVmbNUIokirOCxwERVCARQIplDFcQCqpHM6+EdB0XxHWgrhOLvdW33F/OFwIdAnY20W0SpUVdWPkNST5Aan2ShU41QH0geoD0wRbqGcEQSbCwjadaCD2jw43P79L88T+c2G6/vJ+aHF+hckGLTrQP8Azlw/X95PzTh2kofwyfmj4v0PkgxadaCB2ho9D9qn97xw4/S6N9uj+eLi/QrQUtEIlWlxOk1rHztZsv7RQkL5nSXFIIBBBB1BGoI6gxFDLRCJJaIRACMiNIkhEQiAiMiZ/tDVIsOQ184VxWIyOoOxHsgnFZa+dTa66A8rSkRIyVVgxdlGnntKlSoep1Gsu1abIXXS0HOpsDNDInwNUg2/jzm8wFPKgudSJgcEuuY8hfzmvwGKLKljfrEyohZxISJZYSFhJ",
-    "codigo": "Hola",
-    "precioProducto": "3",
-    "stock": "3",
-    "id": 4
   }
 ]
