@@ -46,10 +46,7 @@ module.exports = class Productos {
 
   actualizarDato(numero, body) {
     const ExistenteID = this.getById(parseInt(numero));
-
     let nuevo = JSON.parse(JSON.stringify(body));
- 
-
     let productosActualizar = {
       nombreProducto: nuevo.nombreProducto,
       descripcion: nuevo.descripcion,

@@ -22,14 +22,14 @@
                     <span
                       class="float-start bg-primary"
                     >COD {{codigo}}</span>
-                    <span class="float-end price-hp">{{precio}}</span>
+                   
                   </div>
-                  <h5 class="card-title">{{nombreProducto}}</h5>
+                  <h5>{{nombreProducto}}</h5>
                     <p>{{descripcion}}</p>
-
+                    <h5>${{precioProducto}}</h5>
                     <div class="text-center my-4">
                       <a  class="btn btn-warning" onclick="detail({{id}})">Detalle</a>
-                       <a href="#" class="btn btn-warning">Comprar</a>
+                       <a class="btn btn-warning" onclick="agregar({{id}})">Carrito</a>
  
                       <a  class="btn btn-warning" onclick="deleting({{id}})">Eliminar</a>
                       <a class="btn btn-warning" onclick="edit({{id}})">Editar</a>
