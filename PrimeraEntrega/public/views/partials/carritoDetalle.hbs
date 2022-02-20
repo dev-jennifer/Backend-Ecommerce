@@ -1,0 +1,49 @@
+<div class="table-responsive">
+  <div id="contenedor">
+    <h2>Detalle de Carrito</h2>
+      <div
+        class="container-fluid bg-trasparent my-4 p-3"
+        style="position: relative;">
+        <div
+          class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-4 g-3">
+          <!-- filas -->
+          {{producto.fotoProducto}}
+          {{#each producto }}
+            <div class="col">
+              <div class="card h-100 shadow-sm">
+                <img
+                  src="{{producto.fotoProducto}}"
+                  class="card-img-top"
+                  alt="..."
+                />
+                <div class="card-body">
+                  <div class="clearfix mb-3">
+                    <span
+                      class="float-start bg-primary"
+                    >COD {{producto.codigo}}</span>
+                   
+                  </div>
+                  <h5>{{nombreProducto}}</h5>
+                    <p>{{descripcion}}</p>
+                    <h5>${{precioProducto}}</h5>
+                    <div class="text-center my-4">
+                      <a  class="btn btn-warning" onclick="detail({{id}})">Detalle</a>
+                       <a class="btn btn-warning" onclick="agregar({{id}})">Carrito</a>
+ 
+                      <a  class="btn btn-warning" onclick="deleting({{id}})">Eliminar</a>
+                      <a class="btn btn-warning" onclick="edit({{id}})">Editar</a>
+
+                                        
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {{/each}}
+        </div>
+      </div>
+
+
+  </div>
+</div>

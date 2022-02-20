@@ -33,6 +33,8 @@ routerProductos.get("/:id?", async (req, res) => {
       producto: seleccion,
       error: false,
     });
+
+
   } catch (error) {
     console.log("error", error);
     res.render("productoDetalle", {
@@ -50,7 +52,7 @@ routerProductos.post("/", async (req, res) => {
   console.log(body);
   try {
     await ProductClass.save(body);
-    res.redirect("/productos");
+    res.redirect("/api/productos/");
   } catch (error) {
     console.log("error", error);
   }

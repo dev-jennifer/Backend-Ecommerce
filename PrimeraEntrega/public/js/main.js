@@ -1,10 +1,10 @@
 ///PRODUCTOS
 async function detail(value) {
-  await fetch(`/productos/${value}`, { method: "GET" })
+  await fetch(`/api/productos/${value}`, { method: "GET" })
     .then(function (response) {
       if (response.ok) {
         console.log("Detalle Producto");
-        window.location.href = `/productos/${value}`;
+        window.location.href = `/api/productos/${value}`;
       }
       throw new Error("Request failed.");
     })
@@ -14,13 +14,13 @@ async function detail(value) {
 }
 
 async function deleting(value) {
-  await fetch(`/productos/${value}`, {
+  await fetch(`/api/productos/${value}`, {
     method: "DELETE",
   })
     .then(function (response) {
       if (response.ok) {
         console.log("Producto Eliminado");
-        window.location.href = "/productos";
+        window.location.href = "/api/productos";
       }
     })
     .catch(function (error) {
@@ -28,12 +28,12 @@ async function deleting(value) {
     });
 }
 async function edit(value) {
-  await fetch(`/productos/edit/${value}`, {
+  await fetch(`/api/productos/edit/${value}`, {
     method: "GET",
   })
     .then(function (response) {
       if (response.ok) {
-        window.location.href = `/productos/edit/${value}`;
+        window.location.href = `/api/productos/edit/${value}`;
       }
     })
     .catch(function (error) {
@@ -50,7 +50,7 @@ async function actualizar(value) {
   let precioProducto = document.getElementById("precioProducto").value;
   let stock = document.getElementById("stock").value;
 
-  const data = fetch(`/productos/${value}`, {
+  const data = fetch(`/api/productos/${value}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" }, // tells the server we have json
     body: JSON.stringify({

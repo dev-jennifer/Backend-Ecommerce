@@ -30,7 +30,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 routerProductos.use(express.json());
 routerCarrito.use(express.json());
 /*Agregamos routers a la app*/
-app.use("/productos", routerProductos);
+app.use("/api/productos", routerProductos);
 app.use("/api/carrito", routerCarrito);
 
 app.get('/', (req, res) => {

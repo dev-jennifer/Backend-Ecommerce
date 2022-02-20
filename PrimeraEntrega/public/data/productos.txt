@@ -1,6 +1,6 @@
 [
   {
-    "nombreProducto": "Manzana",
+    "nombreProducto": "Manzana Nueva",
     "descripcion": "Esta es manzana",
     "fotoProducto": "https://elegifruta.com.ar/onepage/wp-content/uploads/2017/07/manzana_roja.jpg",
     "codigo": "00001",

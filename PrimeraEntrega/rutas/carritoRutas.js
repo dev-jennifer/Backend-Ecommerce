@@ -4,6 +4,9 @@ const routerCarrito = express.Router();
 const Carrito = require("../public/modulos/Carrito.js");
 const CarritoClass = new Carrito();
 
+const Productos = require("../public/modulos/Productos.js");
+const ProductClass = new Productos();
+
 routerCarrito.post("/", async (req, res) => {
   try {
     const resultado = await CarritoClass.crearCarrito();
@@ -79,24 +82,28 @@ routerCarrito.get("/:id/productos", async (req, res) => {
 
 
 routerCarrito.post(`/:id/productos/:id_prod`, async (req, res) => {
-  const idCart = req.params.id;
-  const id_prod = req.params.id_prod;
+  const idCart = parseInt(req.params.id)
+  const id_prod = parseInt(req.params.id_prod)
   console.log("Id cart:", idCart)
   console.log("Id producto:", id_prod)
 
   try {
-    const seleccion = await CarritoClass.getById(parseInt(idCart));
-    console.log(seleccion); 
-    // res.render("productoDetalle", {
-    //   producto: seleccion,
-    //   error: false,
-    // });
+    const ProductoAgregado = ProductClass.getById(id_prod) 
+     //console.log("producto Agregado", ProductoAgregado)
+
+    const seleccion = await CarritoClass.save(idCart, ProductoAgregado) 
+    console.log("Seleccion", seleccion);
+
+    res.render("carrito", {
+      producto: seleccion,
+      error: false,
+    });
   } catch (error) {
     console.log("error", error);
-    // res.render("productoDetalle", {
-    //   error: true,
-    //   mensaje: "No se encuentra el producto",
-    // });
+    res.render("carrito", {
+      error: true,
+      mensaje: "No se encuentra el producto",
+    });
   }
 });
 
@@ -122,7 +129,7 @@ routerCarrito.delete("/:id/productos/:id_prod", async (req, res) => {
   }
 });
 routerCarrito.get('/', (req, res)=>{
-    res.status(200).json(carrito);
+    res.render('carrito');
 })
 
 module.exports = routerCarrito;
