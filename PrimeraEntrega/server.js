@@ -33,6 +33,8 @@ routerCarrito.use(express.json());
 app.use("/api/productos", routerProductos);
 app.use("/api/carrito", routerCarrito);
 
+
+
 app.get('/', (req, res) => {
   res.render('inicio.hbs');
 });
@@ -51,7 +53,8 @@ io.on("connection", (socket) => {
   })
 });
 /* ---------------------- Servidor ----------------------*/
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
+
 const server = app.listen(PORT, () => {
   console.log(`Servidor escuchando en puerto ${PORT}`);
 });

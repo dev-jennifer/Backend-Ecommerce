@@ -49,7 +49,20 @@ module.exports = class Carrito {
   }
 
   save(idCart, ProductoAgregado) {
-  
+    const date = new Date();
+    const dateStr =
+      ("00" + (date.getMonth() + 1)).slice(-2) +
+      "/" +
+      ("00" + date.getDate()).slice(-2) +
+      "/" +
+      date.getFullYear() +
+      " " +
+      ("00" + date.getHours()).slice(-2) +
+      ":" +
+      ("00" + date.getMinutes()).slice(-2) +
+      ":" +
+      ("00" + date.getSeconds()).slice(-2);
+
     let productosActualizar = {
       nombreProducto: ProductoAgregado.nombreProducto,
       descripcion: ProductoAgregado.descripcion,
@@ -58,6 +71,7 @@ module.exports = class Carrito {
       precioProducto: ProductoAgregado.precioProducto,
       stock: ProductoAgregado.stock,
       idProducto: ProductoAgregado.id,
+      fecha:dateStr,
     }
     console.log("ID Cart nr ", idCart);
  
