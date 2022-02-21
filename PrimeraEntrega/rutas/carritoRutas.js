@@ -89,9 +89,7 @@ routerCarrito.post(`/:id/productos/:id_prod`, async (req, res) => {
 
   try {
     const ProductoAgregado = ProductClass.getById(id_prod) 
-     //console.log("producto Agregado", ProductoAgregado)
-
-    const seleccion = await CarritoClass.save(idCart, ProductoAgregado) 
+    const seleccion = CarritoClass.save(idCart, ProductoAgregado) 
     console.log("Seleccion", seleccion);
 
     res.render("carrito", {
