@@ -14,7 +14,7 @@ routerCarrito.post("/", async (req, res) => {
       estado: true,
       id: resultado,
     });
-   } catch (error) {
+  } catch (error) {
     res.json({
       estado: false,
       mensaje: "error",
@@ -25,10 +25,10 @@ routerCarrito.post("/", async (req, res) => {
 routerCarrito.delete("/:id", async (req, res) => {
   const valueID = req.params.id;
   try {
-    const estado =  await CarritoClass.deleteById(parseInt(valueID));
-    console.log("Resultado",estado);
+    const estado = await CarritoClass.deleteById(parseInt(valueID));
+    console.log("Resultado", estado);
 
-     if (estado == false) {
+    if (estado == false) {
       res.json({
         estado: false,
         mensaje: "No se puede eliminar",
@@ -44,24 +44,37 @@ routerCarrito.delete("/:id", async (req, res) => {
   }
 });
 
+// routerCarrito.get("/", (req, res) => {
+//   if (!localStorage.getItem("my_token")) {
+//     const idCart = window.localStorage.getItem("my_token");
+//     res.redirect(`/${idCart}/productos`);
+//   } else {
+//     res.render("carrito", {
+//       error: true,
+//     });
+//   }
+// });
+
 routerCarrito.get("/:id/productos", async (req, res) => {
   const id = req.params.id;
+
   try {
-    const seleccion = await CarritoClass.getById(parseInt(id));
-    console.log(seleccion);
-    // res.render("productoDetalle", {
-    //   producto: seleccion,
-    //   error: false,
-    // });
+    const carrito = CarritoClass.getById(parseInt(id))
+    console.log(carrito.Productos)
+    let list = carrito.Productos.map((item)=>{
+      return  { nombreProducto: item.nombreProducto,
+        descripcion: item.descripcion
+       }
+  });
+  console.log(list)
+    res.render("carrito", {
+      producto: list,
+      error: false,
+    });
   } catch (error) {
     console.log("error", error);
-    // res.render("productoDetalle", {
-    //   error: true,
-    //   mensaje: "No se encuentra el producto",
-    // });
   }
 });
-
 
 // routerCarrito.post("/:id", async (req, res) => {
 //   const id = req.params.id;
@@ -80,38 +93,30 @@ routerCarrito.get("/:id/productos", async (req, res) => {
 //   }
 // });
 
-
 routerCarrito.post(`/:id/productos/:id_prod`, async (req, res) => {
-  const idCart = parseInt(req.params.id)
-  const id_prod = parseInt(req.params.id_prod)
-  console.log("Id cart:", idCart)
-  console.log("Id producto:", id_prod)
+  const idCart = parseInt(req.params.id);
+  const id_prod = parseInt(req.params.id_prod);
 
   try {
-    const ProductoAgregado = ProductClass.getById(id_prod) 
-    const seleccion = CarritoClass.save(idCart, ProductoAgregado) 
-    console.log("Seleccion", seleccion);
-
-    res.render("carrito", {
-      producto: seleccion,
-      error: false,
-    });
+    const ProductoAgregado = ProductClass.getById(id_prod);
+    const seleccion = CarritoClass.save(idCart, ProductoAgregado);
+    // console.log("Carrito View", seleccion);
   } catch (error) {
     console.log("error", error);
-    res.render("carrito", {
-      error: true,
-      mensaje: "No se encuentra el producto",
-    });
+    // res.render("carrito", {
+    //   error: true,
+    //   mensaje: "No se encuentra el producto",
+    // });
   }
 });
 
 routerCarrito.delete("/:id/productos/:id_prod", async (req, res) => {
   const valueID = req.params.id;
   try {
-    const estado =  await CarritoClass.deleteById(parseInt(valueID));
-    console.log("Resultado",estado);
+    const estado = await CarritoClass.deleteById(parseInt(valueID));
+    console.log("Resultado", estado);
 
-     if (estado == false) {
+    if (estado == false) {
       res.json({
         estado: false,
         mensaje: "No se puede eliminar",
@@ -126,8 +131,14 @@ routerCarrito.delete("/:id/productos/:id_prod", async (req, res) => {
     console.log(error);
   }
 });
-routerCarrito.get('/', (req, res)=>{
-    res.render('carrito');
-})
+// routerCarrito.get('/', (req, res)=>{
+//   const idCart = parseInt(req.params.id)
+//   const seleccion =  CarritoClass.getById(parseInt(id));
+//   console.log(seleccion)
+//   res.render("carrito", {
+//     producto: seleccion,
+//     error: false,
+//   });
+// })
 
 module.exports = routerCarrito;

@@ -5,7 +5,6 @@ const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
 
 
-const isAdmin=true
 const routerProductos = require("./rutas/productosRutas");
 const routerCarrito = require("./rutas/carritoRutas"); //Segmento de rutas 1
 
