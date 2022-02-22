@@ -22,12 +22,13 @@ routerCarrito.post("/", async (req, res) => {
   }
 });
 
-routerCarrito.delete("/:id", async (req, res) => {
-  const valueID = req.params.id;
-  try {
-    const estado = await CarritoClass.deleteById(parseInt(valueID));
-    console.log("Resultado", estado);
 
+routerCarrito.delete("/:id", async (req, res) => {
+  const idCart = parseInt(req.params.id)
+ 
+  try {
+    const estado = await CarritoClass.deleteByIdCart(idCart);
+ 
     if (estado == false) {
       res.json({
         estado: false,
@@ -59,14 +60,22 @@ routerCarrito.get("/:id/productos", async (req, res) => {
   const id = req.params.id;
 
   try {
-    const carrito = CarritoClass.getById(parseInt(id))
-    console.log(carrito.Productos)
-    let list = carrito.Productos.map((item)=>{
-      return  { nombreProducto: item.nombreProducto,
-        descripcion: item.descripcion
-       }
-  });
-  console.log(list)
+    const carrito = CarritoClass.getById(parseInt(id));
+    let list = carrito.Productos.map((item) => {
+      return {
+        nombreProducto: item.nombreProducto,
+        descripcion: item.descripcion,
+        fotoProducto: item.fotoProducto,
+        codigo: item.codigo,
+        precioProducto: item.precioProducto,
+        stock: item.stock,
+        quantity: item.Quantity,
+        subtotal: item.Quantity * item.precioProducto,
+        idProducto: item.idProducto,
+        idCarrito:id,
+      };
+    });
+
     res.render("carrito", {
       producto: list,
       error: false,
@@ -76,23 +85,6 @@ routerCarrito.get("/:id/productos", async (req, res) => {
   }
 });
 
-// routerCarrito.post("/:id", async (req, res) => {
-//   const id = req.params.id;
-//   const producto = req.body;
-
-//   try {
-//     const prodModificar = await CarritoClass.agregarProducto(id, producto);
-//     res.json({
-//       mensaje: "Producto actualizado",
-//     });
-//   } catch (error) {
-//     res.json({
-//       estado: false,
-//       mensaje: "Producto falla",
-//     });
-//   }
-// });
-
 routerCarrito.post(`/:id/productos/:id_prod`, async (req, res) => {
   const idCart = parseInt(req.params.id);
   const id_prod = parseInt(req.params.id_prod);
@@ -100,22 +92,21 @@ routerCarrito.post(`/:id/productos/:id_prod`, async (req, res) => {
   try {
     const ProductoAgregado = ProductClass.getById(id_prod);
     const seleccion = CarritoClass.save(idCart, ProductoAgregado);
-    // console.log("Carrito View", seleccion);
+ 
   } catch (error) {
     console.log("error", error);
-    // res.render("carrito", {
-    //   error: true,
-    //   mensaje: "No se encuentra el producto",
-    // });
+ 
   }
 });
 
-routerCarrito.delete("/:id/productos/:id_prod", async (req, res) => {
-  const valueID = req.params.id;
-  try {
-    const estado = await CarritoClass.deleteById(parseInt(valueID));
-    console.log("Resultado", estado);
+routerCarrito.delete("/id/productos/:id_prod", async (req, res) => {
 
+  const idCart = parseInt(req.params.id)
+  const idProducto = parseInt(req.params.id_prod)
+
+  try {
+    const estado = await CarritoClass.deleteById(idCart, idProducto);
+  
     if (estado == false) {
       res.json({
         estado: false,
@@ -131,14 +122,7 @@ routerCarrito.delete("/:id/productos/:id_prod", async (req, res) => {
     console.log(error);
   }
 });
-// routerCarrito.get('/', (req, res)=>{
-//   const idCart = parseInt(req.params.id)
-//   const seleccion =  CarritoClass.getById(parseInt(id));
-//   console.log(seleccion)
-//   res.render("carrito", {
-//     producto: seleccion,
-//     error: false,
-//   });
-// })
+ 
+
 
 module.exports = routerCarrito;

@@ -9,10 +9,10 @@ body {
     background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)
 }
 
-h2 {
-    font-weight: 900
+.imgTable{
+    max-height: 50px;
+    max-width: 50px;
 }
-
 .container-fluid {
     max-width: 1200px
 }
@@ -33,6 +33,7 @@ h2 {
 .h5{
     color: red, import !important;
 }
+
 .card h5 {
     overflow: hidden;
     height: 56px;
@@ -128,13 +129,12 @@ h2 {
 
 .btn-warning {
     background: none #f7810a;
-    color: #ffffff;
+    color: #ffffff!important;
     fill: #ffffff;
     border: none;
     text-decoration: none;
     outline: 0;
-    box-shadow: -1px 6px 19px rgba(247, 129, 10, 0.25);
-    border-radius: 100px
+ margin:10px;
 }
 
 .btn-warning:hover {

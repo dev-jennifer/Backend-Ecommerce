@@ -68,8 +68,12 @@ async function actualizar(value) {
 }
 
 ///CARRITO
+
+let idCart=0
+localStorage.getItem("my_token")?idCart = window.localStorage.getItem("my_token"):idCart = 0
+
 async function agregar(idProducto) {
-  if (!localStorage.getItem("my_token")) {
+  if (idCart=0) {
     await fetch(`/api/carrito/`, { method: "POST" })
       .then((response) => {
         return response.json();
@@ -77,7 +81,6 @@ async function agregar(idProducto) {
       .then(async (data) => {
         if (data.estado == true) {
           window.localStorage.setItem("my_token", data.id);
-          console.log("carrito nuevo");
           await fetch(`/api/carrito/${data.id}/productos/${idProducto}`, {
             method: "POST",
           });
@@ -93,14 +96,39 @@ async function agregar(idProducto) {
   }
 }
 
- function cart() {
-  let idCart;
-  if (localStorage.getItem("my_token")) {
-    idCart = window.localStorage.getItem("my_token");
-  } else {
-    idCart = 0;
-  }
 
-   fetch(`/api/carrito/${idCart}/productos`, { method: "GET" })
+function cart() {
+  fetch(`/api/carrito/${idCart}/productos`, { method: "GET" });
+}
+
+async function deleteItemCart(idProducto,idCarrito) {
+  await fetch(`/api/carrito/${idCarrito}/productos/${idProducto}`, {
+    method: "DELETE",
+  })
+    .then(function (response) {
+      if (response.ok) {
+        console.log("Producto Eliminado");
+        window.location.href = `/api/carrito/${idCarrito}/productos`;
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
+async function borrarCarrito(idCarrito) {
+  console.log(idCarrito)
+  await fetch(`/api/carrito/${idCarrito}`, {
+    method: "DELETE",
+  })
  
+    .then(function (response) {
+      if (response.ok) {
+        console.log("Carrito Eliminado");
+      
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 }

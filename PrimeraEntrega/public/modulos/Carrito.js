@@ -100,18 +100,42 @@ module.exports = class Carrito {
     return cart[index];
   }
 
-  deleteById(numero) {
-    const contenidoExistente = this.getAll();
-    const index = contenidoExistente.findIndex((x) => x.id === numero);
-
+  deleteByIdCart(idCart) {
+    const cart = this.getAll();
+    const index = cart.findIndex((x) => x.BuyerID === parseInt(idCart));
+     console.log("INDEX",index)
     let borrado = false;
     if (index != -1) {
-      contenidoExistente.splice(index, 1);
+      cart[index].Productos=[]
       borrado = true;
+      console.log(cart)
+      // fs.writeFile(
+      //   this.ruta,
+      //   JSON.stringify(cart, null, 2),
+      //   (error) => {
+      //     if (error) {
+      //       console.log("Error");
+      //     }
+      //   }
+      //);
+    }
+    return borrado;
+  }
 
+  deleteById(idCart, idProducto) {
+    const cart = this.getAll();
+    const index = cart.findIndex((x) => x.BuyerID === idCart);
+  
+    let borrado = false;
+    if (index != -1) {
+ 
+      const prodSeleccionado = cart[index].Productos.findIndex((x) => x.idProducto === idProducto);
+      cart[index].Productos.splice(prodSeleccionado, 1);
+      borrado = true;
+ 
       fs.writeFile(
         this.ruta,
-        JSON.stringify(contenidoExistente, null, 2),
+        JSON.stringify(cart, null, 2),
         (error) => {
           if (error) {
             console.log("Error");

@@ -1,10 +1,14 @@
-<tr>
-
-    <td><img src="{{fotoProducto}}"/></td>
+{{#each producto}}
+<tr></tr>
+    <td><img src="{{fotoProducto}}" class="imgTable"/></td>
     <td>{{idProducto}}</td>
     <td> <a onclick="detail({{idProducto}})">  {{nombreProducto}} / {{descripcion}} </a> </td>   
     <td>${{precioProducto}}</td>   
-    <td>${{Quantity}}</td>  
-                   
+    <td>{{quantity}}</td>     
+     <td>${{subtotal}}</td>    
+    <td><button onclick="deleteItemCart({{idProducto}},{{idCarrito}})">Borrar</button></td>
 </tr>
-                                        
+
+{{/each}}   
+
+       

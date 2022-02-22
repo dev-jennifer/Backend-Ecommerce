@@ -5,7 +5,7 @@ const routerProductos = express.Router();
 const Productos = require("../public/modulos/Productos.js");
 const ProductClass = new Productos();
 
-let admin = false;
+let admin = true;
 
 
   routerProductos.get("/nuevo", function (req, res) {
