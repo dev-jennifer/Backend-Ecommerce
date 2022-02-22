@@ -22,13 +22,12 @@ routerCarrito.post("/", async (req, res) => {
   }
 });
 
-
 routerCarrito.delete("/:id", async (req, res) => {
-  const idCart = parseInt(req.params.id)
- 
+  const idCart = parseInt(req.params.id);
+
   try {
     const estado = await CarritoClass.deleteByIdCart(idCart);
- 
+
     if (estado == false) {
       res.json({
         estado: false,
@@ -44,17 +43,6 @@ routerCarrito.delete("/:id", async (req, res) => {
     console.log(error);
   }
 });
-
-// routerCarrito.get("/", (req, res) => {
-//   if (!localStorage.getItem("my_token")) {
-//     const idCart = window.localStorage.getItem("my_token");
-//     res.redirect(`/${idCart}/productos`);
-//   } else {
-//     res.render("carrito", {
-//       error: true,
-//     });
-//   }
-// });
 
 routerCarrito.get("/:id/productos", async (req, res) => {
   const id = req.params.id;
@@ -72,7 +60,7 @@ routerCarrito.get("/:id/productos", async (req, res) => {
         quantity: item.Quantity,
         subtotal: item.Quantity * item.precioProducto,
         idProducto: item.idProducto,
-        idCarrito:id,
+        idCarrito: id,
       };
     });
 
@@ -83,6 +71,10 @@ routerCarrito.get("/:id/productos", async (req, res) => {
     });
   } catch (error) {
     console.log("error", error);
+    res.render("carrito", {
+      producto: [],
+      error: true
+    });
   }
 });
 
@@ -93,21 +85,18 @@ routerCarrito.post(`/:id/productos/:id_prod`, async (req, res) => {
   try {
     const ProductoAgregado = ProductClass.getById(id_prod);
     const seleccion = CarritoClass.save(idCart, ProductoAgregado);
- 
   } catch (error) {
     console.log("error", error);
- 
   }
 });
 
-routerCarrito.delete("/id/productos/:id_prod", async (req, res) => {
-
-  const idCart = parseInt(req.params.id)
-  const idProducto = parseInt(req.params.id_prod)
-
+routerCarrito.delete("/:id/productos/:id_prod", async (req, res) => {
+  const idCart = parseInt(req.params.id);
+  const idProducto = parseInt(req.params.id_prod);
+ 
   try {
     const estado = await CarritoClass.deleteById(idCart, idProducto);
-  
+
     if (estado == false) {
       res.json({
         estado: false,
@@ -123,7 +112,5 @@ routerCarrito.delete("/id/productos/:id_prod", async (req, res) => {
     console.log(error);
   }
 });
- 
-
 
 module.exports = routerCarrito;

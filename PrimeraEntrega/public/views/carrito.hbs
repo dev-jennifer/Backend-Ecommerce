@@ -1,6 +1,6 @@
 {{> headers title="Carrito" }}
 <h1>Carrito </h1>
- 
+  {{#if producto.length}}
 <div class="vh-100 d-flex justify-content-center align-items-center">
 <table class="table">
   <thead>
@@ -21,9 +21,13 @@
 
     </tbody>
 </table>
-<button onclick="borrarCarrito({{cartID}})">Borrar todo</button>
 
 </div>
+<button onclick="borrarCarrito({{cartID}})">Borrar todo</button>
+{{else}}
 
 
+<h2>No hay productos en carrito</h2>
+
+{{/if}}
 {{> footer year="2022"}}

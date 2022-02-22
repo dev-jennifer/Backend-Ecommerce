@@ -69,17 +69,13 @@ async function actualizar(value) {
 
 ///CARRITO
 
-let idCart=0
-localStorage.getItem("my_token")?idCart = window.localStorage.getItem("my_token"):idCart = 0
-
 async function agregar(idProducto) {
   if (!localStorage.getItem("my_token")) {
-   
     await fetch(`/api/carrito/`, { method: "POST" })
       .then((response) => {
         return response.json();
       })
-  
+
       .then(async (data) => {
         if (data.estado == true) {
           window.localStorage.setItem("my_token", data.id);
@@ -98,15 +94,21 @@ async function agregar(idProducto) {
   }
 }
 
-
 function cart() {
-  fetch(`/api/carrito/${idCart}/productos`, { method: "GET" });
+  let idCart = 0;
+  localStorage.getItem("my_token")
+    ? (idCart = window.localStorage.getItem("my_token"))
+    : (idCart = 0);
+  console.log(idCart);
+  window.location.href = `/api/carrito/${idCart}/productos`;
 }
 
-async function deleteItemCart(idProducto,idCarrito) {
-  await fetch(`/api/carrito/${idCarrito}/productos/${idProducto}`, {
-    method: "DELETE",
+async function deleteItemCart(idProducto, idCarrito) {
+
+  await fetch(`/api/carrito/${idCarrito}/productos/${idProducto}`,
+   {method: "DELETE",
   })
+
     .then(function (response) {
       if (response.ok) {
         console.log("Producto Eliminado");
@@ -119,11 +121,10 @@ async function deleteItemCart(idProducto,idCarrito) {
 }
 
 async function borrarCarrito(idCarrito) {
-  console.log(idCarrito)
+
   await fetch(`/api/carrito/${idCarrito}`, {
     method: "DELETE",
   })
- 
     .then(function (response) {
       if (response.ok) {
         console.log("Carrito Eliminado");
