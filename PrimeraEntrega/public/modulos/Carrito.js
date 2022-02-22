@@ -109,15 +109,15 @@ module.exports = class Carrito {
       cart[index].Productos=[]
       borrado = true;
       console.log(cart)
-      // fs.writeFile(
-      //   this.ruta,
-      //   JSON.stringify(cart, null, 2),
-      //   (error) => {
-      //     if (error) {
-      //       console.log("Error");
-      //     }
-      //   }
-      //);
+      fs.writeFile(
+        this.ruta,
+        JSON.stringify(cart, null, 2),
+        (error) => {
+          if (error) {
+            console.log("Error");
+          }
+        }
+      );
     }
     return borrado;
   }

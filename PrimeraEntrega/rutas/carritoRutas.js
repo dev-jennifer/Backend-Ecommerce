@@ -78,6 +78,7 @@ routerCarrito.get("/:id/productos", async (req, res) => {
 
     res.render("carrito", {
       producto: list,
+      cartID: id,
       error: false,
     });
   } catch (error) {

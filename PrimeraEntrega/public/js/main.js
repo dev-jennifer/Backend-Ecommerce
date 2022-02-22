@@ -73,11 +73,13 @@ let idCart=0
 localStorage.getItem("my_token")?idCart = window.localStorage.getItem("my_token"):idCart = 0
 
 async function agregar(idProducto) {
-  if (idCart=0) {
+  if (!localStorage.getItem("my_token")) {
+   
     await fetch(`/api/carrito/`, { method: "POST" })
       .then((response) => {
         return response.json();
       })
+  
       .then(async (data) => {
         if (data.estado == true) {
           window.localStorage.setItem("my_token", data.id);
@@ -125,7 +127,7 @@ async function borrarCarrito(idCarrito) {
     .then(function (response) {
       if (response.ok) {
         console.log("Carrito Eliminado");
-      
+        window.location.href = `/api/carrito/${idCarrito}/productos`;
       }
     })
     .catch(function (error) {
