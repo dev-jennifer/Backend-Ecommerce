@@ -1,3 +1,5 @@
+const socket = io.connect();
+
 ///PRODUCTOS
 async function detail(value) {
   await fetch(`/api/productos/${value}`, { method: "GET" })
@@ -67,6 +69,7 @@ async function actualizar(value) {
 }
 
 /* ---------------------- Chat ----------------------*/
+
 function enviarMensaje() {
   const email = document.querySelector("#email");
   const mensaje = document.querySelector("#mensaje");
@@ -107,68 +110,4 @@ socket.on("mensajes", (mensajes) => {
   document.getElementById("contenedorMensaje").innerHTML = constMensajeHtml;
 })
 
-///CARRITO
 
-async function agregar(idProducto) {
-  if (!localStorage.getItem("my_token")) {
-    await fetch(`/api/carrito/`, { method: "POST" })
-      .then((response) => {
-        return response.json();
-      })
-
-      .then(async (data) => {
-        if (data.estado == true) {
-          window.localStorage.setItem("my_token", data.id);
-          await fetch(`/api/carrito/${data.id}/productos/${idProducto}`, {
-            method: "POST",
-          });
-        }
-        console.log("error");
-      });
-  } else {
-    const idCart = window.localStorage.getItem("my_token");
-    await fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
-      method: "POST",
-    });
-    console.log("carrito existente");
-  }
-}
-
-function cart() {
-  let idCart = 0;
-  localStorage.getItem("my_token")
-    ? (idCart = window.localStorage.getItem("my_token"))
-    : (idCart = 0);
-  console.log(idCart);
-  window.location.href = `/api/carrito/${idCart}/productos`;
-}
-
-async function deleteItemCart(idProducto, idCarrito) {
-  await fetch(`/api/carrito/${idCarrito}/productos/${idProducto}`, {
-    method: "DELETE",
-  })
-    .then(function (response) {
-      if (response.ok) {
-        console.log("Producto Eliminado");
-        window.location.href = `/api/carrito/${idCarrito}/productos`;
-      }
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-}
-
-async function borrarCarrito(idCarrito) {
-  await fetch(`/api/carrito/${idCarrito}`, {
-    method: "DELETE",
-  })
-    .then(function (response) {
-      if (response.ok) {
-        console.log("Carrito Eliminado");
-        window.location.href = `/api/carrito/${idCarrito}/productos`;
-      }
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-}

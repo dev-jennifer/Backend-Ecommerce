@@ -1,15 +1,16 @@
-const { options } = require("../src/utils/options");
+const {options} = require("../src/utils/options");
 const express = require("express");
 const routerProductos = express.Router();
 
 const Productos = require("../src/Productos.js");
-const ProductClass = new Productos(options);
+const ProductClass = new Productos(options.mariaDB );
 
 let admin = true;
 
 routerProductos.get("/nuevo", function (req, res) {
   if (admin == true) {
     res.render("nuevoProducto");
+    
   } else {
     res.json({
       error: -1,
