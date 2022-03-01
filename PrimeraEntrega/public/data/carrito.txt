@@ -1,5 +1,4 @@
-[
-  {
+[]  {
     "BuyerID": 1,
     "Fecha": "Mon Feb 21 2022",
     "Productos": [
@@ -23,7 +22,7 @@
         "stock": "100",
         "idProducto": 2,
         "productDate": "Mon Feb 21 2022",
-        "Quantity": 3
+        "Quantity": 4
       }
     ]
   },

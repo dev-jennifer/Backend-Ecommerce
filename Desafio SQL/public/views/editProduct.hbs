@@ -1,0 +1,74 @@
+{{> headers title="Productos"}}
+<div className="container mt-4">
+  <h2>Editar Producto</h2>
+ <form id="editar" data-id={{id}}>
+     <div class="form-group">
+      <input
+        id="nombreProducto"
+        placeholder="Nombre"
+        type="text"
+         class="form-control"
+        name="nombreProducto"
+        value="{{nombreProducto}}"
+      />
+    </div>
+    <div class="form-group">
+      <input
+      type="text"
+        id="descripcion"
+        name="descripcion"
+        placeholder="Descripción"
+         class="form-control"
+         value="{{descripcion}}"
+      ></input>
+    </div>
+    <div class="form-group">
+      <input
+        id="fotoProducto"
+        class="form-control"
+        type="text"
+        name="fotoProducto"
+         class="form-control"
+        placeholder="Foto URL"
+         value="{{fotoProducto}}"
+      />
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-4">
+      <input
+        id="codigo"
+        class="form-control"
+        type="text"
+        name="codigo"
+        placeholder="Codigo"
+          value="{{codigo}}"
+      />
+</div>
+  <div class="form-group col-md-4"> 
+      <input
+        id="precioProducto"
+        class="form-control"
+        type="number"
+        name="precioProducto"
+        placeholder="Precio"
+         value="{{precioProducto}}"
+      />
+</div>
+  <div class="form-group col-md-4">
+      <input
+        id="stock"
+        class="form-control"
+        type="number"
+        name="stock"
+        placeholder="Stock"
+                 value="{{stock}}"
+      />
+      </div>
+    </div>
+     <a  class="btn btn-warning" onclick="deleting({{id}})">Eliminar</a>
+    <a class="btn btn-warning"  onclick="actualizar({{id}})">Actualizar</a>
+    </form>
+</div>
+{{> footer year=2020}}
+
