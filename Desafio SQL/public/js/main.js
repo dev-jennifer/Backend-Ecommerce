@@ -1,4 +1,4 @@
-const socket = io.connect();
+const socket = io.connect()
 
 ///PRODUCTOS
 async function detail(value) {
@@ -24,6 +24,7 @@ async function deleting(value) {
         console.log("Producto Eliminado");
       }
     })
+
     .catch(function (error) {
       console.log(error);
     });
@@ -89,25 +90,32 @@ function enviarMensaje() {
     ("00" + date.getSeconds()).slice(-2);
 
   socket.emit("mensajeNuevo", {
-    email: email.value,
+    autor: email.value,
     texto: mensaje.value,
-    fecha: dateStr,
+    fechaHora: dateStr,
   });
   return false;
 }
 
 socket.on("mensajes", (mensajes) => {
+ 
   let constMensajeHtml = "";
 
-  mensajes.forEach((mensaje) => {
+  mensajes.forEach((msg) => {
+    console.log(msg)
     constMensajeHtml += `
         <span style="color:blue;">
-          <b>${mensaje.email}</b></span>
-        <span style="color:brown";>${mensaje.texto}</span>
-        <span style="color:green; font-style:italic";>${mensaje.fecha}</span>
+          <b>${msg.autor}</b></span>
+        <span style="color:brown";>${msg.texto}</span>
+        <span style="color:green; font-style:italic";>${msg.fechaHora}</span>
         <br>`;
-  });
+  })
+
+
   document.getElementById("contenedorMensaje").innerHTML = constMensajeHtml;
 })
+
+
+ 
 
 

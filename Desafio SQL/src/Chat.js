@@ -4,10 +4,7 @@ class Chat {
     this.knex = knexLib(options);
   }
 
-  
-
   async guardar(nuevoMensaje) {
-    console.log(nuevoMensaje);
     return this.knex("mensajes").insert(nuevoMensaje);
   }
 
