@@ -1,0 +1,236 @@
+//creacion de databases y colecciones
+
+> use mitest
+switched to db mitest
+> db
+mitest
+> show databases
+admin   0.000GB
+config  0.000GB
+local   0.000GB
+
+-----------
+1)Creo la db
+> use ecommerce
+switched to db ecommerce
+> db
+ecommerce
+
+-----------
+1)Creo las colecciones
+> db.createCollection("productos")
+{ "ok" : 1 }
+> db.createCollection("mensajes")
+{ "ok" : 1 }
+> show databases
+admin      0.000GB
+config     0.000GB
+ecommerce  0.000GB
+local      0.000GB
+
+-----------
+2)Inserto los 10 productos y mensajes
+
+db.productos.insertMany( [
+{nombreProducto:"Manzana", descripcion:"Fruta", fotoProducto:"url", codigo:"MA-01",precioProducto:150,stock:100},
+{nombreProducto:"Banana", descripcion:"Fruta", fotoProducto:"url", codigo:"MA-02",precioProducto:300,stock:100},
+{nombreProducto:"Sandia", descripcion:"Fruta", fotoProducto:"url", codigo:"MA-03",precioProducto:1500,stock:100},
+{nombreProducto:"Naranja", descripcion:"Fruta", fotoProducto:"url", codigo:"MA-04",precioProducto:250,stock:100},
+{nombreProducto:"Anana", descripcion:"Fruta", fotoProducto:"url", codigo:"MA-05",precioProducto:700,stock:100},
+{nombreProducto:"Pera", descripcion:"Fruta", fotoProducto:"url", codigo:"MA-06",precioProducto:1500,stock:100},
+{nombreProducto:"Kiwi", descripcion:"Fruta", fotoProducto:"url", codigo:"MA-07",precioProducto:1600,stock:100},
+{nombreProducto:"Uva", descripcion:"Fruta", fotoProducto:"url", codigo:"MA-08",precioProducto:180,stock:100},
+{nombreProducto:"Durazno", descripcion:"Fruta", fotoProducto:"url", codigo:"MA-09",precioProducto:950,stock:100},
+{nombreProducto:"Melon", descripcion:"Fruta", fotoProducto:"url", codigo:"MA-10",precioProducto:1250,stock:100}
+])
+
+
+ db.mensajes.insertMany( [
+{autor:"Brian", texto:"Hola", fecha:new Date("2022, 03, 04")},
+{autor:"Lautaro", texto:"Hola!", fecha:new Date("2022, 03, 04")},
+{autor:"Brian", texto:"Que tal", fecha:new Date("2022, 03, 04")},
+{autor:"Lautaro", texto:"Todo bien", fecha:new Date("2022, 03, 04")},
+{autor:"Lautaro", texto:"Me alegro", fecha:new Date("2022, 03, 04")},
+{autor:"Brian", texto:"ok", fecha:new Date("2022, 03, 04")},
+{autor:"Lautaro", texto:"gracias", fecha:new Date("2022, 03, 04")},
+{autor:"Brian", texto:"adios", fecha:new Date("2022, 03, 05")},
+{autor:"Brian", texto:"adios", fecha:new Date("2022, 03, 05")},
+ ])
+
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                ObjectId("6222b1f9d691ff89eab6c7d9"),
+                ObjectId("6222b1f9d691ff89eab6c7da"),
+                ObjectId("6222b1f9d691ff89eab6c7db"),
+                ObjectId("6222b1f9d691ff89eab6c7dc"),
+                ObjectId("6222b1f9d691ff89eab6c7dd"),
+                ObjectId("6222b1f9d691ff89eab6c7de"),
+                ObjectId("6222b1f9d691ff89eab6c7df"),
+                ObjectId("6222b1f9d691ff89eab6c7e0"),
+                ObjectId("6222b1f9d691ff89eab6c7e1")
+        ]
+}
+
+-----------
+3)Listar todos los documentos en cada colección.
+
+> db.productos.find()
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7cf"), "nombreProducto" : "Manzana", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-01", "precioProducto" : 150, "stock" : 100 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d0"), "nombreProducto" : "Banana", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-02", "precioProducto" : 300, "stock" : 100 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d1"), "nombreProducto" : "Sandia", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-03", "precioProducto" : 1500, "stock" : 100 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d2"), "nombreProducto" : "Naranja", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-04", "precioProducto" : 250, "stock" : 100 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d3"), "nombreProducto" : "Anana", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-05", "precioProducto" : 700, "stock" : 100 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d4"), "nombreProducto" : "Pera", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-06", "precioProducto" : 1500, "stock" : 100 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d5"), "nombreProducto" : "Kiwi", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-07", "precioProducto" : 1600, "stock" : 100 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d6"), "nombreProducto" : "Uva", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-08", "precioProducto" : 180, "stock" : 100 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d7"), "nombreProducto" : "Durazno", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-09", "precioProducto" : 950, "stock" : 100 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d8"), "nombreProducto" : "Melon", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-10", "precioProducto" : 1250, "stock" : 100 }
+
+> db.mensajes.find()
+{ "_id" : ObjectId("6222b1f9d691ff89eab6c7d9"), "autor" : "Brian", "texto" : "Hola", "fecha" : ISODate("2022-03-04T03:00:00Z") }
+{ "_id" : ObjectId("6222b1f9d691ff89eab6c7da"), "autor" : "Lautaro", "texto" : "Hola!", "fecha" : ISODate("2022-03-04T03:00:00Z") }
+{ "_id" : ObjectId("6222b1f9d691ff89eab6c7db"), "autor" : "Brian", "texto" : "Que tal", "fecha" : ISODate("2022-03-04T03:00:00Z") }
+{ "_id" : ObjectId("6222b1f9d691ff89eab6c7dc"), "autor" : "Lautaro", "texto" : "Todo bien", "fecha" : ISODate("2022-03-04T03:00:00Z") }
+{ "_id" : ObjectId("6222b1f9d691ff89eab6c7dd"), "autor" : "Lautaro", "texto" : "Me alegro", "fecha" : ISODate("2022-03-04T03:00:00Z") }
+{ "_id" : ObjectId("6222b1f9d691ff89eab6c7de"), "autor" : "Brian", "texto" : "ok", "fecha" : ISODate("2022-03-04T03:00:00Z") }
+{ "_id" : ObjectId("6222b1f9d691ff89eab6c7df"), "autor" : "Lautaro", "texto" : "gracias", "fecha" : ISODate("2022-03-04T03:00:00Z") }
+{ "_id" : ObjectId("6222b1f9d691ff89eab6c7e0"), "autor" : "Brian", "texto" : "adios", "fecha" : ISODate("2022-03-05T03:00:00Z") }
+{ "_id" : ObjectId("6222b1f9d691ff89eab6c7e1"), "autor" : "Brian", "texto" : "adios", "fecha" : ISODate("2022-03-05T03:00:00Z") }
+
+
+-----------
+4)Mostrar la cantidad de documentos almacenados en cada una de ellas.
+
+> db.productos.estimatedDocumentCount()
+10
+>
+> db.mensajes.estimatedDocumentCount()
+9
+>  db.mensajes.insertOne( {autor:"Brian", texto:"adios!", fecha:new Date("2022, 03, 05")})
+{
+        "acknowledged" : true,
+        "insertedId" : ObjectId("6222b5dad691ff89eab6c7e2")
+}
+>  db.mensajes.estimatedDocumentCount()
+10
+------------
+Agregar un producto más en la colección de productos 
+
+
+> db.productos.insertOne({nombreProducto:"Frutilla", descripcion:"Fruta", fotoProducto:"url", codigo:"MA-11",precioProducto:1050,stock:100})
+{
+        "acknowledged" : true,
+        "insertedId" : ObjectId("6222b6f8d691ff89eab6c7e3")
+}
+
+-------------
+Realizar una consulta por nombre de producto específico:
+> db.productos.find({nombreProducto: "Manzana"})
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7cf"), "nombreProducto" : "Manzana", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-01", "precioProducto" : 150, "stock" : 100 }
+
+-------------
+Listar los productos con precio menor a 1000 pesos.
+>  db.productos.find({precioProducto:{$lt:1000}})
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7cf"), "nombreProducto" : "Manzana", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-01", "precioProducto" : 150, "stock" : 100 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d0"), "nombreProducto" : "Banana", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-02", "precioProducto" : 300, "stock" : 100 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d2"), "nombreProducto" : "Naranja", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-04", "precioProducto" : 250, "stock" : 100 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d3"), "nombreProducto" : "Anana", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-05", "precioProducto" : 700, "stock" : 100 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d6"), "nombreProducto" : "Uva", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-08", "precioProducto" : 180, "stock" : 100 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d7"), "nombreProducto" : "Durazno", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-09", "precioProducto" : 950, "stock" : 100 }
+-------------
+Listar los productos con precio entre los 1000 a 3000 pesos.
+
+>  db.productos.find({precioProducto:{$gt:1000,$lt:3000}})
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d1"), "nombreProducto" : "Sandia", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-03", "precioProducto" : 1500, "stock" : 100 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d4"), "nombreProducto" : "Pera", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-06", "precioProducto" : 1500, "stock" : 100 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d5"), "nombreProducto" : "Kiwi", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-07", "precioProducto" : 1600, "stock" : 100 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d8"), "nombreProducto" : "Melon", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-10", "precioProducto" : 1250, "stock" : 100 }
+{ "_id" : ObjectId("6222b6f8d691ff89eab6c7e3"), "nombreProducto" : "Frutilla", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-11", "precioProducto" : 1050, "stock" : 100 }
+--------------
+Listar los productos con precio mayor a 3000 pesos.
+ db.productos.find({precioProducto:{$gt:3000}})
+>
+--------------
+Realizar una consulta que traiga sólo el nombre del tercer producto más barato.
+> db.productos.find({},{"nombreProducto":1}).sort({precioProducto: 1}).skip(2).limit(1)
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d2"), "nombreProducto" : "Naranja" }
+
+-------------
+Hacer una actualización sobre todos los productos, agregando el campo stock a todos ellos con un valor de 100.
+(Actualice a 101 porque eran todos 100 antes)
+
+> db.productos.updateMany({},{$set:{stock:101}})
+{ "acknowledged" : true, "matchedCount" : 11, "modifiedCount" : 11 }
+> db.productos.find()
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7cf"), "nombreProducto" : "Manzana", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-01", "precioProducto" : 150, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d0"), "nombreProducto" : "Banana", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-02", "precioProducto" : 300, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d1"), "nombreProducto" : "Sandia", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-03", "precioProducto" : 1500, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d2"), "nombreProducto" : "Naranja", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-04", "precioProducto" : 250, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d3"), "nombreProducto" : "Anana", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-05", "precioProducto" : 700, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d4"), "nombreProducto" : "Pera", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-06", "precioProducto" : 1500, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d5"), "nombreProducto" : "Kiwi", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-07", "precioProducto" : 1600, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d6"), "nombreProducto" : "Uva", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-08", "precioProducto" : 180, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d7"), "nombreProducto" : "Durazno", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-09", "precioProducto" : 950, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d8"), "nombreProducto" : "Melon", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-10", "precioProducto" : 1250, "stock" : 101 }
+{ "_id" : ObjectId("6222b6f8d691ff89eab6c7e3"), "nombreProducto" : "Frutilla", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-11", "precioProducto" : 1050, "stock" : 101 }
+
+
+--------
+Cambiar el stock a cero de los productos con precios mayores a 4000 pesos. 
+Actualizo el precio de alguno producto para que sea mayor a 4k
+
+> db.productos.update({nombreProducto:"Banana"},{$set:{precioProducto:4100}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+
+> db.productos.updateMany({precioProducto:{$gt:4000}},{$set:{stock:0}})
+{ "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
+> db.productos.find()
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7cf"), "nombreProducto" : "Manzana", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-01", "precioProducto" : 150, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d0"), "nombreProducto" : "Banana", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-02", "precioProducto" : 4100, "stock" : 0 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d1"), "nombreProducto" : "Sandia", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-03", "precioProducto" : 1500, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d2"), "nombreProducto" : "Naranja", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-04", "precioProducto" : 250, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d3"), "nombreProducto" : "Anana", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-05", "precioProducto" : 700, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d4"), "nombreProducto" : "Pera", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-06", "precioProducto" : 1500, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d5"), "nombreProducto" : "Kiwi", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-07", "precioProducto" : 1600, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d6"), "nombreProducto" : "Uva", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-08", "precioProducto" : 180, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d7"), "nombreProducto" : "Durazno", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-09", "precioProducto" : 950, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d8"), "nombreProducto" : "Melon", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-10", "precioProducto" : 1250, "stock" : 101 }
+{ "_id" : ObjectId("6222b6f8d691ff89eab6c7e3"), "nombreProducto" : "Frutilla", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-11", "precioProducto" : 1050, "stock" : 101 }
+
+------------
+Borrar los productos con precio menor a 1000 pesos 
+
+> db.productos.deleteMany({precioProducto: {$lt:1000}})
+{ "acknowledged" : true, "deletedCount" : 5 }
+> db.productos.find()
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d0"), "nombreProducto" : "Banana", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-02", "precioProducto" : 4100, "stock" : 0 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d1"), "nombreProducto" : "Sandia", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-03", "precioProducto" : 1500, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d4"), "nombreProducto" : "Pera", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-06", "precioProducto" : 1500, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d5"), "nombreProducto" : "Kiwi", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-07", "precioProducto" : 1600, "stock" : 101 }
+{ "_id" : ObjectId("6222af0ed691ff89eab6c7d8"), "nombreProducto" : "Melon", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-10", "precioProducto" : 1250, "stock" : 101 }
+{ "_id" : ObjectId("6222b6f8d691ff89eab6c7e3"), "nombreProducto" : "Frutilla", "descripcion" : "Fruta", "fotoProducto" : "url", "codigo" : "MA-11", "precioProducto" : 1050, "stock" : 101 }
+
+-------------
+Crear un usuario 'pepe' clave: 'asd456' que sólo pueda leer la base de datos ecommerce. 
+Verificar que pepe no pueda cambiar la información
+
+> db.createUser(
+.   {
+     user: "pepe",
+     pwd: "asd456",
+     roles: [
+        { role: "read", db: "ecommerce" }
+     ]
+   }
+ )
+Successfully added user: {
+        "user" : "pepe",
+        "roles" : [
+                {
+                        "role" : "read",
+                        "db" : "ecommerce"
+                }
+        ]
+}
+
