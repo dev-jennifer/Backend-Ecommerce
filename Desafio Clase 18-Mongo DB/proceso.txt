@@ -215,8 +215,8 @@ Borrar los productos con precio menor a 1000 pesos
 Crear un usuario 'pepe' clave: 'asd456' que sólo pueda leer la base de datos ecommerce. 
 Verificar que pepe no pueda cambiar la información
 
-> db.createUser(
-.   {
+db.createUser(
+   {
      user: "pepe",
      pwd: "asd456",
      roles: [
@@ -224,6 +224,9 @@ Verificar que pepe no pueda cambiar la información
      ]
    }
  )
+
+ db.createUser( {user:"pepe", pwd:"asd456" ,role: [ { role: "read", db: "ecommerce" }]})
+
 Successfully added user: {
         "user" : "pepe",
         "roles" : [
@@ -234,3 +237,4 @@ Successfully added user: {
         ]
 }
 
+mongo -u foo --authenticationDatabase admin -p
