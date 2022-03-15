@@ -15,19 +15,16 @@ async function detail(value) {
     });
 }
 
-
 async function deleting(value) {
-  
   await fetch(`/api/productos/${value}`, {
     method: "DELETE",
   })
     .then(function (response) {
       if (response.ok) {
         console.log("Producto Eliminado");
- 
       }
     })
-  
+
     .catch(function (error) {
       console.log(error);
     });
@@ -67,59 +64,64 @@ async function actualizar(value) {
       stock,
     }),
   })
-    .then((res) =>  window.location.href = `/api/productos/`)
+    .then((res) => (window.location.href = `/api/productos/`))
     .catch((error) => {
       console.log(error);
     });
 }
 
-/* ---------------------- Chat ----------------------*/
+/* ---------------------- Cart ----------------------*/
 
-// function enviarMensaje() {
-//   const email = document.querySelector("#email");
-//   const mensaje = document.querySelector("#mensaje");
+async function agregar(idProducto) {
+  if (!localStorage.getItem("my_token")) {
+      fetch(`/api/carrito/`, { method: "POST" }).then(async (response) => {
+      await fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
+        method: "POST",
+      });
+    });
+  }
+  console.log("ok")
+  const idCart = window.localStorage.getItem("my_token");
+  await fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
+    method: "POST",
+  });
+}
 
-//   const date = new Date();
-//   const dateStr =
-//     ("00" + (date.getMonth() + 1)).slice(-2) +
-//     "/" +
-//     ("00" + date.getDate()).slice(-2) +
-//     "/" +
-//     date.getFullYear() +
-//     " " +
-//     ("00" + date.getHours()).slice(-2) +
-//     ":" +
-//     ("00" + date.getMinutes()).slice(-2) +
-//     ":" +
-//     ("00" + date.getSeconds()).slice(-2);
+function cart() {
+  let idCart = 0;
+  localStorage.getItem("my_token")
+    ? (idCart = window.localStorage.getItem("my_token"))
+    : (idCart = 0);
+  console.log(idCart);
+  window.location.href = `/api/carrito/${idCart}/productos`;
+}
 
-//   socket.emit("mensajeNuevo", {
-//     autor: email.value,
-//     texto: mensaje.value,
-//     fechaHora: dateStr,
-//   });
-//   return false;
-// }
+async function deleteItemCart(idProducto, idCarrito) {
+  await fetch(`/api/carrito/${idCarrito}/productos/${idProducto}`, {
+    method: "DELETE",
+  })
+    .then(function (response) {
+      if (response.ok) {
+        console.log("Producto Eliminado");
+        window.location.href = `/api/carrito/${idCarrito}/productos`;
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
 
-// socket.on("mensajes", (mensajes) => {
- 
-//   let constMensajeHtml = "";
-
-//   mensajes.forEach((msg) => {
-//     console.log(msg)
-//     constMensajeHtml += `
-//         <span style="color:blue;">
-//           <b>${msg.autor}</b></span>
-//         <span style="color:brown";>${msg.texto}</span>
-//         <span style="color:green; font-style:italic";>${msg.fechaHora}</span>
-//         <br>`;
-//   })
-
-
-//   document.getElementById("contenedorMensaje").innerHTML = constMensajeHtml;
-// })
-
-
- 
-
-
+async function borrarCarrito(idCarrito) {
+  await fetch(`/api/carrito/${idCarrito}`, {
+    method: "DELETE",
+  })
+    .then(function (response) {
+      if (response.ok) {
+        console.log("Carrito Eliminado");
+        window.location.href = `/api/carrito/${idCarrito}/productos`;
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}

@@ -23,7 +23,6 @@ class ContenedorMongoDB {
     }
   };
 
-
   guardar = async (body) => {
     try {
       await this.coleccion.create(body);
@@ -38,8 +37,8 @@ class ContenedorMongoDB {
 
   eliminar = async (id) => {
     try {
-      console.log("delete")
-     await this.coleccion.deleteOne({ id: id });
+      console.log("delete");
+      await this.coleccion.deleteOne({ id: id });
     } catch (error) {
       console.log(error);
       return {
@@ -61,16 +60,38 @@ class ContenedorMongoDB {
       };
     }
   };
-  
-  actualizar = async (id, body) => {
+
+  actualizarCart = async (id, cartProduct) => {
     try {
-        await this.coleccion.updateOne(
+      await this.coleccion.updateOne(
         {
           _id: id,
         },
+        {
+          $push: {
+            Productos: cartProduct,
+          },
+        }
+      );
+    } catch (error) {
+      console.log(error);
+      return {
+        code: "004",
+        msg: "Error al actualizar",
+      };
+    }
+  };
+
+  actualizar = async (id, body) => {
+    try {
+      await this.coleccion.updateOne(
+        {
+          _id: id,
+        },
+
         { $set: body }
       );
-      console.log(body)
+      console.log(body);
     } catch (error) {
       console.log(error);
       return {
@@ -80,5 +101,4 @@ class ContenedorMongoDB {
     }
   };
 }
-
 export default ContenedorMongoDB;

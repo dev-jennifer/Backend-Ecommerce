@@ -37,6 +37,7 @@ routerProductos.get("/", async (req, res) => {
 routerProductos.post("/", async (req, res) => {
   if (admin == true) {
     const body = req.body;
+    console.log("body", body)
     await objProd.guardar(body).then((result) => {
       try {
         res.redirect("/api/productos/");
@@ -146,4 +147,4 @@ routerProductos.put("/:id", async (req, res) => {
   }
 });
 
-export default routerProductos;
+export {routerProductos,objProd};

@@ -1,5 +1,5 @@
 import express from "express";
-import routerProductos from "./rutas/productosRutas.js"
+import {routerProductos} from "./rutas/productosRutas.js"
 import routerCarrito from "./rutas/carritoRutas.js";
 const app = express();
 
@@ -19,7 +19,6 @@ app.set("view engine", "hbs");
 app.set("views", __dirname + "/public/views"); //Folder views (templates)
 hbs.registerPartials(__dirname + "/public/views/partials", function (err) {});
 
-
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -29,7 +28,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // const io = new IOServer(httpServer);
 
 // app.use(morgan("tiny"));
-
 
 // routerProductos.use(express.json());
 // routerCarrito.use(express.json());
