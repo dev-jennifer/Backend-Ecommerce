@@ -60,8 +60,11 @@ routerCarrito.post(`/:id/productos/:id_prod`, async (req, res) => {
   console.log("cart", idCart);
   console.log("productos", id_prod);
   try {
-    await objProd.mostrarId(id_prod).then((res) => {
-        objCarrito.actualizarCart(idCart, res);
+    console.log(idCart)
+    await objProd.mostrarId(id_prod).then((cartProduct) => {
+      console.log(cartProduct)
+        objCarrito.actualizarCart(idCart, cartProduct);
+
     });
   } catch (error) {
     console.log("error", error);

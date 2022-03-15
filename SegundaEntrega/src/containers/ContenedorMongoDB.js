@@ -62,13 +62,14 @@ class ContenedorMongoDB {
   };
 
   actualizarCart = async (id, cartProduct) => {
+    console.log("j")
     try {
+      console.log(cartProduct)
       await this.coleccion.updateOne(
         {
-          _id: id,
+          BuyerID: id,
         },
-        {
-          $push: {
+        { $push: {
             Productos: cartProduct,
           },
         }
