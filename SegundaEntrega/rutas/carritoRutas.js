@@ -50,29 +50,6 @@ routerCarrito.delete("/:id", async (req, res) => {
   }
 });
 
-// routerCarrito.post(`/:id/productos/:id_prod`, async (req, res) => {
-//   const idBuyer = req.params.id;
-//   const id_prod = req.params.id_prod;
-
-//   try {
-//     await objProd
-//       .mostrarId(id_prod)
-//       .then(async (cartProduct) => {
-//         await objCarrito.actualizarCart(idBuyer, cartProduct);
-//       })
-//       .catch((error) => {
-//         console.error(error);
-//       })
-//       .finally(() => {
-//         res.json({
-//           mensaje: `Se ha agregado ProductoId ${id_prod} al carrito`,
-//         });
-//       });
-//   } catch (error) {
-//     console.log("error", error);
-//   }
-// });
-
 //add cart
 routerCarrito.post(`/:id/productos/:id_prod`, async (req, res) => {
   const idBuyer = req.params.id;
@@ -93,7 +70,6 @@ routerCarrito.post(`/:id/productos/:id_prod`, async (req, res) => {
     if (cart) {
       const itemIndex = cart.items.findIndex((item) => item.itemId == itemId);
       //check if product exists or not
-
       if (itemIndex > -1) {
         let product = cart.items[itemIndex];
         product.cantidad += cantidad;
@@ -129,61 +105,47 @@ routerCarrito.post(`/:id/productos/:id_prod`, async (req, res) => {
   }
 });
 
-// routerCarrito.get("/:id/productos", async (req, res) => {
-//   const id = req.params.id;
+routerCarrito.get("/:id/productos", async (req, res) => {
+  const idBuyer = req.params.id;
 
-//   try {
-//     const carrito = objCarrito.getById(parseInt(id));
-//     let list = carrito.Productos.map((item) => {
-//       return {
-//         nombreProducto: item.nombreProducto,
-//         descripcion: item.descripcion,
-//         fotoProducto: item.fotoProducto,
-//         codigo: item.codigo,
-//         precioProducto: item.precioProducto,
-//         stock: item.stock,
-//         quantity: item.Quantity,
-//         subtotal: item.Quantity * item.precioProducto,
-//         idProducto: item.idProducto,
-//         idCarrito: id,
-//       };
-//     });
+  try {
+    const carrito = await objCarrito.mostrarBuyer(idBuyer);
+    return res.status(201).send(carrito);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Algo fue mal");
+  }
+});
 
-//     res.render("carrito", {
-//       producto: list,
-//       cartID: id,
-//       error: false,
-//     });
-//   } catch (error) {
-//     console.log("error", error);
-//     res.render("carrito", {
-//       producto: [],
-//       error: true
-//     });
-//   }
-// });
 
-// routerCarrito.delete("/:id/productos/:id_prod", async (req, res) => {
-//   const idCart = parseInt(req.params.id);
-//   const idProducto = parseInt(req.params.id_prod);
+routerCarrito.delete("/:id/productos/:id_prod", async (req, res) => {
+  const idBuyer = req.params.id;
+  const itemId = req.params.id_prod;
 
-//   try {
-//     const estado = await objCarrito.deleteById(idCart, idProducto);
+  try {
+    let carrito = await objCarrito.mostrarBuyer(idBuyer);
+    const itemIndex = carrito.items.findIndex((item) => item.itemId == itemId);
 
-//     if (estado == false) {
-//       res.json({
-//         estado: false,
-//         mensaje: "No se puede eliminar",
-//       });
-//     } else {
-//       res.json({
-//         estado: true,
-//         mensaje: "eliminado!",
-//       });
-//     }
-//   } catch (error) {
-//     console.log(error);
-//   }
-// });
+    if (itemIndex > -1) {
+      let item = carrito.items[itemIndex];
+      carrito.total -= item.cantidad * item.precio;
+      if (carrito.total < 0) {
+        carrito.total = 0;
+      }
+      carrito.items.splice(itemIndex, 1);
+      carrito.total = carrito.items.reduce((acc, curr) => {
+        return acc + curr.cantidad * curr.precio;
+      }, 0);
 
+      carrito = await carrito.save();
+
+      res.status(200).send(carrito);
+    } else {
+      res.status(404).send("No se encontro el item");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send();
+  }
+});
 export default routerCarrito;
