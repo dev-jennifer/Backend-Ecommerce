@@ -9,7 +9,7 @@ const app = express();
 //RENDER
 
 import hbs from "hbs"
-import morgan from "morgan";
+// import morgan from "morgan";
 import bodyParser from "body-parser"
 import path from 'path';
 

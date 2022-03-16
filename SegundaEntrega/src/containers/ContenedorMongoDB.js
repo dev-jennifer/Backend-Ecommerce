@@ -56,32 +56,56 @@ class ContenedorMongoDB {
 
       return {
         code: "003",
-        msg: "Error al eliminar",
+        msg: "Error al mostrar",
       };
     }
   };
 
-  actualizarCart = async (id, cartProduct) => {
-    console.log("j")
+  mostrarBuyer = async (id) => {
     try {
-      console.log(cartProduct)
-      await this.coleccion.updateOne(
-        {
-          BuyerID: id,
-        },
-        { $push: {
-            Productos: cartProduct,
-          },
-        }
-      );
+      return await this.coleccion.findOne({ idBuyer: id });
     } catch (error) {
       console.log(error);
+
       return {
-        code: "004",
-        msg: "Error al actualizar",
+        code: "003",
+        msg: "Error al mostrar",
       };
     }
   };
+  // actualizarCart = (idBuyer, cartProduct) => {
+  //   try {
+  //     let BuyerId = idBuyer;
+  //     let cantidad = 1;
+
+  //     this.coleccion.updateOne(
+  //       {
+  //         buyerId: BuyerId,
+  //       },
+  //       {
+  //         $pull: {
+  //           productos: {
+  //             idProducto: cartProduct.id,
+  //             cantidad: { $gte: cantidad },
+  //             nombreProducto: cartProduct.nombreProducto,
+  //             precioProducto: cartProduct.precioProducto,
+  //           },
+  //         },
+  //       },
+
+  //       function (err, docs) {
+  //         if (err) throw err;
+  //         console.log("%s", docs);
+  //       }
+  //     );
+  //   } catch (error) {
+  //     console.log(error);
+  //     return {
+  //       code: "004",
+  //       msg: "Error al actualizar",
+  //     };
+  //   }
+  // };
 
   actualizar = async (id, body) => {
     try {
