@@ -73,39 +73,7 @@ class ContenedorMongoDB {
       };
     }
   };
-  // actualizarCart = (idBuyer, cartProduct) => {
-  //   try {
-  //     let BuyerId = idBuyer;
-  //     let cantidad = 1;
-
-  //     this.coleccion.updateOne(
-  //       {
-  //         buyerId: BuyerId,
-  //       },
-  //       {
-  //         $pull: {
-  //           productos: {
-  //             idProducto: cartProduct.id,
-  //             cantidad: { $gte: cantidad },
-  //             nombreProducto: cartProduct.nombreProducto,
-  //             precioProducto: cartProduct.precioProducto,
-  //           },
-  //         },
-  //       },
-
-  //       function (err, docs) {
-  //         if (err) throw err;
-  //         console.log("%s", docs);
-  //       }
-  //     );
-  //   } catch (error) {
-  //     console.log(error);
-  //     return {
-  //       code: "004",
-  //       msg: "Error al actualizar",
-  //     };
-  //   }
-  // };
+ 
 
   actualizar = async (id, body) => {
     try {

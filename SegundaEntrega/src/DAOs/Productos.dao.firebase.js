@@ -1,7 +1,6 @@
-import ContenedorMongoDB from "../containers/ContenedorMongoDb.js";
+import ContenedorFirebase from "../containers/ContenedoFirebase.js";
 
-
-class ProductosDAO extends ContenedorMongoDB {
+class ProductosDAOFirebase extends ContenedorFirebase {
   constructor() {
     super("productos", {
       nombreProducto: { type: String, require: true },
@@ -14,4 +13,4 @@ class ProductosDAO extends ContenedorMongoDB {
   }
 }
 
-export default ProductosDAO;
+export default ProductosDAOFirebase;

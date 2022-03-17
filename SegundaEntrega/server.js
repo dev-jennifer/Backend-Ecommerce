@@ -1,18 +1,18 @@
 import express from "express";
 import {routerProductos} from "./rutas/productosRutas.js"
 import routerCarrito from "./rutas/carritoRutas.js";
-const app = express();
+import admin from "firebase-admin"
+import config from "./src/utils/config.js";
 
-// const { Server: HttpServer } = require("http");
-// const { Server: IOServer } = require("socket.io");
+const app = express();
 
 //RENDER
 
 import hbs from "hbs"
-// import morgan from "morgan";
 import bodyParser from "body-parser"
 import path from 'path';
 
+//Vista solo para Productos
 const __dirname = path.resolve();
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "hbs");
@@ -24,23 +24,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// const httpServer = new HttpServer(app);
-// const io = new IOServer(httpServer);
-
-// app.use(morgan("tiny"));
-
-// routerProductos.use(express.json());
-// routerCarrito.use(express.json());
-
 /*Agregamos routers a la app*/
 app.use("/api/productos", routerProductos);
 app.use("/api/carrito", routerCarrito);
 
-// app.get('/', (req, res) => {
-//   res.render('inicio.hbs');
-// });
 
-
+/***************FIREBASE*************************/
+ 
+try {
+    admin.initializeApp({
+        credential:  admin.credential.cert(config.firebase)
+    });      
+} catch (error) {
+    console.log(error)
+} finally {
+    console.log('base Firebase conectada!')
+}
 
 /* ---------------------- Servidor ----------------------*/
 const PORT = process.env.PORT || 8080;
