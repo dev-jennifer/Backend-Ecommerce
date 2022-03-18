@@ -1,8 +1,10 @@
 import express from "express";
-import ProductosDAO from "../src/DAOs/productos.dao.js";
 const routerProductos = express.Router();
-
 let admin = true;
+
+// import ProductosDAO from "../src/DAOs/productos.dao.mongo.js";
+import ProductosDAO from "../src/DAOs/Productos.dao.firebase.js";
+
 const objProd = new ProductosDAO();
 
 //AGREGAR PRODUCTO
@@ -22,10 +24,14 @@ routerProductos.get("/nuevo", function (req, res) {
 routerProductos.get("/", async (req, res) => {
   try {
     await objProd.mostrarTodos().then((respuesta) => {
+ 
       let data = { productos: respuesta };
       res.render("productos", data);
+      console.log(data)
     });
+
   } catch (error) {
+    console.log("error", error);
     res.send({
       code: 400,
       failed: "Error",

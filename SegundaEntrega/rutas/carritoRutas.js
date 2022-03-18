@@ -1,6 +1,6 @@
 import express from "express";
 const routerCarrito = express.Router();
-import CarritoDAO from "../src/DAOs/carrito.dao.js";
+import CarritoDAO from "../src/DAOs/Carrito.dao.mongo.js";
 import { objProd } from "../rutas/productosRutas.js";
 
 const objCarrito = new CarritoDAO();

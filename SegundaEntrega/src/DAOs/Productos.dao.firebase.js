@@ -1,16 +1,9 @@
 import ContenedorFirebase from "../containers/ContenedoFirebase.js";
 
-class ProductosDAOFirebase extends ContenedorFirebase {
+class ProductosDAO extends ContenedorFirebase {
   constructor() {
-    super("productos", {
-      nombreProducto: { type: String, require: true },
-      descripcion: { type: String, require: false },
-      precioProducto: { type: Number, require: true },
-      fotoProducto: { type: String, require: false },
-      codigo: { type: String, require: false },
-      stock: { type: Number, require: true }
-    });
+    super("productos");
   }
 }
 
-export default ProductosDAOFirebase;
+export default ProductosDAO;

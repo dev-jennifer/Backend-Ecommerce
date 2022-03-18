@@ -13,7 +13,11 @@ class ContenedorMongoDB {
   mostrarTodos = async () => {
     try {
       const docs = await this.coleccion.find({});
-      return docs;
+      const response = docs.map((doc) => ({
+        id: doc.id,
+        producto: doc.docs,
+      }));
+      return response;
     } catch (error) {
       this.console.log(error);
       return {

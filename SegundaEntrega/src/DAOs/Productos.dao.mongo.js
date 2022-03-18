@@ -1,6 +1,5 @@
 import ContenedorMongoDB from "../containers/ContenedorMongoDb.js";
 
-
 class ProductosDAO extends ContenedorMongoDB {
   constructor() {
     super("productos", {

@@ -1,16 +1,16 @@
 import express from "express";
-import {routerProductos} from "./rutas/productosRutas.js"
+
+/* ---------------------- Rutas ----------------------*/
+import { routerProductos } from "./rutas/productosRutas.js";
 import routerCarrito from "./rutas/carritoRutas.js";
-import admin from "firebase-admin"
-import config from "./src/utils/config.js";
 
 const app = express();
 
 //RENDER
 
-import hbs from "hbs"
-import bodyParser from "body-parser"
-import path from 'path';
+import hbs from "hbs";
+import bodyParser from "body-parser";
+import path from "path";
 
 //Vista solo para Productos
 const __dirname = path.resolve();
@@ -29,17 +29,7 @@ app.use("/api/productos", routerProductos);
 app.use("/api/carrito", routerCarrito);
 
 
-/***************FIREBASE*************************/
- 
-try {
-    admin.initializeApp({
-        credential:  admin.credential.cert(config.firebase)
-    });      
-} catch (error) {
-    console.log(error)
-} finally {
-    console.log('base Firebase conectada!')
-}
+
 
 /* ---------------------- Servidor ----------------------*/
 const PORT = process.env.PORT || 8080;
