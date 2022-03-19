@@ -1,5 +1,6 @@
 import admin from "firebase-admin";
 import config from "../utils/config.js";
+
 /***************FIREBASE*************************/
 try {
   admin.initializeApp({
@@ -87,18 +88,23 @@ class ContenedorFirebase {
     }
   };
 
-  //   mostrarBuyer = async (id) => {
-  //     try {
-  //       return await this.coleccion.findOne({ idBuyer: id });
-  //     } catch (error) {
-  //       console.log(error);
+  mostrarBuyer = async (id) => {
+    try {
+      const snapshot = await this.coleccion.where("buyerID", "==", id).get();
 
-  //       return {
-  //         code: "003",
-  //         msg: "Error al mostrar",
-  //       };
-  //     }
-  //   };
+      return snapshot.doc
+    
+
+   
+    } catch (error) {
+      console.log(error);
+
+      return {
+        code: "003",
+        msg: "Error al mostrar",
+      };
+    }
+  };
 
   actualizar = async (id, body) => {
     try {

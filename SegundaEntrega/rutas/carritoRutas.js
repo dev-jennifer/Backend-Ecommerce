@@ -1,16 +1,17 @@
 import express from "express";
 const routerCarrito = express.Router();
-import CarritoDAO from "../src/DAOs/Carrito.dao.mongo.js";
+import uuidv1 from "uuidv1";
+let session_id = uuidv1();
 import { objProd } from "../rutas/productosRutas.js";
+
+// import CarritoDAO from "../src/DAOs/Carrito.dao.mongo.js";
+import CarritoDAO from "../src/DAOs/Carrito.dao.firebase.js";
 
 const objCarrito = new CarritoDAO();
 
-//nro de carrito
-import uuidv1 from "uuidv1";
-
 routerCarrito.post("/", async (req, res) => {
   try {
-    let session_id = uuidv1();
+    
 
     const newCarrito = {
       buyerID: session_id,
@@ -58,6 +59,7 @@ routerCarrito.post(`/:id/productos/:id_prod`, async (req, res) => {
 
   try {
     const cart = await objCarrito.mostrarBuyer(idBuyer);
+    console.log(cart)
     const item = await objProd.mostrarId(itemId);
 
     if (!item) {
@@ -68,6 +70,7 @@ routerCarrito.post(`/:id/productos/:id_prod`, async (req, res) => {
     const nombre = item.nombreProducto;
     //If cart already exists for user,
     if (cart) {
+      console.log(cart.items)
       const itemIndex = cart.items.findIndex((item) => item.itemId == itemId);
       //check if product exists or not
       if (itemIndex > -1) {
@@ -92,8 +95,8 @@ routerCarrito.post(`/:id/productos/:id_prod`, async (req, res) => {
       }
     } else {
       //no cart exists, create one
-      const newCart = await Cart.create({
-        idBuyer,
+      const newCart = await objCarrito.guardar ({
+        buyerID: session_id,
         items: [{ itemId, nombre, cantidad, precio }],
         total: cantidad * precio,
       });
