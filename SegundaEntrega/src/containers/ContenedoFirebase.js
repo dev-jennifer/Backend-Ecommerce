@@ -53,42 +53,39 @@ class ContenedorFirebase {
     }
   };
 
-    eliminar = async (id) => {
-      try {
-        const doc =  this.coleccion.doc(`${id}`);
-        let item = await doc.delete();
-        console.log("El usuario ha sido borrado", item);
+  eliminar = async (id) => {
+    try {
+      const doc = this.coleccion.doc(`${id}`);
+      let item = await doc.delete();
+      console.log("El usuario ha sido borrado", item);
+    } catch (error) {
+      console.log(error);
+      return {
+        code: "003",
+        msg: "Error al eliminar",
+      };
+    }
+  };
 
-      } catch (error) {
-        console.log(error);
-        return {
-          code: "003",
-          msg: "Error al eliminar",
-        };
-      }
-    };
+  mostrarId = async (id) => {
+    try {
+      const itemId = await this.coleccion.doc(id).get();
 
+      let data = {
+        id,
+        ...itemId.data(),
+      };
 
-    mostrarId = async (id) => {
-      try {
-        const snapshot = await this.coleccion.get(id);
-        let docs = snapshot.docs;
-  
-        const response = docs.map((doc) => ({
-          id: doc.id,
-          producto: doc.data()
-        }));
-        
-        return response
-      } catch (error) {
-        console.log(error);
+      return data;
+    } catch (error) {
+      console.log(error);
 
-        return {
-          code: "003",
-          msg: "Error al mostrar",
-        };
-      }
-    };
+      return {
+        code: "003",
+        msg: "Error al mostrar",
+      };
+    }
+  };
 
   //   mostrarBuyer = async (id) => {
   //     try {
@@ -103,23 +100,18 @@ class ContenedorFirebase {
   //     }
   //   };
 
-  //   actualizar = async (id, body) => {
-  //     try {
-  //       await this.coleccion.updateOne(
-  //         {
-  //           _id: id,
-  //         },
-
-  //         { $set: body }
-  //       );
-  //       console.log(body);
-  //     } catch (error) {
-  //       console.log(error);
-  //       return {
-  //         code: "004",
-  //         msg: "Error al actualizar",
-  //       };
-  //     }
-  //   };
+  actualizar = async (id, body) => {
+    try {
+      const doc = await this.coleccion.doc(id).update(body);
+      console.log("producto actualizado");
+    } catch (error) {
+      console.log(error);
+      return {
+        code: "004",
+        msg: "Error al actualizar",
+      };
+    }
+  };
 }
+
 export default ContenedorFirebase;
