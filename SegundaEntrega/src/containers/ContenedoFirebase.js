@@ -88,23 +88,6 @@ class ContenedorFirebase {
     }
   };
 
-  mostrarBuyer = async (id) => {
-    try {
-      const snapshot = await this.coleccion.where("buyerID", "==", id).get();
-
-      return snapshot.doc
-    
-
-   
-    } catch (error) {
-      console.log(error);
-
-      return {
-        code: "003",
-        msg: "Error al mostrar",
-      };
-    }
-  };
 
   actualizar = async (id, body) => {
     try {
@@ -118,6 +101,26 @@ class ContenedorFirebase {
       };
     }
   };
+ 
+
+  // mostrarBuyer = async (id) => {
+  //   try {
+  //     const response = await this.coleccion.where("buyerID", "==", id).get();
+  //     const documents = [];
+  //     response.forEach((doc) => {
+  //       const document = doc.data();
+  //       documents.push(document);
+  //     });
+  //     return documents;
+  //   } catch (error) {
+  //     console.log(error);
+
+  //     return {
+  //       code: "003",
+  //       msg: "Error al mostrar",
+  //     };
+  //   }
+  // };
 }
 
 export default ContenedorFirebase;

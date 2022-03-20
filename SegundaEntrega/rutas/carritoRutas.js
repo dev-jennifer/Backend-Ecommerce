@@ -2,7 +2,8 @@ import express from "express";
 const routerCarrito = express.Router();
 import uuidv1 from "uuidv1";
 let session_id = uuidv1();
-import { objProd } from "../rutas/productosRutas.js";
+import { objProd } from "./productosRutas.js";
+
 
 // import CarritoDAO from "../src/DAOs/Carrito.dao.mongo.js";
 import CarritoDAO from "../src/DAOs/Carrito.dao.firebase.js";
@@ -11,8 +12,6 @@ const objCarrito = new CarritoDAO();
 
 routerCarrito.post("/", async (req, res) => {
   try {
-    
-
     const newCarrito = {
       buyerID: session_id,
       items: [],
@@ -50,58 +49,46 @@ routerCarrito.delete("/:id", async (req, res) => {
     console.log(error);
   }
 });
-
 //add cart
 routerCarrito.post(`/:id/productos/:id_prod`, async (req, res) => {
-  const idBuyer = req.params.id;
+  const idCart = req.params.id;
   const itemId = req.params.id_prod;
   const cantidad = 1;
 
   try {
-    const cart = await objCarrito.mostrarBuyer(idBuyer);
-    console.log(cart)
+    const cart = await objCarrito.mostrarId(idCart);
     const item = await objProd.mostrarId(itemId);
 
-    if (!item) {
-      res.status(404).send({ message: "No se encontro item" });
-      return;
-    }
     const precio = item.precioProducto;
     const nombre = item.nombreProducto;
-    //If cart already exists for user,
-    if (cart) {
-      console.log(cart.items)
-      const itemIndex = cart.items.findIndex((item) => item.itemId == itemId);
-      //check if product exists or not
-      if (itemIndex > -1) {
-        let product = cart.items[itemIndex];
-        product.cantidad += cantidad;
-
-        cart.total = cart.items.reduce((acc, curr) => {
-          return acc + curr.cantidad * curr.precio;
-        }, 0);
-
-        cart.items[itemIndex] = product;
-        await cart.save();
-        res.status(200).send(cart);
-      } else {
-        cart.items.push({ itemId, nombre, cantidad, precio });
-        cart.total = cart.items.reduce((acc, curr) => {
-          return acc + curr.cantidad * curr.precio;
-        }, 0);
-
-        await cart.save();
-        res.status(200).send(cart);
-      }
-    } else {
-      //no cart exists, create one
-      const newCart = await objCarrito.guardar ({
-        buyerID: session_id,
-        items: [{ itemId, nombre, cantidad, precio }],
-        total: cantidad * precio,
-      });
-      return res.status(201).send(newCart);
+    console.log("CARTITEMS" , cart.items)
+    if (cart.items == undefined) {
+      cart.items = [];
     }
+    const itemIndex = cart.items.findIndex((item) => item.itemId == itemId);
+    console.log("itemIndex" ,itemIndex)
+    if (itemIndex > -1) {
+      let product = cart.items[itemIndex];
+      console.log("product" ,product)
+
+      product.cantidad += cantidad;
+      
+      cart.total = cart.items.reduce((acc, curr) => {
+        return acc + curr.cantidad * curr.precio;
+      }, 0);
+      
+      cart.items[itemIndex] = product;
+    } else {
+      cart.items.push({ itemId, nombre, cantidad, precio });
+      console.log({ itemId, nombre, cantidad, precio });
+      cart.total = cart.items.reduce((acc, curr) => {
+        return acc + curr.cantidad * curr.precio;
+      }, 0);   
+    }
+    objCarrito.actualizar(idCart, cart);
+    console.log("cart",cart)
+    res.status(200).send(cart);
+
   } catch (error) {
     console.log(error);
     res.status(500).send("Algo fue mal");
@@ -109,10 +96,9 @@ routerCarrito.post(`/:id/productos/:id_prod`, async (req, res) => {
 });
 
 routerCarrito.get("/:id/productos", async (req, res) => {
-  const idBuyer = req.params.id;
-
+  const idCart = req.params.id;
   try {
-    const carrito = await objCarrito.mostrarBuyer(idBuyer);
+    const carrito = await objCarrito.mostrarId(idCart);
     return res.status(201).send(carrito);
   } catch (error) {
     console.log(error);
@@ -120,13 +106,12 @@ routerCarrito.get("/:id/productos", async (req, res) => {
   }
 });
 
-
 routerCarrito.delete("/:id/productos/:id_prod", async (req, res) => {
-  const idBuyer = req.params.id;
+  const idCart = req.params.id;
   const itemId = req.params.id_prod;
 
   try {
-    let carrito = await objCarrito.mostrarBuyer(idBuyer);
+    let carrito = await objCarrito.mostrarId(idCart);
     const itemIndex = carrito.items.findIndex((item) => item.itemId == itemId);
 
     if (itemIndex > -1) {
@@ -139,8 +124,8 @@ routerCarrito.delete("/:id/productos/:id_prod", async (req, res) => {
       carrito.total = carrito.items.reduce((acc, curr) => {
         return acc + curr.cantidad * curr.precio;
       }, 0);
-
-      carrito = await carrito.save();
+      objCarrito.actualizar(idCart, carrito);
+      //carrito = await carrito.save();
 
       res.status(200).send(carrito);
     } else {

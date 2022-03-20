@@ -14,8 +14,8 @@ class ContenedorMongoDB {
     try {
       const docs = await this.coleccion.find({});
       const response = docs.map((doc) => ({
-        id: doc.id,
-        producto: doc.docs,
+        id: doc._id,
+        producto: doc,
       }));
       return response;
     } catch (error) {
@@ -54,7 +54,9 @@ class ContenedorMongoDB {
 
   mostrarId = async (id) => {
     try {
-      return await this.coleccion.findOne({ id: id });
+      let doc = await this.coleccion.findOne({ _id: id });
+      console.log(doc);
+      return doc;
     } catch (error) {
       console.log(error);
 
@@ -65,19 +67,18 @@ class ContenedorMongoDB {
     }
   };
 
-  mostrarBuyer = async (id) => {
-    try {
-      return await this.coleccion.findOne({ idBuyer: id });
-    } catch (error) {
-      console.log(error);
+  // mostrarBuyer = async (id) => {
+  //   try {
+  //     return await this.coleccion.findOne({ buyerID: id });
+  //   } catch (error) {
+  //     console.log(error);
 
-      return {
-        code: "003",
-        msg: "Error al mostrar",
-      };
-    }
-  };
- 
+  //     return {
+  //       code: "003",
+  //       msg: "Error al mostrar",
+  //     };
+  //   }
+  // };
 
   actualizar = async (id, body) => {
     try {
@@ -97,5 +98,7 @@ class ContenedorMongoDB {
       };
     }
   };
+
+ 
 }
 export default ContenedorMongoDB;
