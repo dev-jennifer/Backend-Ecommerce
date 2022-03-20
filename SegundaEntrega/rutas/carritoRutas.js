@@ -5,8 +5,8 @@ let session_id = uuidv1();
 import { objProd } from "./productosRutas.js";
 
 
-// import CarritoDAO from "../src/DAOs/Carrito.dao.mongo.js";
-import CarritoDAO from "../src/DAOs/Carrito.dao.firebase.js";
+import CarritoDAO from "../src/DAOs/Carrito.dao.mongo.js";
+// import CarritoDAO from "../src/DAOs/Carrito.dao.firebase.js";
 
 const objCarrito = new CarritoDAO();
 

@@ -2,8 +2,8 @@ import express from "express";
 const routerProductos = express.Router();
 let admin = true;
 
-// import ProductosDAO from "../src/DAOs/productos.dao.mongo.js";
-import ProductosDAO from "../src/DAOs/Productos.dao.firebase.js";
+import ProductosDAO from "../src/DAOs/productos.dao.mongo.js";
+// import ProductosDAO from "../src/DAOs/Productos.dao.firebase.js";
 
 const objProd = new ProductosDAO();
 
