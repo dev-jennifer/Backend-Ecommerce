@@ -1,5 +1,5 @@
 {
-  "type":"module",
+  "type": "module",
   "name": "desafio-sql",
   "version": "1.0.0",
   "description": "",
@@ -22,6 +22,7 @@
     "mongoose": "^6.2.7",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
+    "normalizr": "^3.6.2",
     "socket.io": "^4.4.1"
   }
 }

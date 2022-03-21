@@ -10,8 +10,9 @@ class MensajesDao extends ContenedorMongoDB {
         edad: { type: Number, require: false },
         alias: { type: String, require: false },
         avatar: { type: String, require: false },
+        fechaHora: { type: String, require: true },
       },
-      text: { type: String, require: true },
+      mensaje: { type: String, require: true },
     });
   }
 }

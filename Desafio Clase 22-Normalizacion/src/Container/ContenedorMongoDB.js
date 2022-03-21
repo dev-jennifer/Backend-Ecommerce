@@ -10,11 +10,11 @@ class ContenedorMongoDB {
   mostrarTodos = async () => {
     try {
       const docs = await this.coleccion.find({});
-      const response = docs.map((doc) => ({
-        id: doc._id,
-        producto: doc,
-      }));
-      return response;
+      // const response = docs.map((doc) => ({
+      //   author: doc.author,
+      //   text: doc.text,
+      // }));
+      return docs;
     } catch (error) {
       this.console.log(error);
       return {
@@ -26,8 +26,7 @@ class ContenedorMongoDB {
 
   guardar = async (body) => {
     try {
-      await this.coleccion.create(body);
-      console.log(body)
+      await this.coleccion.create({ author: body, mensaje: body.mensaje });
     } catch (error) {
       console.log(error);
       return {
@@ -38,4 +37,4 @@ class ContenedorMongoDB {
   };
 }
 
-export default ContenedorMongoDB
+export default ContenedorMongoDB;
