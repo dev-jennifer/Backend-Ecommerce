@@ -1,19 +1,23 @@
 import express from "express";
 import productosTestRuta from "./rutas/productosTestRuta.js";
+import { normalize, schema } from "normalizr";
+import util from "util";
 
-import hbs from "hbs";
-import bodyParser from "body-parser";
-import path from "path";
 import { createServer } from "http";
 import { Server } from "socket.io";
-
-
+import MensajesDao from "./src/DAO/mongodb.dao.js";
+const mensajeClass = new MensajesDao();
 
 const app = express();
 const httpServer = new createServer(app);
 const io = new Server(httpServer);
 
 app.use("/api/productos-test", productosTestRuta);
+
+import hbs from "hbs";
+import bodyParser from "body-parser";
+import path from "path";
+import { copyFileSync } from "fs";
 
 const __dirname = path.resolve();
 app.use(express.static(__dirname + "/public"));
@@ -26,24 +30,52 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
-
-import MensajesDao from "./src/DAO/mongodb.dao.js";
-const mensajeClass = new MensajesDao();
-
 app.get("/", (req, res) => {
   res.render("chat.hbs");
 });
 
+function print(objeto) {
+  console.log(util.inspect(objeto, false, 12, true));
+}
 io.on("connection", async (socket) => {
   console.log(`Nuevo cliente conectado ${socket.id}`);
-  socket.emit("mensajes", await mensajeClass.mostrarTodos());
+
   socket.on("mensajeNuevo", async (msg) => {
-    await mensajeClass.guardar(msg)
-    io.sockets.emit("mensajes", await mensajeClass.mostrarTodos());
+    await mensajeClass.guardar(msg);
+
+    // ("\n ------------- OBJETO MONGO --------------- ");
+    const mensajeGuardados = await mensajeClass.mostrarTodos();
+
+    // console.log("\n ------------- OBJETO NORMALIZADO --------------- ");
+
+    const user = new schema.Entity("author",{},{idAttribute: user =>  user.id });
+    const commment = new schema.Entity("text", {
+      escribeMensaje: user,
+    });
+    const chatIndiv = new schema.Entity("articles", {
+      author: user,
+      msg: [commment],
+    });
+    const mensajeSchema = new schema.Entity("mensaje", {
+      msgs: [chatIndiv],
+    });
+
+    const normalizedHolding = normalize(mensajeGuardados, mensajeSchema);
+
+    const longO = JSON.stringify(mensajeGuardados).length;
+    const longN = JSON.stringify(normalizedHolding).length;
+    console.log("\nLongitud objeto normalizado: ", longN);
+    const porcentaje = (longN * 100) / longO;
+
+    console.log("----------------NORMALIZADO--------");
+    console.log("BIR", normalizedHolding);
+    socket.emit("mensajes", {
+      normalizedHolding: normalizedHolding,
+      mensajeSchema: mensajeSchema,
+      porcentaje: porcentaje,
+    });
   });
 });
-
 
 /* ---------------------- Servidor ----------------------*/
 const PORT = process.env.PORT || 8080;

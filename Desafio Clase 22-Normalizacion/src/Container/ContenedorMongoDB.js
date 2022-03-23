@@ -3,6 +3,7 @@ import config from "../utils/options.js";
 const URL = config.mongodb.url;
 await mongoose.connect(URL);
 
+
 class ContenedorMongoDB {
   constructor(nombreColeccion, esquema) {
     this.coleccion = mongoose.model(nombreColeccion, esquema);
@@ -10,23 +11,26 @@ class ContenedorMongoDB {
   mostrarTodos = async () => {
     try {
       const docs = await this.coleccion.find({});
-      // const response = docs.map((doc) => ({
-      //   author: doc.author,
-      //   text: doc.text,
-      // }));
+
       return docs;
     } catch (error) {
-      this.console.log(error);
+      console.log(error);
       return {
         code: "001",
         msg: "Errror al consumir ",
       };
     }
   };
+ 
+  
 
   guardar = async (body) => {
     try {
-      await this.coleccion.create({ author: body, mensaje: body.mensaje });
+      await this.coleccion.create({
+        author: body,
+        text: body.textoMsj,
+        date: body.fecha,
+      });
     } catch (error) {
       console.log(error);
       return {

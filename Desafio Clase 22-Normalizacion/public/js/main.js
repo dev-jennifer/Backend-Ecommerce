@@ -1,5 +1,4 @@
-const socket = io.connect()
-
+const socket = io.connect();
 
 /* ---------------------- Chat ----------------------*/
 
@@ -9,7 +8,7 @@ function enviarMensaje() {
   const apellido = document.querySelector("#apellido");
   const edad = document.querySelector("#edad");
   const avatar = document.querySelector("#avatar");
-  const mensaje = document.querySelector("#mensaje");
+  const texto = document.querySelector("#textoMensaje");
   const alias = document.querySelector("#alias");
 
   const date = new Date();
@@ -33,32 +32,74 @@ function enviarMensaje() {
     edad: edad.value,
     alias: alias.value,
     avatar: avatar.value,
-    mensaje: mensaje.value,
-    fechaHora: dateStr,
+    textoMsj: texto.value,
+    fecha: dateStr,
   });
   return false;
 }
 
-socket.on("mensajes", (mensajes) => {
- 
-  let constMensajeHtml = "";
+socket.on(
+  "mensajes",
+  ({ normalizedHolding, mensajeSchema, porcentaje }) => {
 
-  mensajes.forEach((msg) => {
-    console.log(msg)
+    console.log("normalizado", normalizedHolding);
+
+    const denormalizedHolding = normalizr.denormalize(
+      normalizedHolding.result,
+      mensajeSchema,
+      normalizedHolding.entities.mensaje
+    );
+    console.log("mensaje", denormalizedHolding);
+
+    const porcentajeMensaje=(`Porcentaje Optimizado: ${porcentaje.toFixed(2)} %`);
+    document.getElementById("contenedorMensaje").innerHTML = porcentajeMensaje;
+
+    let constMensajeHtml = "";
+    denormalizedHolding.forEach((msg) => {
+      console.log("Msg", msg);
+      constMensajeHtml += `
+        <span style="color:blue;">
+          <b>${msg.author.alias}</b></span>
+        <span style="color:brown";>${msg.text}</span>
+        <span style="color:green; font-style:italic";>${msg.date}</span>
+        <br>
+        <img src="${msg.author.avatar}" style="width:30px";/>`;
+    });
+    document.getElementById("contenedorMensaje").innerHTML = constMensajeHtml;
+  }
+);
+
+socket.on("mensajes", (normalizedHolding, mensaje) => {
+  console.log("\n ------------- OBJETO DESNORMALIZADO --------------- ");
+  const denormalizedHolding = normalizr.denormalize(
+    normalizedHolding.result,
+    mensaje,
+    normalizedHolding.entities
+  );
+  print(denormalizedHolding);
+
+  const longN = JSON.stringify(normalizedHolding).length;
+
+  console.log("\nLongitud objeto original: ", longO);
+  console.log("\nLongitud objeto normalizado: ", longN);
+
+  const porcentaje = (longN * 100) / longO;
+  const porcentajeMensaje = `Porcentaje Optimizado: ${porcentaje.toFixed(2)} %`;
+  document.getElementById("contenedorMensaje").innerHTML = porcentajeMensaje;
+
+  let constMensajeHtml = "";
+  console.log("Mensajes", denormalizedHolding);
+
+  denormalizedHolding.forEach((msg) => {
+    console.log("Msg", msg);
     constMensajeHtml += `
         <span style="color:blue;">
           <b>${msg.author.alias}</b></span>
-        <span style="color:brown";>${msg.mensaje}</span>
-        <span style="color:green; font-style:italic";>${msg.author.fechaHora}</span>
+        <span style="color:brown";>${msg.text}</span>
+        <span style="color:green; font-style:italic";>${msg.date}</span>
         <br>
         <img src="${msg.author.avatar}" style="width:30px";/>`;
-  })
-
+  });
 
   document.getElementById("contenedorMensaje").innerHTML = constMensajeHtml;
-})
-
-
- 
-
-
+});

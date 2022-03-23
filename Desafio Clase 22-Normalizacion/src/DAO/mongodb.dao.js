@@ -1,4 +1,4 @@
-import ContenedorMongoDB from "./../Container/ContenedorMongoDB.js"
+import ContenedorMongoDB from "./../Container/ContenedorMongoDB.js";
 
 class MensajesDao extends ContenedorMongoDB {
   constructor() {
@@ -10,11 +10,11 @@ class MensajesDao extends ContenedorMongoDB {
         edad: { type: Number, require: false },
         alias: { type: String, require: false },
         avatar: { type: String, require: false },
-        fechaHora: { type: String, require: true },
       },
-      mensaje: { type: String, require: true },
+      text: { type: String, require: true },
+      date: { type: String, require: false },
     });
   }
 }
 
-export default MensajesDao
+export default MensajesDao;
