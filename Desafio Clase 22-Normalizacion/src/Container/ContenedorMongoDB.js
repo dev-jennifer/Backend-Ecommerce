@@ -31,6 +31,7 @@ class ContenedorMongoDB {
         text: body.textoMsj,
         date: body.fecha,
       });
+      console.log(body)
     } catch (error) {
       console.log(error);
       return {

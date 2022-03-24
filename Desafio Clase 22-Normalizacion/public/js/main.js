@@ -3,7 +3,7 @@ const socket = io.connect();
 /* ---------------------- Chat ----------------------*/
 
 function enviarMensaje() {
-  const id = document.querySelector("#id");
+  const id = document.querySelector("#email");
   const nombre = document.querySelector("#nombre");
   const apellido = document.querySelector("#apellido");
   const edad = document.querySelector("#edad");
@@ -26,7 +26,7 @@ function enviarMensaje() {
     ("00" + date.getSeconds()).slice(-2);
 
   socket.emit("mensajeNuevo", {
-    id: id.value,
+    email: id.value,
     nombre: nombre.value,
     apellido: apellido.value,
     edad: edad.value,

@@ -17,7 +17,6 @@ app.use("/api/productos-test", productosTestRuta);
 import hbs from "hbs";
 import bodyParser from "body-parser";
 import path from "path";
-import { copyFileSync } from "fs";
 
 const __dirname = path.resolve();
 app.use(express.static(__dirname + "/public"));
@@ -45,23 +44,30 @@ io.on("connection", async (socket) => {
 
     // ("\n ------------- OBJETO MONGO --------------- ");
     const mensajeGuardados = await mensajeClass.mostrarTodos();
-
+    console.log("Guardado", mensajeGuardados);
     // console.log("\n ------------- OBJETO NORMALIZADO --------------- ");
 
-    const user = new schema.Entity("author",{},{idAttribute: user =>  user.id });
-    const commment = new schema.Entity("text", {
-      escribeMensaje: user,
-    });
-    const chatIndiv = new schema.Entity("articles", {
-      author: user,
-      msg: [commment],
-    });
-    const mensajeSchema = new schema.Entity("mensaje", {
-      msgs: [chatIndiv],
-    });
+    const authorSchema = new schema.Entity(
+      "author",
+      {},
+      { idAttribute:( "email" )}
+    );
 
-    const normalizedHolding = normalize(mensajeGuardados, mensajeSchema);
+    const mensajeSchema = new schema.Entity(
+      "post",
+      {
+        author: authorSchema,
+      },
+      { idAttribute: "id" }
+    );
 
+    const mensajeSchemas = new schema.Entity(
+      "posts",
+      { mensajes: [mensajeSchema] },
+      { idAttribute: "id" }
+    );
+    const normalizedHolding = normalize(mensajeGuardados, [mensajeSchemas]);
+    print(normalizedHolding);
     const longO = JSON.stringify(mensajeGuardados).length;
     const longN = JSON.stringify(normalizedHolding).length;
     console.log("\nLongitud objeto normalizado: ", longN);
