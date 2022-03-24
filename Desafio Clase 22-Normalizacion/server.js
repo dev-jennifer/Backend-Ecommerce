@@ -1,13 +1,11 @@
 import express from "express";
 import productosTestRuta from "./rutas/productosTestRuta.js";
-import { normalize, schema } from "normalizr";
-import util from "util";
-
+import { normalizedHolding } from "./src/utils/normalizr.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import MensajesDao from "./src/DAO/mongodb.dao.js";
-const mensajeClass = new MensajesDao();
-
+import MensajesDAO from "./src/DAO/firebase.dao.js";
+const mensajeClass = new MensajesDAO();
+ 
 const app = express();
 const httpServer = new createServer(app);
 const io = new Server(httpServer);
@@ -33,58 +31,30 @@ app.get("/", (req, res) => {
   res.render("chat.hbs");
 });
 
-function print(objeto) {
-  console.log(util.inspect(objeto, false, 12, true));
-}
 io.on("connection", async (socket) => {
   console.log(`Nuevo cliente conectado ${socket.id}`);
 
   socket.on("mensajeNuevo", async (msg) => {
     await mensajeClass.guardar(msg);
-
-    // ("\n ------------- OBJETO MONGO --------------- ");
     const mensajeGuardados = await mensajeClass.mostrarTodos();
-    console.log("Guardado", mensajeGuardados);
-    // console.log("\n ------------- OBJETO NORMALIZADO --------------- ");
-
-    const authorSchema = new schema.Entity(
-      "author",
-      {},
-      { idAttribute:( "email" )}
-    );
-
-    const mensajeSchema = new schema.Entity(
-      "post",
-      {
-        author: authorSchema,
-      },
-      { idAttribute: "id" }
-    );
-
-    const mensajeSchemas = new schema.Entity(
-      "posts",
-      { mensajes: [mensajeSchema] },
-      { idAttribute: "id" }
-    );
-    const normalizedHolding = normalize(mensajeGuardados, [mensajeSchemas]);
-    print(normalizedHolding);
+ 
+    const normalizar = normalizedHolding(mensajeGuardados);
     const longO = JSON.stringify(mensajeGuardados).length;
-    const longN = JSON.stringify(normalizedHolding).length;
-    console.log("\nLongitud objeto normalizado: ", longN);
+    const longN = JSON.stringify(normalizar).length;
     const porcentaje = (longN * 100) / longO;
 
     console.log("----------------NORMALIZADO--------");
-    console.log("BIR", normalizedHolding);
+    console.log("normalizedHolding", normalizar);
+
     socket.emit("mensajes", {
-      normalizedHolding: normalizedHolding,
-      mensajeSchema: mensajeSchema,
+      normalizedHolding: normalizar,
       porcentaje: porcentaje,
     });
   });
 });
 
 /* ---------------------- Servidor ----------------------*/
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8081;
 const server = httpServer.listen(PORT, () => {
   console.log(`Servidor escuchando en puerto ${PORT}`);
 });
