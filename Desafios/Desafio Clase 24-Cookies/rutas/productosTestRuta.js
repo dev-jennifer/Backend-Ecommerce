@@ -18,9 +18,7 @@ productosTestRuta.get("/", (req, res) => {
   for (let index = 0; index < cant; index++) {
     productos.push({ id: index + 1, ...generarRandomObjeto() });
   }
-
-  console.log(productos)
-  res.render("productos", {productos:productos});
+  res.render("index", {productos:productos});
 });
 
 export default productosTestRuta;

@@ -14,6 +14,9 @@ const options = {
     client_x509_cert_url:
       "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-zdpbp%40backend-1cf21.iam.gserviceaccount.com",
   },
+  mongoAtlas:{
+    mongourl:'mongodb+srv://jennifer:coderhouse@cluster0.9cfys.mongodb.net/sesiones?retryWrites=true&w=majority'
+  }
 };
 
 export default options;
