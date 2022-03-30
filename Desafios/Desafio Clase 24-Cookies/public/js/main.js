@@ -46,10 +46,9 @@ const schemaAuthor = new normalizr.schema.Entity(
 );
 
 //Define esquema de mensaje
-const schemaMensaje = new normalizr.schema.Entity(
-  "post",
-  { author: schemaAuthor } 
-);
+const schemaMensaje = new normalizr.schema.Entity("post", {
+  author: schemaAuthor,
+});
 
 //Define esquema de mensaje
 const schemaMensajes = new normalizr.schema.Entity("posts", {
@@ -57,16 +56,18 @@ const schemaMensajes = new normalizr.schema.Entity("posts", {
 });
 
 socket.on("mensajes", ({ normalizedHolding, porcentaje }) => {
-
-  const denormalizedHolding = normalizr.denormalize(normalizedHolding.result, schemaMensajes, normalizedHolding.entities)
+  const denormalizedHolding = normalizr.denormalize(
+    normalizedHolding.result,
+    schemaMensajes,
+    normalizedHolding.entities
+  );
 
   const porcentajeMensaje = `Porcentaje Optimizado: ${porcentaje.toFixed(2)} %`;
   document.getElementById("contenedorMensaje").innerHTML = porcentajeMensaje;
- 
-  let constMensajeHtml = "";
- 
-  denormalizedHolding.mensajes.forEach((msg) => {
 
+  let constMensajeHtml = "";
+
+  denormalizedHolding.mensajes.forEach((msg) => {
     constMensajeHtml += `
         <span style="color:blue;">
         <b>${msg.author.alias}</b></span>
@@ -79,3 +80,17 @@ socket.on("mensajes", ({ normalizedHolding, porcentaje }) => {
   document.getElementById("contenedorMensaje").innerHTML = constMensajeHtml;
 });
 
+
+// async function logout() {
+//  fetch(`/logout`, { method: "GET" })
+//     .then(function (response) {
+//       if (response.ok) {
+//         setTimeout(() => {
+//           window.location = "/login";
+//         }, 2000);
+//       }
+//     })
+//     .catch(function (error) {
+//       console.log(error);
+//     });
+// }

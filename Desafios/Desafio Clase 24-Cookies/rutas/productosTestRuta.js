@@ -21,4 +21,6 @@ productosTestRuta.get("/", (req, res) => {
   res.render("index", {productos:productos});
 });
 
+ 
+
 export default productosTestRuta;

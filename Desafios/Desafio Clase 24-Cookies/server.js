@@ -19,7 +19,9 @@ import session from 'express-session';
 import connectMongo from 'connect-mongo'
 
 const MongoStore= connectMongo.create({
-  mongoUrl:options.mongoAtlas.mongourl
+  mongoUrl:options.mongoAtlas.mongourl,
+  //expiracion autorenovable
+  ttl: 60
 })
 
 const app = express();
@@ -34,12 +36,15 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   rolling: true,
-  cookie: {
-    maxAge: 60000
-}
 }));
+ 
 
 
+app.use(function(req, res, next){
+  res.locals.session = req.session;
+  console.log(res.locals.session);
+  next();
+});
 const __dirname = path.resolve();
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "hbs");
@@ -51,17 +56,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+// app.use("/api/productos",productosTestRuta);
 app.use("/",autentificacionRuta);
-app.use("/api/productos",productosTestRuta);
-app.use("/", (req, res) => {
-  res.render("index.hbs");
+
+app.use(function (req, res, next) {
+  res.locals.session = req.session;
+  next();
 });
- 
 
 app.get("/chat", (req, res) => {
-  res.render("chat.hbs");
+  res.render("chat");
 });
+app.use("/",productosTestRuta);
+ 
  
 
 io.on("connection", async (socket) => {
