@@ -2,12 +2,10 @@ import express from "express";
 const routerProductos = express.Router();
 let admin = true;
 
-import ProductosDAO from "../src/DAOs/productos.dao.mongo.js";
-// import ProductosDAO from "../src/DAOs/Productos.dao.firebase.js";
+import ProductosDAO from "../src/DAOs/productos.dao.mongo.js"
 
 const objProd = new ProductosDAO();
 
-//AGREGAR PRODUCTO
 routerProductos.get("/nuevo", function (req, res) {
   if (admin == true) {
     res.render("nuevoProducto");
@@ -20,7 +18,6 @@ routerProductos.get("/nuevo", function (req, res) {
   }
 });
 
-//OBTENER PRODUCTOS
 routerProductos.get("/", async (req, res) => {
   try {
     await objProd.mostrarTodos().then((respuesta) => {
