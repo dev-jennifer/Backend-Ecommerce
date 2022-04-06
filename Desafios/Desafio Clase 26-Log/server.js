@@ -1,26 +1,24 @@
+/*============================[Modulos]============================*/
 import express from "express";
-import productosTestRuta from "./rutas/productosTestRuta.js";
-import autentificacionRuta from "./rutas/autentificacionRuta.js";
-
-import { normalizedHolding } from "./src/utils/normalizr.js";
-import { createServer } from "http";
-import { Server } from "socket.io";
+import session from "express-session";
+import cookieParser from "cookie-parser";
+import path from "path";
+import options from "./src/utils/options.js";
 import passport from "passport";
 import { Strategy } from "passport-facebook";
 const FacebookStrategy = Strategy;
 
-import MensajesDAO from "./src/DAO/firebase.dao.js";
+import productosTestRuta from "./rutas/productosTestRuta.js";
+//import autentificacionRuta from "./rutas/autentificacionRuta.js";
 
+import { createServer } from "http";
+import { Server } from "socket.io";
+import MensajesDAO from "./src/DAO/firebase.dao.js";
 import hbs from "hbs";
-import path from "path";
-import options from "./src/utils/options.js";
+import bodyParser from "body-parser";
+
 
 const mensajeClass = new MensajesDAO();
-
-
-import cookieParser from "cookie-parser";
-import session from "express-session";
-// import connectMongo from 'connect-mongo'
 
 const app = express();
 const httpServer = new createServer(app);
@@ -65,10 +63,11 @@ app.use(
     saveUninitialized: false,
     cookie: {
       secure: "auto",
-      maxAge: 600,
+      maxAge: 60000,
     },
   })
 );
+
 
 const __dirname = path.resolve();
 app.use(express.static(__dirname + "/public"));
@@ -80,10 +79,13 @@ hbs.registerPartials(__dirname + "/public/views/partials", function (err) {});
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use("/", autentificacionRuta);
-
+const usuarios = [];
+// app.use("/", autentificacionRuta);
+app.get('/login', (req, res)=>{
+  res.render('login');
+});
 /*============================[Rutas]============================*/
 app.get("/chat", (req, res) => {
   res.render("chat");
@@ -101,16 +103,16 @@ app.get(
 );
 
 app.get("/datos", (req, res) => {
-  if (req.isAuthenticated()) {
+  if(req.isAuthenticated()){
     if (!req.user.contador) {
-      req.user.contador = 0;
+        req.user.contador = 0
     }
     req.user.contador++;
     console.log(req.user);
     const datosUsuario = {
       nombre: req.user.displayName,
       foto: req.user.photos[0].value,
-      email: req.user.emails[0].value,
+      // email: req.user.emails[0].value,
     };
     res.render("datos", { contador: req.user.contador, datos: datosUsuario });
   } else {
@@ -123,8 +125,6 @@ app.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
-
-
 
 io.on("connection", async (socket) => {
   console.log(`Nuevo cliente conectado ${socket.id}`);

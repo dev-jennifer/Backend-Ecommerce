@@ -58,7 +58,7 @@ autentificacionRuta.get("/register", (req, res) => {
   res.render("register.hbs");
 });
 
-const usuarios = [];
+
 autentificacionRuta.post("/register", (req, res) => {
   const { nombre } = req.body;
   const usuario = usuarios.find((usuario) => usuario.nombre == nombre);
