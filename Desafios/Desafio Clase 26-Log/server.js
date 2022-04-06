@@ -3,13 +3,11 @@ import express from "express";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import path from "path";
-import options from "./src/utils/options.js";
+ 
 import passport from "passport";
-import { Strategy } from "passport-facebook";
-const FacebookStrategy = Strategy;
 
 import productosTestRuta from "./rutas/productosTestRuta.js";
-//import autentificacionRuta from "./rutas/autentificacionRuta.js";
+import autentificacionRuta from "./rutas/autentificacionRuta.js";
 
 import { createServer } from "http";
 import { Server } from "socket.io";
@@ -24,35 +22,6 @@ const app = express();
 const httpServer = new createServer(app);
 const io = new Server(httpServer);
 
-const FACEBOOK_APP_ID = options.facebookId.facebook_app_id;
-const FACEBOOK_APP_SECRET = options.facebookId.facebook_app_secret;
-
-/*-------- [Conf Passport]*/
-passport.use(
-  new FacebookStrategy(
-    {
-      clientID: FACEBOOK_APP_ID,
-      clientSecret: FACEBOOK_APP_SECRET,
-      callbackURL: "http://localhost:8081/auth/facebook/callback",
-      profileFields: ["id", "displayName", "photos", "email"],
-    },
-
-    function (accessToken, refreshToken, profile, cb) {
-      console.log("accessToken: ", accessToken);
-      console.log("refreshToken: ", refreshToken);
-      // console.log(profile);
-      cb(null, profile);
-    }
-  )
-);
-
-passport.serializeUser((user, cb) => {
-  cb(null, user);
-});
-
-passport.deserializeUser((obj, cb) => {
-  cb(null, obj);
-});
 
 /*----------- Session -----------*/
 app.use(cookieParser());
@@ -78,54 +47,17 @@ hbs.registerPartials(__dirname + "/public/views/partials", function (err) {});
 /*----------- passport -----------*/
 app.use(passport.initialize());
 app.use(passport.session());
-
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const usuarios = [];
-// app.use("/", autentificacionRuta);
-app.get('/login', (req, res)=>{
-  res.render('login');
-});
+
 /*============================[Rutas]============================*/
+app.use("/", autentificacionRuta);
+app.use("/", productosTestRuta);
 app.get("/chat", (req, res) => {
   res.render("chat");
 });
-app.use("/", productosTestRuta);
-app.get("/auth/facebook", passport.authenticate("facebook"));
 
-app.get(
-  "/auth/facebook/callback",
-  passport.authenticate("facebook", {
-    failureRedirect: "/",
-    successRedirect: "/datos",
-    authType: "reauthenticate",
-  })
-);
-
-app.get("/datos", (req, res) => {
-  if(req.isAuthenticated()){
-    if (!req.user.contador) {
-        req.user.contador = 0
-    }
-    req.user.contador++;
-    console.log(req.user);
-    const datosUsuario = {
-      nombre: req.user.displayName,
-      foto: req.user.photos[0].value,
-      // email: req.user.emails[0].value,
-    };
-    res.render("datos", { contador: req.user.contador, datos: datosUsuario });
-  } else {
-    res.redirect("/");
-    console.log("Usuario no autenticdo");
-  }
-});
-
-app.get("/logout", (req, res) => {
-  req.logout();
-  res.redirect("/");
-});
-
+/*============================[Mensaje Socket]============================*/
 io.on("connection", async (socket) => {
   console.log(`Nuevo cliente conectado ${socket.id}`);
 

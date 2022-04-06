@@ -1,98 +1,80 @@
 import express from "express";
-import { generateAuthToken,auth} from './../jwt.js';
-import jwt from "jsonwebtoken";
+import passport from "passport";
+import options from "../src/utils/options.js";
+
+
+import { Strategy } from "passport-facebook";
+const FacebookStrategy = Strategy;
 
 const autentificacionRuta = express.Router();
 autentificacionRuta.get("/login", (req, res) => {
-  const nombre = req.session.nombre;
+  res.render("login");
+});
 
-  if (nombre) {
-    res.redirect("/");
+
+const FACEBOOK_APP_ID = options.facebookId.facebook_app_id;
+const FACEBOOK_APP_SECRET = options.facebookId.facebook_app_secret;
+
+/*-------- [Conf Passport]*/
+passport.use(
+  new FacebookStrategy(
+    {
+      clientID: FACEBOOK_APP_ID,
+      clientSecret: FACEBOOK_APP_SECRET,
+      callbackURL: "http://localhost:8081/auth/facebook/callback",
+      profileFields: ["id", "displayName", "photos", "email"],
+    },
+
+    function (accessToken, refreshToken, profile, cb) {
+      console.log("accessToken: ", accessToken);
+      console.log("refreshToken: ", refreshToken);
+      // console.log(profile);
+      cb(null, profile);
+    }
+  )
+);
+
+passport.serializeUser((user, cb) => {
+  cb(null, user);
+});
+
+passport.deserializeUser((obj, cb) => {
+  cb(null, obj);
+});
+
+autentificacionRuta.get("/datos", (req, res) => {
+  if (req.isAuthenticated()) {
+    if (!req.user.contador) {
+      req.user.contador = 0;
+    }
+    req.user.contador++;
+    console.log(req.user);
+    const datosUsuario = {
+      nombre: req.user.displayName,
+      foto: req.user.photos[0].value,
+      // email: req.user.emails[0].value,
+    };
+    res.render("datos", { contador: req.user.contador, datos: datosUsuario });
   } else {
-    res.render("login.hbs");
+    res.redirect("/");
+    console.log("Usuario no autenticdo");
   }
-});
-
-autentificacionRuta.post("/login", (req, res) => {
-  const { nombre, password } = req.body;
-  const usuario = usuarios.find((usuario) => usuario.nombre == nombre);
-  if (!usuario) {
-    return res.json({ error: "usuario no registrado" });
-  }
-
-  const credencialesOk =
-    usuario.nombre == nombre && usuario.password == password;
-  if (!credencialesOk) {
-    return res.json({ error: "credenciales invalidas" });
-  }
-
-  usuario.contador = 0;
-  const access_token = jwt.generateAuthToken(nombre);
-  res.json({
-    nombre,
-    access_token,
-  });
-});
-
-autentificacionRuta.get("/login-error", (req, res) => {
-  res.render("login-error");
 });
 
 autentificacionRuta.get("/logout", (req, res) => {
-  const nombre = req.session.nombre;
-
-  if (nombre) {
-    res.render("logout.hbs");
-    try {
-      req.session.destroy();
-      res.set({ Refresh: "2; url=/login" });
-    } catch (err) {
-      console.log(err);
-    }
-  } else {
-    res.redirect("/");
-  }
+  req.logout();
+  res.redirect("/");
 });
 
-autentificacionRuta.get("/register", (req, res) => {
-  res.render("register.hbs");
-});
+autentificacionRuta.get("/auth/facebook", passport.authenticate("facebook"));
 
+autentificacionRuta.get(
+  "/auth/facebook/callback",
+  passport.authenticate("facebook", {
+    failureRedirect: "/",
+    successRedirect: "/datos",
+    authType: "reauthenticate",
+  })
+);
 
-autentificacionRuta.post("/register", (req, res) => {
-  const { nombre } = req.body;
-  const usuario = usuarios.find((usuario) => usuario.nombre == nombre);
-  if (usuario) {
-    return res.status(400).json({ error: "el nombre de usuario ya existe" });
-  }
-
-  const user = req.body;
-  if (!user.contador) {
-    user.contador = 0;
-  }
-  usuarios.push(req.body);
-  const access_token = generateAuthToken(nombre);
-  // res.json({ access_token });
-  console.log(usuarios)
-  res.redirect("/")
-});
-
-autentificacionRuta.get("/register-error", (req, res) => {
-  res.render("register-error");
-});
-
-
-/* --------- API DE DATOS ---------- */
-autentificacionRuta.get("/api/datos", auth, (req, res) => {
-  const usuario = usuarios.find((usuario) => usuario.nombre == req.user.nombre);
-  if (!usuario) {
-    return res.status(404).json({ error: "usuario no encontrado" });
-  }
-
-  usuario.contador++;
-  res.json({
-    datos: usuario,
-    contador: usuario.contador,
-  });
-});
 export default autentificacionRuta;
