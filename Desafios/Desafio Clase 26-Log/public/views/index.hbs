@@ -3,11 +3,14 @@
 
 
 {{#if session.nombre}} 
-<div class="container mt-3">
-           <h1 class="alert alert-success">Bienvenido, {{session.nombre}}</h1>     
-           {{!-- <img src="{{datos.foto}}" width="100" alt=""><br>  
-           <a href="#">{{datos.email}}</a> --}}
-           <a class="btn btn-warning float-right" href="/logout">Cerrar Sesión</a>
+<div>
+<div class="container" style="display:flex">
+ 
+      <h3>Hola {{session.nombre}}</h3>
+        <img src="{{session.foto}}" style="max-width:50px; margin:10px" alt="">
+    
+        <a class="btn btn-warning float-right" href="/logout">Logout</a>
+    </div>
 </div>
 
   

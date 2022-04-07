@@ -5,7 +5,6 @@ import cookieParser from "cookie-parser";
 import path from "path";
  
 import passport from "passport";
-
 import productosTestRuta from "./rutas/productosTestRuta.js";
 import autentificacionRuta from "./rutas/autentificacionRuta.js";
 
@@ -15,7 +14,7 @@ import MensajesDAO from "./src/DAO/firebase.dao.js";
 import hbs from "hbs";
 import bodyParser from "body-parser";
 
-
+const usuarios = []
 const mensajeClass = new MensajesDAO();
 
 const app = express();
@@ -37,6 +36,12 @@ app.use(
   })
 );
 
+app.use(function(req, res, next){
+  res.locals.session = req.session;
+  console.log("---------------------sesions-------------");
+  console.log(res.locals.session);
+  next();
+});
 
 const __dirname = path.resolve();
 app.use(express.static(__dirname + "/public"));

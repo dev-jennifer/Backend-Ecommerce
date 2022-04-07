@@ -2,7 +2,6 @@ import express from "express";
 import passport from "passport";
 import options from "../src/utils/options.js";
 
-
 import { Strategy } from "passport-facebook";
 const FacebookStrategy = Strategy;
 
@@ -10,7 +9,6 @@ const autentificacionRuta = express.Router();
 autentificacionRuta.get("/login", (req, res) => {
   res.render("login");
 });
-
 
 const FACEBOOK_APP_ID = options.facebookId.facebook_app_id;
 const FACEBOOK_APP_SECRET = options.facebookId.facebook_app_secret;
@@ -48,13 +46,11 @@ autentificacionRuta.get("/datos", (req, res) => {
       req.user.contador = 0;
     }
     req.user.contador++;
-    console.log(req.user);
-    const datosUsuario = {
-      nombre: req.user.displayName,
-      foto: req.user.photos[0].value,
-      // email: req.user.emails[0].value,
-    };
-    res.render("datos", { contador: req.user.contador, datos: datosUsuario });
+
+    req.session.nombre = req.user.displayName;
+    req.session.foto = req.user.photos[0].value;
+    // email: req.user.emails[0].value,
+    res.redirect("/");
   } else {
     res.redirect("/");
     console.log("Usuario no autenticdo");
@@ -62,7 +58,9 @@ autentificacionRuta.get("/datos", (req, res) => {
 });
 
 autentificacionRuta.get("/logout", (req, res) => {
+  
   req.logout();
+  req.session.destroy();
   res.redirect("/");
 });
 
