@@ -17,7 +17,7 @@ const FACE_APP_ID = process.env.FACEBOOK_APP_ID
 
 const FACE_APP_SECRET =process.env.FACEBOOK_APP_SECRET  
 
-console.log("Facebokk", FACE_APP_ID )
+
  
 passport.use(
   new FacebookStrategy(

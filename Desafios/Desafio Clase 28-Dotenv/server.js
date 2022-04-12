@@ -13,6 +13,7 @@ import { Server } from "socket.io";
 import MensajesDAO from "./src/DAO/firebase.dao.js";
 import hbs from "hbs";
 import bodyParser from "body-parser";
+import apiRandomRuta from "./rutas/apiRandomRuta.js";
 
 const usuarios = []
 const mensajeClass = new MensajesDAO();
@@ -59,7 +60,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/", autentificacionRuta);
 app.use("/", productosTestRuta);
 app.use("/info", infoRuta);
-
+app.use("/api/randoms", apiRandomRuta);
 app.get("/chat", (req, res) => {
   res.render("chat");
 });
