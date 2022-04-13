@@ -11,14 +11,9 @@ autentificacionRuta.get("/login", (req, res) => {
   res.render("login");
 });
 
-
 const FACE_APP_ID = process.env.FACEBOOK_APP_ID
-
-
 const FACE_APP_SECRET =process.env.FACEBOOK_APP_SECRET  
 
-
- 
 passport.use(
   new FacebookStrategy(
     {

@@ -15,13 +15,9 @@ apiRandomRuta.get("/:cant?", async (req, res) => {
 
   let child = fork(__dirname + "/rutas/child.js");
  
-  child.on("message", (msg) => {
-    if (msg == "ok") {
-      child.send(cantidad);
-    } else {
-      res.json(msg);
-    }
-  });
+  child.send(cantidad);
+  child.on('message', (message) => res.json(message));
+
 
 });
 

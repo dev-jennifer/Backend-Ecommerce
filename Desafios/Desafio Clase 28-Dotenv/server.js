@@ -18,10 +18,10 @@ import apiRandomRuta from "./rutas/apiRandomRuta.js";
 const usuarios = []
 const mensajeClass = new MensajesDAO();
 
+
 const app = express();
 const httpServer = new createServer(app);
 const io = new Server(httpServer);
-
 
 /*----------- Session -----------*/
 app.use(cookieParser());
@@ -54,7 +54,6 @@ hbs.registerPartials(__dirname + "/public/views/partials", function (err) {});
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 
 /*============================[Rutas]============================*/
 app.use("/", autentificacionRuta);
