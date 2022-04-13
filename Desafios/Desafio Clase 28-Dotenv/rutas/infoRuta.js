@@ -6,7 +6,12 @@ dotenv.config();
 const infoRuta = express.Router();
 
 infoRuta.get("/", (req, res) => {
-  const argumentos = minimist(process.argv.slice(2));
+
+  let argumentos= [];
+   process.argv.forEach((val, index) => {
+    argumentos+=`${index}: ${val}`;
+  });
+ 
   const folder = process.cwd();
   const versionNode = process.version;
   const processId = process.version;
@@ -15,8 +20,7 @@ infoRuta.get("/", (req, res) => {
   const memoryRss = Math.round((memory / 1024 / 1024) * 100) / 100;
   const pid = process.pid;
 
-  console.log(process);
-  console.log(process.memoryUsage());
+
   res.render("info.hbs", {
     argumentos: argumentos,
     path: pid,

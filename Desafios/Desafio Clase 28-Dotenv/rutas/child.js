@@ -1,8 +1,13 @@
 // child.js
 process.on('message', msg => {
   const result = getRandom(msg);
+
+  setTimeout(() => {
+    
   process.send(result)
   process.exit;
+}, 5000);
+
  })
  
 

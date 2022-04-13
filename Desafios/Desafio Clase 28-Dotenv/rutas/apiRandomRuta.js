@@ -18,7 +18,6 @@ apiRandomRuta.get("/:cant?", async (req, res) => {
   child.send(cantidad);
   child.on('message', (message) => res.json(message));
 
-
 });
 
 export default apiRandomRuta;
