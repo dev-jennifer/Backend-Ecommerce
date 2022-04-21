@@ -11,6 +11,9 @@ import hbs from 'hbs';
 import bodyParser  from 'body-parser';
 import apiRandomRuta  from './rutas/apiRandomRuta.js';
 
+import cluster from "cluster";
+import os from "os";
+
 const app = express();
 
 
@@ -50,9 +53,37 @@ app.use("/api/randoms", apiRandomRuta);
 
  
 // pm2 start server.js --name="Server1" --watch -- port=8081 
+//pm2 start server.js --name="Server3" --watch -i max -- 8080
+// Check the number of available CPU.
 
-const PORT = parseInt(process.argv[2]) || 8080
-app.listen(PORT, err => {
-  console.log(PORT)
-    if(!err) console.log(`Servidor express escuchando en el puerto ${PORT} - PID WORKER ${process.pid}`)
-})
+const numCPUs =  os.cpus().length;
+ 
+ 
+const PORT = 8080;
+ 
+// For Master process
+if (cluster.isMaster) {
+  console.log(`Master ${process.pid} is running`);
+ 
+  // Fork workers.
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+ 
+  // This event is firs when worker died
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`worker ${worker.process.pid} died`);
+  });
+}
+ 
+// For Worker
+else{
+ 
+  // Workers can share any TCP connection
+  // In this case it is an HTTP server
+  app.listen(PORT, err =>{
+    err ?
+    console.log("Error in server setup") :
+    console.log(`Worker ${process.pid} started`);
+  });
+}
