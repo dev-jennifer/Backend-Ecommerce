@@ -49,7 +49,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/", autentificacionRuta);
 app.use("/", productosTestRuta);
 app.use("/info", infoRuta);
-app.use("/api/randoms", apiRandomRuta);
+app.use("/api/random", apiRandomRuta);
 
  
 // pm2 start server.js --name="Server1" --watch -- port=8081 
