@@ -52,7 +52,7 @@ app.use("/info", infoRuta);
 app.use("/api/random", apiRandomRuta);
 
  
-// pm2 start server.js --name="Server1" --watch -- port=8081 
+//pm2 start server.js --name="Server1" --watch -- port=8081 
 //pm2 start server.js --name="Server3" --watch -i max -- 8080
 // Check the number of available CPU.
 
