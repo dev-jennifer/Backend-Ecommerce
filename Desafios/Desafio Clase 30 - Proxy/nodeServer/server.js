@@ -53,9 +53,11 @@ app.use("/api/random", apiRandomRuta);
 
  
 //pm2 start server.js --name="Server1" --watch -- port=8081 
-//pm2 start server.js --name="Server3" --watch -i max -- 8080
-// Check the number of available CPU.
+//pm2 start server.js --name="Server3" --watch -i max
+//pm2 monit
+//pm2 kill
 
+// Check the number of available CPU.
 const numCPUs =  os.cpus().length;
  
  
