@@ -87,13 +87,7 @@ app.get('/chat', (req, res) => {
 	res.render('chat');
 });
 
-//pm2 start server.js --name="Server1" --watch -- port=8081
-//pm2 start server.js --name="Server3" --watch -i max
-//pm2 monit
-//pm2 kill
-
-// Check the number of available CPU.
-
+ 
 
 app.get('*', (req, res) => {
 	const { url, method } = req;
@@ -101,12 +95,13 @@ app.get('*', (req, res) => {
 	res.send(`Ruta ${method} ${url} no está implementada`);
 });
 
-const PORT = 8080;
-const numeroCPUs = os.cpus().length;
 
+const numeroCPUs = os.cpus().length;
+const PORT = parseInt(process.argv[2]) || 8080
+const modoCluster = process.argv[3] == 'CLUSTER'
 
 		// For Master process
-		if (cluster.isPrimary) {
+		if (modoCluster && cluster.isPrimary) {
 			logger.info('CPUs:', numeroCPUs);
 			logger.info(`Master ${process.pid} is running`);
 			// Fork workers.
@@ -131,3 +126,11 @@ const numeroCPUs = os.cpus().length;
 
 
 
+//node -prof server.js
+//artillery quick --count 50 -n 20 http://localhost:8080/info
+//node --prof-process isolate-000001C543809790-34120-v8.log > ArtilleryResultConsole.txt
+
+
+//node -prof server.js
+//autocannon -c 100 -d 20 -p 1 http://localhost:8080/info
+//node --prof-process isolate-000002AEEBA74ED0-13428-v8.log > AutocanonResultConsole.txt

@@ -25,9 +25,8 @@ infoRuta.get("/", (req, res) => {
   const memoryRss = Math.round((memory / 1024 / 1024) * 100) / 100;
   const pid = process.pid;
 
-
-  res.render("info.hbs", {
-    argumentos: argumentos,
+const processData = {
+   argumentos: argumentos,
     path: pid,
     so: so,
     processId: processId,
@@ -36,7 +35,9 @@ infoRuta.get("/", (req, res) => {
     memory: memoryRss,
 
     cpu:numCPUs
-  });
+  };
+  console.info(processData)
+  res.render("info.hbs", processData);
 });
 
 export default infoRuta;
