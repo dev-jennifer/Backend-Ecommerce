@@ -126,11 +126,12 @@ const modoCluster = process.argv[3] == 'CLUSTER'
 
 
 
-//node -prof server.js
-//artillery quick --count 50 -n 20 http://localhost:8080/info
-//node --prof-process isolate-000001C543809790-34120-v8.log > ArtilleryResultConsole.txt
+//node -prof server.js 8080 FORK
+//$ curl -X GET "http://localhost:8080/info"
 
+//node --prof-process ArtilleryResult_ConsoleActivate-v8.log > ProfResultConsole.txt
+//node --prof-process ArtilleryResult_ConsoleNOActivate-v8.log > ProfResultNOConsole.txt
 
-//node -prof server.js
+//node -prof server.js 8080 FORK
 //autocannon -c 100 -d 20 -p 1 http://localhost:8080/info
 //node --prof-process isolate-000002AEEBA74ED0-13428-v8.log > AutocanonResultConsole.txt
