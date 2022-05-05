@@ -5,7 +5,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-       "test": "node benchmark.js",
+         "test": "node benchmark.js",
 		"start": "0x server.js"
 	},
 	"keywords": [],
