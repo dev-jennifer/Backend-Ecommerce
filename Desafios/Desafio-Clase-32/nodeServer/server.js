@@ -121,7 +121,7 @@ const modoCluster = process.argv[3] == 'CLUSTER'
 						.port} - PID ${process.pid} - ${new Date().toLocaleString()}`
 				);
 			});
-			server.on('error', (error) => logger.error(`Error en servidor ${error}`));
+		     	server.on('error', (error) => logger.error(`Error en servidor ${error}`));
 		}
 
 
