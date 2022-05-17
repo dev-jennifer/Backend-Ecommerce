@@ -1,0 +1,16 @@
+{{> headers title="Login"}}
+  
+ 
+<div class="vh-100 d-flex justify-content-center align-items-center">
+
+        {{#if signinMessage}} 
+   <div class="errorMensaje"> {{signinMessage}}    </div>
+     {{/if}}  
+
+ 
+{{> login}}
+</div>
+
+
+ 
+{{> footer year="2022"}}

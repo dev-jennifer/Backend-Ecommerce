@@ -1,0 +1,52 @@
+{{> headers title="Productos" }}
+
+<div class="table-responsive">
+  <div id="contenedor">
+    <h2 style="color: blue">Vista de Productos</h2>
+      <div
+        class="container-fluid bg-trasparent my-4 p-3"
+        style="position: relative;">
+        <div
+          class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-4 g-3">
+          <!-- filas -->
+          {{#each productos }}
+            <div class="col">
+              <div class="card h-100 shadow-sm">
+                <img
+                  src="{{producto.fotoProducto}}"
+                  class="card-img-top"
+                  alt="..."
+                />
+                <div class="card-body">
+                  <div class="clearfix mb-3">
+                    <span>COD {{producto.codigo}}</span>
+                   
+                  </div>
+                  <h5>{{producto.nombreProducto}}</h5>
+                    <p>{{producto.descripcion}}</p>
+                    <h5>${{producto.precioProducto}}</h5>
+                    <div class="text-center my-4">
+         
+                        <a class="btn btn-lg btn-primary" onclick="detail('{{id}}')">Detalle</a>
+                       
+                        <a class="btn btn-lg btn-primary"  onclick="edit('{{id}}')">Editar</a>
+                         <a class="btn btn-danger" onclick="deleting('{{id}}')">Eliminar</a>
+                     
+              
+
+                                        
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {{/each}}
+        </div>
+      </div>
+
+
+  </div>
+</div>
+{{> footer year=2020}}
+
