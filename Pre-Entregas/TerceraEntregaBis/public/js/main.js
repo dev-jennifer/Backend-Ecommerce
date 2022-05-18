@@ -15,6 +15,10 @@ async function detail(value) {
     });
 }
 
+
+
+
+
 async function deleting(value) {
   await fetch(`/api/productos/${value}`, {
     method: "DELETE",
@@ -111,6 +115,7 @@ async function deleteItemCart(idProducto, idCarrito) {
     });
 }
 
+
 async function borrarCarrito(idCarrito) {
   await fetch(`/api/carrito/${idCarrito}`, {
     method: "DELETE",
@@ -124,4 +129,26 @@ async function borrarCarrito(idCarrito) {
     .catch(function (error) {
       console.log(error);
     });
+}
+
+
+var fileTag = document.getElementById("avatar"),
+    preview = document.getElementById("preview");
+    
+fileTag.addEventListener("change", function() {
+  changeImage(this);
+});
+
+function changeImage(input) {
+  var reader;
+
+  if (input.files && input.files[0]) {
+    reader = new FileReader();
+
+    reader.onload = function(e) {
+      preview.setAttribute('src', e.target.result);
+    }
+
+    reader.readAsDataURL(input.files[0]);
+  }
 }

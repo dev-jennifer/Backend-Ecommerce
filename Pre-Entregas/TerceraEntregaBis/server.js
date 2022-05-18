@@ -9,9 +9,9 @@ const express = require('express'),
       connectMongo  = require( 'connect-mongo'),
       dotenv = require( 'dotenv');
 
-const { routerProductos } = require('./rutas/productosRutas'),
-      routerCarrito = require('./rutas/carritoRutas'),
-      autentificacionRuta = require('./rutas/autentificacionRuta');
+const { routerProductos } = require('./rutas/productos.router'),
+      routerCarrito = require('./rutas/carrito.router'),
+      autentificacionRuta = require('./rutas/autentificacion.router');
 
 const app = express();
 
@@ -47,7 +47,6 @@ app.use(session({
   saveUninitialized: false,
   rolling: true,
 }));
- 
  
 app.use(function(req, res, next){
   res.locals.session = req.session;

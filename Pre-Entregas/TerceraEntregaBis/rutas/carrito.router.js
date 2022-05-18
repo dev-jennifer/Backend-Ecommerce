@@ -2,7 +2,7 @@ const express =require("express")
 const routerCarrito = express.Router();
 const uuidv1 =require("uuidv1");
 let session_id = uuidv1();
-const { objProd }  =require("./productosRutas.js");
+const { objProd }  =require("./productos.router.js");
 
 
 const CarritoDAO  =require( "../src/DAOs/Carrito.dao.mongo.js");
