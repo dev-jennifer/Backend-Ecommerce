@@ -5,6 +5,7 @@ const express = require('express'),
 	multer = require('multer')
 
 const LocalStrategy = passportLocal.Strategy;
+const {sendEmail} = require("../notificaciones/newUser")
 
 const UserDao = require('../src/DAOs/User.dao.mongo'),
 	newUser = new UserDao();
@@ -85,7 +86,7 @@ passport.use(
 
 				await newUser.guardar(newUserRegister);
 
-				done(null, newUserRegister);
+				done(null, newUserRegister, sendEmail(newUserRegister.email));
 			}
 		}
 	)

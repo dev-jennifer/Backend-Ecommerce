@@ -62,7 +62,7 @@ routerCarrito.post(`/:id/productos/:id_prod`, async (req, res) => {
 		const cart = await objCarrito.mostrarId('BuyerID', idCart);
 		const item = await objProd.mostrarId('_id', itemId);
 
-		console.log(item);
+ 
 		const precio = item.precioProducto;
 		const nombre = item.nombreProducto;
 		const foto = item.fotoProducto;
@@ -105,7 +105,7 @@ routerCarrito.get('/:id/productos', async (req, res) => {
 	const condicion = 'buyerID';
 	try {
 		const carrito = await objCarrito.mostrarId(condicion, idCart);
-
+    if(carrito){
 		let list = carrito.items.map((item) => {
 			return {
 				nombreProducto : item.nombre,
@@ -116,7 +116,9 @@ routerCarrito.get('/:id/productos', async (req, res) => {
 				idProducto     : item._id
 			};
 		});
-
+  }else{
+    list=[]
+  }
 		res.render('carrito', {
 			producto : list,
 			cartID   : idCart,

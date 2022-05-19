@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
-const dotenv = require( 'dotenv');
-dotenv.config({ silent: process.env.NODE_ENV === 'production' });
+// const dotenv = require( 'dotenv');
+// dotenv.config({ silent: process.env.NODE_ENV === 'production' });
 
-const MONGO_URI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_USER_PASSWORD}@${process.env
-	.DB_CLUSTER}.mongodb.net/${process.env.DB_NAME_USER}?retryWrites=true&w=majority`;
+// const MONGO_URI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_USER_PASSWORD}@${process.env
+// 	.DB_CLUSTER}.mongodb.net/${process.env.DB_NAME_USER}?retryWrites=true&w=majority`;
 
-  
+const {MONGO_URI} = require("../utils/config")
 class ContenedorMongoDB {
   constructor(nombreColeccion, esquema) {
 
@@ -45,6 +45,7 @@ class ContenedorMongoDB {
     }
   };
 
+  
   eliminar = async (condicion,id) => {
     try {
       await this.coleccion.deleteOne({ [condicion]: id });

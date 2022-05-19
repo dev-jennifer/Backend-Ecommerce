@@ -126,9 +126,9 @@ routerProductos.put("/:id", async (req, res) => {
   if (admin == true) {
     const id = req.params.id;
     const body = req.body;
-
+    const condicion = "id"
     try {
-      await objProd.actualizar(id,body).then((result) => {
+      await objProd.actualizar(condicion,id,body).then((result) => {
      res.json({
         mensaje: "Producto actualizado",
       });

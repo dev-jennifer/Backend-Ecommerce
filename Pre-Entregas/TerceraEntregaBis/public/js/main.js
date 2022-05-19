@@ -76,7 +76,7 @@ async function agregar(idProducto) {
 		const json = await response.json();
 
 		console.log('response', `/api/carrito/${json.data.buyerID}/productos/${idProducto}`);
-		
+
 		await fetch(`/api/carrito/${json.data.buyerID}/productos/${idProducto}`, {
 			method : 'POST'
 		});
@@ -88,7 +88,6 @@ async function agregar(idProducto) {
 		method : 'POST'
 	});
 }
-
 
 function cart() {
 	let idCart = 0;
@@ -111,9 +110,7 @@ async function deleteItemCart(idProducto) {
 		});
 }
 
-
 async function borrarCarrito() {
-
 	const idCart = window.localStorage.getItem('my_token');
 	await fetch(`/api/carrito/${idCart}`, {
 		method : 'DELETE'
@@ -128,7 +125,6 @@ async function borrarCarrito() {
 			console.log(error);
 		});
 }
-
 
 var fileTag = document.getElementById('avatar'),
 	preview = document.getElementById('preview');
