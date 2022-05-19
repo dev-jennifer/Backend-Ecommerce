@@ -45,12 +45,10 @@ class ContenedorMongoDB {
     }
   };
 
-  eliminar = async (id) => {
+  eliminar = async (condicion,id) => {
     try {
-      console.log("delete");
-      await this.coleccion.deleteOne({ id: id });
+      await this.coleccion.deleteOne({ [condicion]: id });
     } catch (error) {
-      console.log(error);
       return {
         code: "003",
         msg: "Error al eliminar",
@@ -58,31 +56,29 @@ class ContenedorMongoDB {
     }
   };
 
-  mostrarId = async (id) => {
+  mostrarId = async (condition, id) => {
     try {
-      let doc = await this.coleccion.findOne({ _id: id });
-      console.log(doc);
+      let doc = await this.coleccion.findOne({ [condition]: id });
       return doc;
     } catch (error) {
       console.log(error);
 
       return {
-        code: "003",
+        code: "004",
         msg: "Error al mostrar",
       };
     }
   };
-
+ 
     existUser = async (email) => {
     try {
       let doc = await this.coleccion.findOne({ email: email });
-      console.log(doc);
       return doc;
     } catch (error) {
       console.log(error);
 
       return {
-        code: "003",
+        code: "005",
         msg: "Error al mostrar",
       };
     }
@@ -100,20 +96,20 @@ class ContenedorMongoDB {
   //   }
   // };
 
-  actualizar = async (id, body) => {
+  actualizar = async ( condition,id, body) => {
+ 
     try {
       await this.coleccion.updateOne(
         {
-          _id: id,
+          [condition]: id,
         },
 
         { $set: body }
       );
-      console.log(body);
     } catch (error) {
       console.log(error);
       return {
-        code: "004",
+        code: "006",
         msg: "Error al actualizar",
       };
     }

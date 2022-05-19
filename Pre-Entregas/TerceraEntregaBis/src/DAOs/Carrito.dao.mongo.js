@@ -19,6 +19,7 @@ class CarritoDAO extends ContenedorMongoDB {
               type: ObjectID,
               ref: "Item"
             },
+             foto: String,
             nombre: String,
             cantidad: {
               type: Number,

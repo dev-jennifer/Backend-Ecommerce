@@ -24,7 +24,6 @@ routerProductos.get("/", async (req, res) => {
  
       let data = { productos: respuesta };
       res.render("productos", data);
-      console.log(data)
     });
 
   } catch (error) {
@@ -40,7 +39,6 @@ routerProductos.get("/", async (req, res) => {
 routerProductos.post("/", async (req, res) => {
   if (admin == true) {
     const body = req.body;
-    console.log("body", body)
     await objProd.guardar(body).then((result) => {
       try {
         res.redirect("/api/productos/");
@@ -87,7 +85,7 @@ routerProductos.get("/:id?", async (req, res) => {
         producto: respuesta,
         error: false,
       });
-      console.log( respuesta);
+
     });
   } catch (error) {
     console.log("error", error);
