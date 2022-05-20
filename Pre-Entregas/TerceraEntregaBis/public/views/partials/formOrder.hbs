@@ -1,0 +1,12 @@
+<div class="form">
+ <form action="/order" method="post" role="form" enctype="multipart/form-data" enctype="multipart/form-data">
+  <input id="email" name="email" value="{{user.email}}" placeholder="email" required/>
+  <input name="name" id="name" type="text" value="{{user.nombre}}" placeholder="name" required />
+  <input name="lastName" id="lastName" type="text" value="{{user.lastName}}" placeholder="lastName" />
+  <input name="address" id="address" type="text" value="{{user.address}}" placeholder="address" />
+  <input name="phone" id="phone" type="text" value="{{user.phone}}" placeholder="phone" />
+<a class="btn btn-warning" onclick="actualizarOrder()">
+  Finalizar Orden
+</a>
+</form>
+</div>

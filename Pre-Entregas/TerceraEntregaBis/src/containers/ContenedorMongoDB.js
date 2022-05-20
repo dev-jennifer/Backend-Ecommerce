@@ -8,15 +8,13 @@ const mongoose = require("mongoose");
 const {MONGO_URI} = require("../utils/config")
 class ContenedorMongoDB {
   constructor(nombreColeccion, esquema) {
-
     mongoose.connect(MONGO_URI);
     this.coleccion = mongoose.model(nombreColeccion, esquema);
   }
 
- 
   mostrarTodos = async () => {
     try {
-      const docs = await   this.coleccion.find({});
+      const docs = await this.coleccion.find({});
       const response = docs.map((doc) => ({
         id: doc._id,
         producto: doc,
@@ -25,13 +23,11 @@ class ContenedorMongoDB {
     } catch (error) {
       this.console.log(error);
       return {
-        code: "001",
-        msg: "Errror al consumir ",
+        code: '001',
+        msg: 'Errror al consumir ',
       };
     }
   };
-
-  
 
   guardar = async (body) => {
     try {
@@ -39,24 +35,24 @@ class ContenedorMongoDB {
     } catch (error) {
       console.log(error);
       return {
-        code: "002",
-        msg: "Error al guardar",
+        code: '002',
+        msg: 'Error al guardar',
+      };
+    }
+  };
+
+  eliminar = async (condicion, id) => {
+    try {
+      await this.coleccion.deleteOne({ [condicion]: id });
+    } catch (error) {
+      return {
+        code: '003',
+        msg: 'Error al eliminar',
       };
     }
   };
 
   
-  eliminar = async (condicion,id) => {
-    try {
-      await this.coleccion.deleteOne({ [condicion]: id });
-    } catch (error) {
-      return {
-        code: "003",
-        msg: "Error al eliminar",
-      };
-    }
-  };
-
   mostrarId = async (condition, id) => {
     try {
       let doc = await this.coleccion.findOne({ [condition]: id });
@@ -65,13 +61,13 @@ class ContenedorMongoDB {
       console.log(error);
 
       return {
-        code: "004",
-        msg: "Error al mostrar",
+        code: '004',
+        msg: 'Error al mostrar',
       };
     }
   };
- 
-    existUser = async (email) => {
+
+  existUser = async (email) => {
     try {
       let doc = await this.coleccion.findOne({ email: email });
       return doc;
@@ -79,8 +75,8 @@ class ContenedorMongoDB {
       console.log(error);
 
       return {
-        code: "005",
-        msg: "Error al mostrar",
+        code: '005',
+        msg: 'Error al mostrar',
       };
     }
   };
@@ -97,25 +93,41 @@ class ContenedorMongoDB {
   //   }
   // };
 
-  actualizar = async ( condition,id, body) => {
- 
+  actualizar = async (condition, id, body) => {
     try {
       await this.coleccion.updateOne(
         {
-          [condition]: id,
+          buyerID: id,
         },
 
         { $set: body }
       );
+      console.log('OK');
     } catch (error) {
       console.log(error);
       return {
-        code: "006",
-        msg: "Error al actualizar",
+        code: '006',
+        msg: 'Error al actualizar',
       };
     }
   };
+  actualizar = async (condition, id, body) => {
+    try {
+      await this.coleccion.updateOne(
+        {
+          [condition]: id,
+        
 
- 
+         $set: body }
+      );
+      console.log('OK');
+    } catch (error) {
+      console.log(error);
+      return {
+        code: '006',
+        msg: 'Error al actualizar',
+      };
+    }
+  };
 }
 module.exports= ContenedorMongoDB;

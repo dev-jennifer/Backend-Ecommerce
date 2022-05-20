@@ -10,10 +10,11 @@ const express = require('express'),
 	{ createServer } = require('http'),
 	{ Server } = require('socket.io');
 
+	
 const { routerProductos } = require('./rutas/productos.router'),
-	routerCarrito = require('./rutas/carrito.router'),
-	autentificacionRuta = require('./rutas/autentificacion.router');
-
+  { routerCarrito } = require('./rutas/carrito.router'),
+  routerPedido = require('./rutas/pedido.router'),
+  autentificacionRuta = require('./rutas/autentificacion.router');
 const app = express();
 
 app.use(express.static(__dirname + '/public'));
@@ -38,7 +39,7 @@ const MongoStore = connectMongo.create({
 	//expiracion autorenovable
 	ttl      : 60
 });
-
+ 
 app.use(cookieParser());
 app.use(
 	session({
@@ -67,6 +68,7 @@ app.use((req, res, next) => {
 
 app.use('/api/productos', routerProductos);
 app.use('/api/carrito', routerCarrito);
+app.use('/api/pedido', routerPedido);
 app.use('/', autentificacionRuta);
 
 /* ---------------------- Servidor ----------------------*/

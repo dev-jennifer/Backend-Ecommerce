@@ -21,7 +21,7 @@ class UserDao extends ContenedorMongoDB {
 				required : true,
 				trim     : true
 			},
-			surname  : { type: String, require: false },
+			lastName  : { type: String, require: false },
 			address : { type: String, require: false },
 			age      : { type: Number, require: false },
 			phone  : { type: Number, require: false },

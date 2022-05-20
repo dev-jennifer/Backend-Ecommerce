@@ -5,55 +5,20 @@
 
   <form method="POST" action="/api/productos">
     <div class="form-group">
-      <input
-        id="nombreProducto"
-        placeholder="Nombre"
-        className="form-control"
-        type="text"
-        name="nombreProducto"
-      />
+      <input id="nombre" placeholder="Nombre" className="form-control" type="text" name="nombre" />
     </div>
     <div class="form-group">
-      <textarea
-        id="descripcion"
-        className="form-control"
-        name="descripcion"
-        placeholder="Descripción"
-      ></textarea>
+      <textarea id="descripcion" className="form-control" name="descripcion" placeholder="Descripción"></textarea>
     </div>
     <div class="form-group">
-      <input
-        id="fotoProducto"
-        className="form-control"
-        type="text"
-        name="fotoProducto"
-        placeholder="Foto URL"
-      />
+      <input id="foto" className="form-control" type="text" name="foto" placeholder="Foto URL" />
     </div>
     <div class="form-group">
-      <input
-        id="codigo"
-        className="form-control"
-        type="text"
-        name="codigo"
-        placeholder="Codigo"
-      />
+      <input id="codigo" className="form-control" type="text" name="codigo" placeholder="Codigo" />
 
-      <input
-        id="precioProducto"
-        className="form-control"
-        type="number"
-        name="precioProducto"
-        placeholder="Precio"
-      />
+      <input id="precio" className="form-control" type="number" name="precio" placeholder="Precio" />
 
-      <input
-        id="stock"
-        className="form-control"
-        type="number"
-        name="stock"
-        placeholder="Stock"
-      />
+      <input id="stock" className="form-control" type="number" name="stock" placeholder="Stock" />
     </div>
 
     <input type="submit" class="btn btn-dark btn-block" value="Agregar" />

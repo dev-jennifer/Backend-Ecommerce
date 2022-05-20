@@ -1,13 +1,15 @@
 {{> headers title="Login"}}
-  
+
 <div class="justify-content-center align-items-center">
- 
-
-   {{#if signupMessage}} 
-       <div class="errorMensaje">    {{signupMessage}} </div>
-     {{/if}} 
-{{> SignUp}}
 
 
- </div>
+     {{#if signupMessage}}
+     <div class="errorMensaje">
+          {{signupMessage}}
+     </div>
+     {{/if}}
+     {{> SignUp}}
+
+
+</div>
 {{> footer year="2022"}}

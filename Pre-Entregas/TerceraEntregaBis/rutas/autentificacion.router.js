@@ -76,7 +76,7 @@ passport.use(
 					email    : email,
 					password : password,
 					name     : req.body.name,
-					surname  : req.body.surname,		
+					lastName  : req.body.lastName,		
 					address  : req.body.address,
 					age      : req.body.age,
 					phone    : req.body.phone,
@@ -128,8 +128,6 @@ autentificacionRuta.get('/register', function(req, res) {
 
 
 
-
-
 autentificacionRuta.post(
 	'/register',
       middleware,
@@ -145,7 +143,10 @@ function isAuthenticated(req, res, next) {
 		return next();
 	}
 	res.redirect('/');
+
 }
+ 
+
 autentificacionRuta.get('/profile',isAuthenticated, (req, res, next) => {
   res.render('profile');
  
