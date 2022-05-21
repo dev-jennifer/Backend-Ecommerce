@@ -31,7 +31,9 @@ class ContenedorMongoDB {
 
   guardar = async (body) => {
     try {
-      await this.coleccion.create(body);
+    const newObj =     this.coleccion.create(body);
+     return newObj;
+ 
     } catch (error) {
       console.log(error);
       return {

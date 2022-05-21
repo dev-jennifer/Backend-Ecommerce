@@ -1,39 +1,36 @@
 const express = require('express'),
   session = require('express-session'),
-
- routerPedido = express.Router(),
- { objCarrito } = require('./carrito.router'),
-
- PedidoDAO = require('../src/DAOs/Pedido.dao.mongo'),
- objPedido = new PedidoDAO()
+  { newOrderEmail } = require('../notificaciones/emails/Order/newOrder'),
+  routerPedido = express.Router(),
+  { objCarrito } = require('./carrito.router'),
+  PedidoDAO = require('../src/DAOs/Pedido.dao.mongo'),
+  objPedido = new PedidoDAO();
 
 function isAuthenticatedUser(req, res, next) {
- req?.isAuthenticated?console.log(req.isAuthenticated):null
- }
+  req?.isAuthenticated ? console.log(req.isAuthenticated) : null;
+}
 
-
- 
 routerPedido.get('/:idCart', async (req, res) => {
-
   const idCart = req.params.id;
   const cart = await objCarrito.mostrarId('BuyerID', idCart);
 
   // isAuthenticatedUser?console.log(isAuthenticatedUser()):""
- 
- res.render('order', {producto: cart.items });
+
+  res.render('order', { producto: cart.items });
 });
 
+ 
 routerPedido.get('/gracias', async (req, res) => {
-  console.log("OK")
+  console.log('OK');
   res.render('gracias');
 });
-routerPedido.post('/:id', async (req, res) => {
+routerPedido.post('/:id', async (req, res, done) => {
   const idCart = req.params.id;
- const body = req.body;
- 
+  const body = req.body;
+
   try {
     const cart = await objCarrito.mostrarId('BuyerID', idCart);
-    console.log("CART",cart.items)
+    console.log('CART', cart.items);
     const newOrder = {
       buyerID: body.email,
       items: cart.items,
@@ -41,10 +38,12 @@ routerPedido.post('/:id', async (req, res) => {
       timestamps: new Date(),
     };
 
-    console.log(newOrder)
-    const resultado = await objPedido.guardar(newOrder);
-   res.status(200).send(resultado);
+     await objPedido
+       .guardar(newOrder)
 
+       .then((result) => newOrderEmail(result ))
+       .catch((err) => console.log('ERROR', err));
+ 
   } catch (error) {
     res.json({
       estado: false,

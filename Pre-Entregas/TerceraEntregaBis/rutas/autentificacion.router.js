@@ -2,10 +2,10 @@ const express = require('express'),
 	bcrypt = require('bcrypt'),
 	passport = require('passport'),
 	passportLocal = require('passport-local'),
-	multer = require('multer')
-
+	multer = require('multer'),
+    sendEmail = require('../notificaciones/emails/Registration/newUser');
 const LocalStrategy = passportLocal.Strategy;
-const {sendEmail} = require("../notificaciones/newUser")
+
 
 const UserDao = require('../src/DAOs/User.dao.mongo'),
 	newUser = new UserDao();
