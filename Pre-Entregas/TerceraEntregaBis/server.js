@@ -105,3 +105,14 @@ if (modoCluster && cluster.isPrimary) {
   server.on('error', (error) => logger.error(`Error en servidor ${error}`));
 }
 
+//node -prof server.js 8080 FORK
+//$ curl -X GET "http://localhost:8080/api/productoso"
+
+//node --prof-process ArtilleryResult_ConsoleActivate-v8.log > ProfResultConsole.txt
+//node --prof-process ArtilleryResult_ConsoleNOActivate-v8.log > ProfResultNOConsole.txt
+
+//node -prof server.js 8080 FORK
+//autocannon -c 100 -d 20 -p 1 http://localhost:8080/api/productos
+//node --prof-process isolate-000002AEEBA74ED0-13428-v8.log > AutocanonResultConsole.txt
+
+//0x server.js
