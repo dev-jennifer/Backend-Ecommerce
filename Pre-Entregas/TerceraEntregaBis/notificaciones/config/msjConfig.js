@@ -6,10 +6,10 @@ const {
   WHATSAPP_ADMIN,
   WHATSAPP_FROM,
 } = require('../../src/utils/config');
-const client = twilio(ACCOUNT_SID, AUTH_TOKEN,TWILO_PHONE);
+const client = twilio(ACCOUNT_SID, AUTH_TOKEN);
 
 async function msgSend(number, order){
-  console.log("order",order);
+ 
 
 try {
   //sms to user
@@ -30,7 +30,8 @@ try {
       to: `whatsapp:${WHATSAPP_ADMIN}`,
       body: `Nuevo Pedido nº${order.id}  - ${order.buyerID} `,
     })
-    .then((smsAdmin) => console.log(JSON.stringify(smsAdmin)));
+    .then((message) => console.warn("SID",message.sid))
+    .done();
  
 } catch (e) {
    console.error('SMS admin', e);

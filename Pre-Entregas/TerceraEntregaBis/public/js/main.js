@@ -183,7 +183,12 @@ const idCart = window.localStorage.getItem('my_token');
       phone,
     }),
   })
-    .then((res) => (window.location.href = `/api/pedido/gracias`))
+   
+  await fetch(`/api/carrito/${idCart}`, {
+    method: 'DELETE',
+  })
+    .then(() => localStorage.removeItem('my_token'))
+    .finally(() => (window.location.href = `/api/pedido/gracias`))
     .catch((error) => {
       console.log(error);
     });
