@@ -1,12 +1,17 @@
 const nodemailer = require('nodemailer');
 const request = require('request');
-const { TEST_EMAIL, PASS_EMAIL } = require('../../src/utils/config');
+const {
+  TEST_EMAIL,
+  PASS_EMAIL,
+  ADMIN_EMAIL
+} = require('../../src/utils/config');
 
-function send(templateFile, toEmail, subject, info) {
+function send(templateFile,subject, data) {
+  console.log("DATA",data)
   let options = {
     uri: `http://localhost:8080/template/email/${templateFile}`,
     method: 'POST',
-    json: info,
+    json: data,
   };
   request(options, async function (error, response, body) {
     if (error) console.log(error);
@@ -23,13 +28,13 @@ function send(templateFile, toEmail, subject, info) {
     });
     let mailOptions = {
       from: 'Admin <noreply@admin.com>',
-      to: toEmail,
+      to: ADMIN_EMAIL,
       subject: subject,
       html: body,
     };
    await transporter.sendMail(mailOptions, function (error, info) {
       if (error) console.log(error);
-      console.log(info)
+      console.log("info",info)
     });
   });
 }

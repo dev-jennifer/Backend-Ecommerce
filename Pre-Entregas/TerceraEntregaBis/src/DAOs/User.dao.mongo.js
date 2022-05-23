@@ -15,7 +15,6 @@ class UserDao extends ContenedorMongoDB {
 				required  : true,
 				minLength : 4
 			},
-
 			name    : {
 				type     : String,
 				required : true,
@@ -24,7 +23,7 @@ class UserDao extends ContenedorMongoDB {
 			lastName  : { type: String, require: false },
 			address : { type: String, require: false },
 			age      : { type: Number, require: false },
-			phone  : { type: Number, require: false },
+			phone  : { type: String, require: false },
 			avatar    : { type: String, require: false }
 		});
 	}

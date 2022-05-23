@@ -1,5 +1,6 @@
-{{> headers title="Login"}}
 
+{{> header_register title="Register"}}
+ 
 <div class="justify-content-center align-items-center">
 
 
@@ -12,4 +13,19 @@
 
 
 </div>
+<script>
+     let input = document.querySelector("#phone");
+    window.intlTelInput(input, {
+        separateDialCode: true,
+        initialCountry:"AR",
+        dropdownContainer: document.body
+    });
+  
+  
+    let iti = window.intlTelInputGlobals.getInstance(input);
+
+    input.addEventListener('input', function() { 
+      document.getElementById('country').value = iti.activeItem.dataset.dialCode;
+    });
+</script>
 {{> footer year="2022"}}

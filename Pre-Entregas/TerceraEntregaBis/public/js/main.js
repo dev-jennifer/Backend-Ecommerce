@@ -169,7 +169,8 @@ async function actualizarOrder() {
   let lastName = document.getElementById('lastName').value;
   let address = document.getElementById('address').value;
   let phone = document.getElementById('phone').value;
- 
+
+
 const idCart = window.localStorage.getItem('my_token');
   const data = fetch(`/api/pedido/${idCart}`, {
     method: 'POST',
@@ -187,3 +188,27 @@ const idCart = window.localStorage.getItem('my_token');
       console.log(error);
     });
 }
+
+
+/* ---------------------- Register ----------------------*/
+
+ 
+
+   
+ 
+// document.getElementById('btnSubmit').addEventListener('click', function (e) {
+//   e.preventDefault();
+//   const phoneNumber = iti.getNumber();
+//   const activeItem = iti.activeItem.dataset;
+//  const ibxCode = activeItem.dialCode;
+
+  /*
+    Si es para mandarlo por Ajax o Fetch
+    construyes un objeto como este
+    y lo mandas. Y en el servidor los recuperas
+    usando las claves de la izquierda:
+    ibxCode y phone
+  */
+
+ 
+// });

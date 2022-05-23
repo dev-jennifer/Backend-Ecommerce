@@ -389,12 +389,11 @@ height: 50px;
     background: #395591;
   }
   
-  .form span {
-    font-size: 75px;
-    color: #4b6cb7;
-  }
-}
 
+}
+input#country{
+    display: none;
+}
 .errorMensaje{
 background-color: red;
     color: white;

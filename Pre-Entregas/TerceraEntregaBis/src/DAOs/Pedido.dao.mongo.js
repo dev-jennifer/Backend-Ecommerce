@@ -10,6 +10,10 @@ class PedidoDAO extends ContenedorMongoDB {
         required: true,
         ref: 'User',
       },
+      name: {
+        type: String,
+ 
+      },
       items: [
         {
           itemId: {

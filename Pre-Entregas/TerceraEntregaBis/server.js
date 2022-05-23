@@ -8,12 +8,15 @@ const express = require('express'),
   connectMongo = require('connect-mongo'),
   dotenv = require('dotenv'),
   { createServer } = require('http'),
-  { Server } = require('socket.io');
+  { Server } = require('socket.io'),
+   cluster = require( 'cluster'),
+   os = require( 'os')
+   logger = require('./logger');
 
 const { routerProductos } = require('./rutas/productos.router'),
   { routerCarrito } = require('./rutas/carrito.router'),
   routerPedido = require('./rutas/pedido.router'),
-  autentificacionRuta = require('./rutas/autentificacion.router'),
+  {autentificacionRuta} = require('./rutas/autentificacion.router'),
   routerTemplate = require('./rutas/email.router');
 const app = express();
 
@@ -28,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-dotenv.config({ silent: process.env.NODE_ENV === 'production' });
+
 
 const httpServer = new createServer(app);
 const io = new Server(httpServer);
@@ -72,12 +75,33 @@ app.use('/template/email', routerTemplate);
 app.use('/', autentificacionRuta);
 
 /* ---------------------- Servidor ----------------------*/
-const PORT = process.env.PORT || 8080;
+dotenv.config({ silent: process.env.NODE_ENV === 'production' });
+const numeroCPUs = os.cpus().length;
+const PORT = parseInt(process.argv[2]) || 8080;
+const modoCluster = process.argv[3] == 'CLUSTER';
 
-const server = app.listen(PORT, () => {
-  console.log(`Servidor escuchando en puerto ${PORT}`);
-});
+// For Master process
+if (modoCluster && cluster.isPrimary) {
+  logger.info('CPUs:', numeroCPUs);
+  logger.info(`Master ${process.pid} is running`);
+  // Fork workers.
+  for (let i = 0; i < numeroCPUs; i++) {
+    cluster.fork();
+  }
 
-server.on('error', (error) => {
-  console.error(`Error en el servidor ${error}`);
-});
+  // This event is firs when worker died
+  cluster.on('exit', (worker) => {
+    logger.info(`worker ${worker.process.pid} died`);
+  });
+} else {
+  // For Worker
+  const server = httpServer.listen(PORT, () => {
+    logger.info(
+      `Servidor HTTP escuchado en puerto ${server.address().port} - PID ${
+        process.pid
+      } - ${new Date().toLocaleString()}`
+    );
+  });
+  server.on('error', (error) => logger.error(`Error en servidor ${error}`));
+}
+

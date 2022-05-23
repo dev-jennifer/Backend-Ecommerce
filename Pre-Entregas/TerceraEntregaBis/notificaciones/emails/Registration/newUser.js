@@ -2,7 +2,7 @@ const send = require('../../config/configEmail');
  
 async function sendEmail(newUser) {
  
-    const templateFile = 'templateOrder',
+    const templateFile = 'templateRegistration',
       toEmail = newUser.email,
       subject = 'Nueva Usuario',
       info = { Email: newUser.id };

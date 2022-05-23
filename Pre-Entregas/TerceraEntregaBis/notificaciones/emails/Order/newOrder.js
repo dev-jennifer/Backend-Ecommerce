@@ -1,13 +1,17 @@
 const send = require('../../config/configEmail');
 
+//email to admin
 function newOrderEmail(resultado) {
-  console.log('EJECUTANDO', resultado);
+  console.log("resultadoEmail", resultado)
   const templateFile = 'templateOrder',
-    toEmail = resultado.buyerID,
-    subject = 'Nueva Orden',
-    info = { orderNumber: resultado.id };
+    subject = `Nuevo pedido de  ${resultado.buyerID}- ${resultado.name}`,
+    info = {
+      orderNumber: resultado.id,
+      producto: resultado.items,
+      total: resultado.total,
+    };
 
-     send(templateFile, toEmail, subject, info);
+     send(templateFile, subject, info);
 }
   
 module.exports = { newOrderEmail };
