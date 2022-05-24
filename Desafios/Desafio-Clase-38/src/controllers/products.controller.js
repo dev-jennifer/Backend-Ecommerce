@@ -104,6 +104,13 @@ const ProductsController = {
       });
     }
   },
+  showID: async ( itemId) => {
+    try {
+      await ProductsDAO.mostrarId('_id', itemId);
+    } catch (error) {
+      console.error(error);
+    }
+  },
   editProduct: async (req, res) => {
     if (admin == true) {
       const id = req.params.id;
@@ -128,7 +135,7 @@ const ProductsController = {
       });
       console.log('Error');
     }
-  }
+  },
 };
 
 module.exports = ProductsController;

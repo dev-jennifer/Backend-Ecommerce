@@ -12,10 +12,10 @@ const express = require('express'),
   CONFIG = require('./src/utils/config'),
   CONFIG_SERVER = require('./src/utils/configServer');
 
-const  routerProducts = require('./src/routes/products.router'),
-  { routerCart } = require('./src/routes/cart.router'),
+const routerProducts = require('./src/routes/products.router'),
+ routerCart  = require('./src/routes/cart.router'),
   routerOrder = require('./src/routes/order.router'),
-  { routerAuth } = require('./src/routes/auth.router'),
+  routerUser = require('./src/routes/user.router'),
   routerEmail = require('./src/routes/email.router');
 const app = express();
 
@@ -66,7 +66,7 @@ app.use('/api/productos', routerProducts);
 app.use('/api/carrito', routerCart);
 app.use('/api/pedido', routerOrder);
 app.use('/template/email', routerEmail);
-app.use('/', routerAuth);
+app.use('/', routerUser);
 
 /* ---------------------- Servidor ----------------------*/
 
