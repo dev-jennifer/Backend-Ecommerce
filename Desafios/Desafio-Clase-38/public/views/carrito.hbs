@@ -1,0 +1,34 @@
+{{> headers title="Carrito" }}
+<h1>Carrito </h1>
+{{#if producto.length}}
+<div class="vh-100 d-flex justify-content-center align-items-center">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Imagen</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Precio</th>
+        <th scope="col">Cantidad</th>
+        <th scope="col">Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+
+
+      {{> carritoDetalle}}
+
+
+    </tbody>
+  </table>
+
+</div>
+<button onclick="borrarCarrito()">Borrar todo</button>
+
+<button onclick="comprar()">Continuar Compra</button>
+{{else}}
+
+
+<h2>No hay productos en carrito</h2>
+
+{{/if}}
+{{> footer year="2022"}}
