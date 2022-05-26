@@ -14,4 +14,4 @@ function newOrderEmail(resultado) {
      send(templateFile, subject, info);
 }
   
-module.exports = { newOrderEmail };
+module.exports =  newOrderEmail ;

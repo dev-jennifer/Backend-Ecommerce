@@ -1,7 +1,4 @@
-{{> headers title="Productos" }}
-
-<div class="table-responsive">
-  <div id="contenedor">
+<div class="container">
     <h2 style="color: blue">Vista de Productos</h2>
     <div class="container-fluid bg-trasparent my-4 p-3" style="position: relative;">
       <div class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-4 g-3">
@@ -22,7 +19,6 @@
 
                 <a class="btn btn-lg btn-primary" onclick="detail('{{id}}')">Detalle</a>
                 <a class="btn btn-lg btn-primary" onclick="agregar('{{id}}')">Agregar Carrito</a>
-
                 <a class="btn btn-lg btn-primary" onclick="edit('{{id}}')">Editar</a>
                 <a class="btn btn-danger" onclick="deleting('{{id}}')">Eliminar</a>
 
@@ -35,7 +31,4 @@
       </div>
     </div>
 
-
-  </div>
-</div>
-{{> footer year=2020}}
+ 

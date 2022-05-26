@@ -1,6 +1,5 @@
 const express = require('express'),
   flash = require('connect-flash'),
-  hbs = require('hbs'),
   bodyParser = require('body-parser'),
   passport = require('passport'),
   cookieParser = require('cookie-parser'),
@@ -10,20 +9,44 @@ const express = require('express'),
   cluster = require('cluster'),
   logger = require('./logger'),
   CONFIG = require('./src/utils/config'),
-  CONFIG_SERVER = require('./src/utils/configServer');
-
+  CONFIG_SERVER = require('./src/utils/configServer'),
+ morgan = require('morgan'), 
+ path=require("path")
+ compression = require('compression'),
+  { engine } = require('express-handlebars'),
+ { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access'),
+ exphbs = require('express-handlebars');
+ 
 const routerProducts = require('./src/routes/products.router'),
- routerCart  = require('./src/routes/cart.router'),
+  routerCart = require('./src/routes/cart.router'),
   routerOrder = require('./src/routes/order.router'),
   routerUser = require('./src/routes/user.router'),
   routerEmail = require('./src/routes/email.router');
 const app = express();
 
-app.use(express.static(__dirname + '/public'));
+// app.use(express.static(__dirname + '/public'));
+
+
+app.use(compression());
+app.use(morgan('tiny'));
+
+ 
 app.use('/uploads', express.static('uploads'));
-app.set('view engine', 'hbs');
-app.set('views', __dirname + '/public/views');
-hbs.registerPartials(__dirname + '/public/views/partials', function (err) {});
+const Handlebars = require('handlebars');
+app.engine(
+  '.hbs',
+  exphbs.engine({
+    extname: '.hbs',
+    defaultLayout: 'main',
+    partialsDir: path.join(__dirname, 'public/views/partials'),
+    layoutsDir: path.join(__dirname, 'public/views/layouts'),
+     handlebars: allowInsecurePrototypeAccess(Handlebars) 
+  })
+);
+app.set('view engine', '.hbs');
+app.set('views', path.join(__dirname, 'public/views'));
+app.use(express.static('public'));
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -4,13 +4,15 @@
 async function detail(value) {
   await fetch(`/api/productos/${value}`, { method: 'GET' })
     .then(function (response) {
+      
       if (response.ok) {
         window.location.href = `/api/productos/${value}`;
-      }
-      throw new Error('Request failed.');
+      }else{      console.log("ERorr");
+    }
     })
     .catch(function (error) {
       console.log(error);
+
     });
 }
 
@@ -19,12 +21,12 @@ async function deleting(value) {
     method: 'DELETE',
   })
     .then(function (response) {
-      if (response.ok) {
-        console.log('Producto Eliminado');
-      }
+ 
+          window.location.href = `/api/productos/`;
+ 
     })
     .catch(function (error) {
-      console.log(error);
+      window.location.href = `/error/`;
     });
 }
 
@@ -50,7 +52,7 @@ async function actualizar(value) {
   let precio = document.getElementById('precio').value;
   let stock = document.getElementById('stock').value;
 
-  const data = fetch(`/api/productos/${value}`, {
+  fetch(`/api/productos/${value}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' }, 
     body: JSON.stringify({
@@ -77,8 +79,9 @@ async function agregar(idProducto) {
       })
       .then((data) => {
         const id = data.data.buyerID;
+ 
         localStorage.setItem('my_token', id);
-        console.log('ID', id);
+ 
         return fetch(`/api/carrito/${id}/productos/${idProducto}`, {
           method: 'POST',
         });
@@ -86,13 +89,13 @@ async function agregar(idProducto) {
       .catch((err) => {
         console.error('Request failed', err);
       });
-  }
+  }else{
 
   const idCart = window.localStorage.getItem('my_token');
   await fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
     method: 'POST',
   });
-}
+}}
 
 function cart() {
   let idCart = 0;
@@ -132,13 +135,12 @@ async function borrarCarrito() {
       console.log(error);
     });
 }
-
 async function comprar() {
   const idCart = window.localStorage.getItem('my_token');
-
+console.log("ID",idCart)
   window.location.href = `/api/pedido/${idCart}`;
 }
-
+ 
 /* ---------------------- Profile ----------------------*/
 var fileTag = document.getElementById('avatar'),
   preview = document.getElementById('preview');
@@ -194,26 +196,3 @@ const idCart = window.localStorage.getItem('my_token');
     });
 }
 
-
-/* ---------------------- Register ----------------------*/
-
- 
-
-   
- 
-// document.getElementById('btnSubmit').addEventListener('click', function (e) {
-//   e.preventDefault();
-//   const phoneNumber = iti.getNumber();
-//   const activeItem = iti.activeItem.dataset;
-//  const ibxCode = activeItem.dialCode;
-
-  /*
-    Si es para mandarlo por Ajax o Fetch
-    construyes un objeto como este
-    y lo mandas. Y en el servidor los recuperas
-    usando las claves de la izquierda:
-    ibxCode y phone
-  */
-
- 
-// });

@@ -5,10 +5,12 @@ async function sendEmail(newUser) {
     const templateFile = 'templateRegistration',
       toEmail = newUser.email,
       subject = 'Nueva Usuario',
-      info = { Email: newUser.id };
 
+      info = {name:newUser.name};
 
-   await send(templateFile, toEmail, subject, info);
+      console.log("INFO", info);
+
+   return await send(templateFile,  subject, info);
 }
 
 module.exports =  sendEmail  

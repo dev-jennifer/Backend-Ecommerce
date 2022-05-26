@@ -8,14 +8,18 @@ const UserController = {
     if (req.isAuthenticated()) {
       res.redirect('/api/productos');
     }
-    res.render('register', { title: 'Register', newUser: UserDAO });
+    res.render('register', {
+      title: 'Register',
+      layout: 'register',
+      newUser: UserDAO,
+    });
   },
 
   renderLoginForm: (req, res) => {
     if (req.isAuthenticated()) {
       res.redirect('/api/productos');
     }
-    res.render('login', { title: 'Log in' });
+    res.render('login', { title: 'Login' });
   },
 
   renderLogOut: (req, res) => {
@@ -26,8 +30,11 @@ const UserController = {
   },
 
   renderProfile: (req, res) => {
-    res.render('profile');
+    console.log(req.user);
+
+    res.render('profile', { title: 'Profile' });
   },
+
   register: async (req, email, password, done) => {
     const user = await UserDAO.existUser(email);
 
@@ -61,8 +68,10 @@ const UserController = {
       done(null, newUserRegister, sendEmail(newUserRegister));
     }
   },
-  existUser:async(req, res) => {
-      await UserDAO.existUser(id);
+  existPassport: async  (req, email) => {
+    const user = await UserDAO.mostrarId(email);
+ 
+    return   user;
   },
 
   login: async (req, email, password, done) => {

@@ -2,12 +2,12 @@ const nodemailer = require('nodemailer');
 const request = require('request');
 const CONFIG = require('../../src/utils/config');
 
-function send(templateFile,subject, data) {
-  console.log("DATA",data)
+function send(templateFile,  subject, info) {
+  console.log('DATA', info);
   let options = {
     uri: `http://localhost:8080/template/email/${templateFile}`,
     method: 'POST',
-    json: data,
+    json: info,
   };
   request(options, async function (error, response, body) {
     if (error) console.log(error);
@@ -28,9 +28,9 @@ function send(templateFile,subject, data) {
       subject: subject,
       html: body,
     };
-   await transporter.sendMail(mailOptions, function (error, info) {
+    await transporter.sendMail(mailOptions, function (error, info) {
       if (error) console.log(error);
-      console.log("info",info)
+      console.log('info', info);
     });
   });
 }

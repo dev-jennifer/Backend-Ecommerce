@@ -1,12 +1,12 @@
 const ProductosDAOMongoDB = require('../services/productsDAOMongo');
 const ProductsDAO = new ProductosDAOMongoDB();
-
+const path = require('path');
 let admin = true;
 
 const ProductsController = {
   renderNewProduct: (req, res) => {
     if (admin == true) {
-      res.render('nuevoProducto');
+      res.render('productNew', { title: 'Nuevo Producto' });
     } else {
       res.json({
         error: -1,
@@ -17,8 +17,10 @@ const ProductsController = {
   renderProducts: async (req, res) => {
     try {
       await ProductsDAO.mostrarTodos().then((respuesta) => {
-        let data = { productos: respuesta };
-        res.render('productos', data);
+        res.render('products', {
+          title: 'Products',
+          productos: respuesta,
+        });
       });
     } catch (error) {
       console.log('error', error);
@@ -28,6 +30,7 @@ const ProductsController = {
       });
     }
   },
+
   saveProducts: async (req, res) => {
     if (admin == true) {
       const body = req.body;
@@ -49,11 +52,11 @@ const ProductsController = {
     if (admin == true) {
       const valueID = req.params.id;
       try {
-        await ProductsDAO.eliminar(valueID).then(() => {
-          console.log('Registro Eliminado');
+        await ProductsDAO.eliminar(valueID).then((result) => {
+          res.redirect('/api/productos/');
         });
       } catch (error) {
-        console.log(error);
+        console.error(`Error al  eliminar ${valueID}, ${error}`);
       }
     } else {
       res.json({
@@ -65,31 +68,31 @@ const ProductsController = {
   },
 
   getProduct: async (req, res) => {
-    async (req, res) => {
-      const id = req.params.id;
-
-      try {
-        await ProductsDAO.mostrarId(id).then((respuesta) => {
-          res.render('productoDetalle', {
-            producto: respuesta,
-            error: false,
-          });
+    const id = req.params.id;
+    try {
+      await ProductsDAO.mostrarId(id).then((respuesta) => {
+        res.render('productDetail', {
+          producto: respuesta,
+          error: false,
         });
-      } catch (error) {
-        console.log('error', error);
-        res.render('productoDetalle', {
-          error: true,
-          mensaje: 'No se encuentra el producto',
-        });
-      }
-    };
+      });
+    } catch (error) {
+      console.log('error', error);
+      res.render('productDetail', {
+        error: true,
+        mensaje: 'No se encuentra el producto',
+      });
+    }
   },
   formEditProduct: async (req, res) => {
     if (admin == true) {
       const id = req.params.id;
       try {
         await ProductsDAO.mostrarId(id).then((result) => {
-          res.render('editProduct', result);
+          res.render('productEdit', {
+            title: 'Editar',
+            data: result,
+          });
         });
       } catch (error) {
         res.send({
@@ -104,9 +107,10 @@ const ProductsController = {
       });
     }
   },
-  showID: async ( itemId) => {
+  showID: async (itemId) => {
     try {
-      await ProductsDAO.mostrarId('_id', itemId);
+      const product = await ProductsDAO.mostrarId('id', itemId);
+      return product;
     } catch (error) {
       console.error(error);
     }

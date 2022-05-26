@@ -1,26 +1,31 @@
 const OrderDAOMongoDB = require('../services/orderDAOMongo'),
   msgSend = require('../../notificaciones/config/msjConfig'),
-  UserDAO =require("../controllers/user.controller")
-  
+  newOrderEmail = require('../../notificaciones/emails/Order/newOrder'),
+  UserController = require('../controllers/user.controller'),
+  CartController = require('../controllers/cart.controller');
 const OrderDAO = new OrderDAOMongoDB();
-
-//objCarrito
+ 
 
 const OrderController = {
 renderThanks: (req, res) => {
     res.render('gracias');
 },
-getCart:async (req, res) => {
+
+getCartOrder:async (req, res) => {
   const idCart = req.params.id;
-  const cart = await objCarrito.mostrarId('BuyerID', idCart);
-  res.render('order', { producto: cart.items });
+  const cart = await CartController.getCartOrder(idCart);
+
+  console.log(cart)
+  res.render('order', { title:"Orden",producto: cart.items });
 },
-postCart:async (req, res, done) => {
+postOrder:async (req, res, done) => {
+
   const idCart = req.params.id;
   const body = req.body;
-
+  console.log('idCart ORDER', idCart);
+   console.log('body', body);
   try {
-    const cart = await objCarrito.mostrarId('BuyerID', idCart);
+    const cart = await CartController.getCartOrder(idCart);
     const newOrder = {
       buyerID: body.email,
       name: body.name,
@@ -32,9 +37,11 @@ postCart:async (req, res, done) => {
     await OrderDAO.guardar(newOrder)
 
       .then((order) => {
+        console.log("ORDEN", order)
         newOrderEmail(order);
-        UserDAO.mostrarId(newOrder.buyerID).then((userId) => {
+        UserController.existPassport(newOrder.buyerID).then((userId) => {
           msgSend(userId.phone, order);
+              console.log('userId.phone', userId.phone);
         });
       })
       .then(localStorage.setItem('my_token', ''))

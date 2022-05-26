@@ -14,7 +14,8 @@ passport.serializeUser(function (user, done) {
 });
 
 passport.deserializeUser(async (id, done) => {
-  const user = UserController.existUser;
+  const user = await UserController.existPassport(id)
+    console.log(user)
   done(null, user);
 });
 

@@ -63,9 +63,9 @@ class ContenedorMongoDB {
     }
   };
 
-  existUser = async (email) => {
+  existUser =   (email) => {
     try {
-      let doc = await this.coleccion.findOne({ email: email });
+      let doc =   this.coleccion.findOne({ email: email });
       return doc;
     } catch (error) {
       console.log(error);
@@ -95,21 +95,6 @@ class ContenedorMongoDB {
       };
     }
   };
-  actualizar = async (condition, id, body) => {
-    try {
-      await this.coleccion.updateOne({
-        [condition]: id,
-
-        $set: body,
-      });
-      console.log('OK');
-    } catch (error) {
-      console.log(error);
-      return {
-        code: '006',
-        msg: 'Error al actualizar',
-      };
-    }
-  };
+  
 }
 module.exports = ContenedorMongoDB;
