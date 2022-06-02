@@ -1,0 +1,18 @@
+{{#each producto}}
+<tr> 
+    <td>
+        <img src="{{foto}}" alt={{nombre}} class="imgTable"/>
+    </td>
+    <td> 
+        <a onclick="detail('{{_id}}')"> {{nombre}} </a> 
+    </td>
+
+    <td>${{precio}}</td>
+    <td>{{quantity}}</td>
+    <td>${{subtotal}}</td>
+
+
+    <td><button onclick="deleteItemCart('{{_id}}')">Borrar</button></td>
+</tr>
+
+{{/each}}
