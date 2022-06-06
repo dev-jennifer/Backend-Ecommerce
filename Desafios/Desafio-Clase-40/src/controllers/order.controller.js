@@ -1,4 +1,4 @@
-const OrderDAOMongoDB = require('../services/orderDAOMongo'),
+const {OrderDAOMongoDB} = require('../services/DAOMongo'),
   msgSend = require('../../notificaciones/config/msjConfig'),
   newOrderEmail = require('../../notificaciones/emails/Order/newOrder'),
   UserController = require('../controllers/user.controller'),

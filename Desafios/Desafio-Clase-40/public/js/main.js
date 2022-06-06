@@ -2,31 +2,27 @@
 
 ///PRODUCTOS
 async function detail(value) {
+ 
   await fetch(`/api/productos/${value}`, { method: 'GET' })
     .then(function (response) {
-      
       if (response.ok) {
         window.location.href = `/api/productos/${value}`;
-      }else{      console.log("ERorr");
-    }
+      } else {
+        console.log('Erorr');
+      }
     })
     .catch(function (error) {
       console.log(error);
-
     });
 }
 
 async function deleting(value) {
-  await fetch(`/api/productos/${value}`, {
-    method: 'DELETE',
-  })
-    .then(function (response) {
- 
-          window.location.href = `/api/productos/`;
- 
+  await fetch(`/api/productos/${value}`, { method: 'DELETE' })
+    .then(function () {
+      window.location.href = `/api/productos`;
     })
-    .catch(function (error) {
-      window.location.href = `/error/`;
+    .catch(function () {
+      //   window.location.href = `/error/`;
     });
 }
 
@@ -52,9 +48,9 @@ async function actualizar(value) {
   let precio = document.getElementById('precio').value;
   let stock = document.getElementById('stock').value;
 
-  fetch(`/api/productos/${value}`, {
+    fetch(`/api/productos/${value}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' }, 
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       nombre,
       descripcion,
@@ -64,7 +60,12 @@ async function actualizar(value) {
       stock,
     }),
   })
-    .then((res) => (window.location.href = `/api/productos/`))
+    .then((response)=>{         
+        if(response){
+            window.location.href = "/api/productos";
+        }
+    })   
+ 
     .catch((error) => {
       console.log(error);
     });
@@ -73,15 +74,17 @@ async function actualizar(value) {
 /* ---------------------- Cart ----------------------*/
 async function agregar(idProducto) {
   if (!localStorage.getItem('my_token')) {
-    const result = fetch(`/api/carrito/`, { method: 'POST' })
-      .then((data) => {
-        return data.json();
+    await fetch('/api/carrito/', {
+      method: 'POST',
+    })
+      .then(function (response) {
+        return response.json();
       })
       .then((data) => {
-        const id = data.data.buyerID;
- 
+        console.log(data);
+        const id = data.cart.buyerID;
         localStorage.setItem('my_token', id);
- 
+
         return fetch(`/api/carrito/${id}/productos/${idProducto}`, {
           method: 'POST',
         });
@@ -89,13 +92,13 @@ async function agregar(idProducto) {
       .catch((err) => {
         console.error('Request failed', err);
       });
-  }else{
+  }
 
   const idCart = window.localStorage.getItem('my_token');
   await fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
     method: 'POST',
   });
-}}
+}
 
 function cart() {
   let idCart = 0;
@@ -106,6 +109,7 @@ function cart() {
 }
 
 async function deleteItemCart(idProducto) {
+  console.log(idProducto)
   const idCart = window.localStorage.getItem('my_token');
   await fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
     method: 'DELETE',
@@ -137,10 +141,10 @@ async function borrarCarrito() {
 }
 async function comprar() {
   const idCart = window.localStorage.getItem('my_token');
-console.log("ID",idCart)
+  console.log('ID', idCart);
   window.location.href = `/api/pedido/${idCart}`;
 }
- 
+
 /* ---------------------- Profile ----------------------*/
 var fileTag = document.getElementById('avatar'),
   preview = document.getElementById('preview');
@@ -172,8 +176,7 @@ async function actualizarOrder() {
   let address = document.getElementById('address').value;
   let phone = document.getElementById('phone').value;
 
-
-const idCart = window.localStorage.getItem('my_token');
+  const idCart = window.localStorage.getItem('my_token');
   const data = fetch(`/api/pedido/${idCart}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -184,8 +187,8 @@ const idCart = window.localStorage.getItem('my_token');
       address,
       phone,
     }),
-  })
-   
+  });
+
   await fetch(`/api/carrito/${idCart}`, {
     method: 'DELETE',
   })
@@ -195,4 +198,3 @@ const idCart = window.localStorage.getItem('my_token');
       console.log(error);
     });
 }
-

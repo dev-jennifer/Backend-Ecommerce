@@ -4,15 +4,15 @@
         <img src="{{foto}}" alt={{nombre}} class="imgTable"/>
     </td>
     <td> 
-        <a onclick="detail('{{_id}}')"> {{nombre}} </a> 
+        <a onclick="detail('{{itemId}}')"> {{itemId}} - {{nombre}} </a> 
     </td>
-
+ 
     <td>${{precio}}</td>
     <td>{{quantity}}</td>
     <td>${{subtotal}}</td>
 
 
-    <td><button onclick="deleteItemCart('{{_id}}')">Borrar</button></td>
+    <td><button onclick="deleteItemCart('{{itemId}}')">Borrar</button></td>
 </tr>
 
 {{/each}}

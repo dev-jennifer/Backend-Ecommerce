@@ -1,7 +1,7 @@
 const ProductDTO = require('../classes/ProductsDTO.class');
-const ProductDAOFile = require('../services/products/productsDAOFile');
-const ProductosDAOMongoDB = require('../services/products/productsDAOMongo');
- 
+const {ProductDAOFile} = require('../services/DAOFile');
+const {ProductosDAOMongoDB} = require('../services/DAOMongo');
+const {ProductDAOMemory}=require('../services/DAOMemory')
 const config = require('../utils/config');
 let admin = true;
 
@@ -12,10 +12,10 @@ switch (config.SRV.persistencia) {
     ProductsDAO = new ProductosDAOMongoDB();
     break;
   case 'file':
-    ProductsDAO = new ProductDAOFile()
+    ProductsDAO = new ProductDAOFile();
     break;
-  case 'memoria':
-    ProductsDAO = new PersonasDAOMem();
+  case 'memory':
+    ProductsDAO = new  ProductDAOMemory();
     break;
   default:
     break;
@@ -34,29 +34,26 @@ const ProductsController = {
   },
   renderProducts: async (req, res) => {
     try {
-   const docs=   await ProductsDAO.mostrarTodos().then((p) => {
-        let prdDTOs = docs.map((p) => {
-          return new ProductDTO(
-            p.nombre,
-            p.descripcion,
-            p.descripcion,
-            p.foto,
-            p.codigo,
-            p.stock
-          );
-        });
+      const docs = await ProductsDAO.mostrarTodos();
 
-        res.render('products', {
-          title: 'Products',
-          productos: prdDTOs,
-        });
+      const productos = docs.map((p) => {
+        return new ProductDTO(
+          p.id,
+          p.nombre,
+          p.descripcion,
+          p.foto,
+          p.codigo,
+          p.precio,
+          p.stock
+        );
+      });
+
+      res.render('products', {
+        title: 'Products',
+        productos: productos,
       });
     } catch (error) {
-      console.log('error', error);
-      res.send({
-        code: 400,
-        failed: 'Error',
-      });
+      throw new Error(`Error al renderizar productos: ${error}`);
     }
   },
 
@@ -67,59 +64,54 @@ const ProductsController = {
         try {
           res.redirect('/api/productos/');
         } catch (error) {
-          console.log('error', error);
+          throw new Error(`Error al guardar productos productos: ${error}`);
         }
       });
     } else {
-      res.json({
-        error: -1,
-        descripcion: `ruta ${'/'} método POST no autorizado`,
-      });
+      throw new Error(`Acceso no autorizado: ${error}`);
     }
   },
   deleteProduct: async (req, res) => {
     if (admin == true) {
       const valueID = req.params.id;
+
       try {
-        await ProductsDAO.eliminar(valueID).then((result) => {
+        await ProductsDAO.eliminar(valueID).then(() => {
           res.redirect('/api/productos/');
         });
       } catch (error) {
-        console.error(`Error al  eliminar ${valueID}, ${error}`);
+        throw new Error(`Error al  eliminar ${valueID}, ${error}`);
       }
     } else {
-      res.json({
-        error: -1,
-        descripcion: `ruta ${'/:id'} método delete no autorizado`,
-      });
-      console.log('Error');
+      throw new Error(`Acceso no autorizado: ${error}`);
     }
   },
 
   getProduct: async (req, res) => {
     const id = req.params.id;
     try {
-      await ProductsDAO.mostrarId(id).then((respuesta) => {
-        let product = new ProductDTO(
-          p.nombre,
-          p.descripcion,
-          p.descripcion,
-          p.foto,
-          p.codigo,
-          p.stock
-        );
+      const doc = await ProductsDAO.mostrarId(id);
 
-        res.render('productDetail', {
-          producto: product,
-          error: false,
-        });
+      const productsDto = new ProductDTO(
+        doc.id,
+        doc.nombre,
+        doc.descripcion,
+        doc.foto,
+        doc.codigo,
+        doc.precio,
+        doc.stock
+      );
+
+      res.render('productDetail', {
+        producto: productsDto,
+        error: false,
       });
     } catch (error) {
-      console.log('error', error);
       res.render('productDetail', {
         error: true,
         mensaje: 'No se encuentra el producto',
       });
+      throw new Error(`Error al  obtener producto ${id}, ${error}`);
     }
   },
   formEditProduct: async (req, res) => {
@@ -133,24 +125,19 @@ const ProductsController = {
           });
         });
       } catch (error) {
-        res.send({
-          code: 400,
-          failed: 'Error',
-        });
+        throw new Error(`Error al  editar producto ${id}, ${error}`);
       }
     } else {
-      res.json({
-        error: -1,
-        descripcion: `ruta ${'/'} método POST no autorizado`,
-      });
+      throw new Error(`Ruta no autorizada`);
     }
   },
   showID: async (itemId) => {
     try {
       const product = await ProductsDAO.mostrarId('id', itemId);
+      console.log("product",product)
       return product;
     } catch (error) {
-      console.error(error);
+      throw new Error(`Error al mostrar producto ${itemId}`);
     }
   },
   editProduct: async (req, res) => {
@@ -158,24 +145,15 @@ const ProductsController = {
       const id = req.params.id;
       const body = req.body;
       const condicion = 'id';
+
       try {
-        await ProductsDAO.actualizar(condicion, id, body).then((result) => {
-          res.json({
-            mensaje: 'Producto actualizado',
-          });
-        });
+        await ProductsDAO.actualizar(condicion, id, body)
+      res.send(200);
       } catch (error) {
-        res.json({
-          estado: false,
-          mensaje: 'Producto falla',
-        });
+        throw new Error(`Error al editar producto`);
       }
     } else {
-      res.json({
-        error: -1,
-        descripcion: `ruta ${'/'} método POST no autorizado`,
-      });
-      console.log('Error');
+      throw new Error(`Ruta no autorizada`);
     }
   },
 };

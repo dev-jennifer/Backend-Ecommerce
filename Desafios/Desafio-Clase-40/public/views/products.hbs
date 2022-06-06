@@ -6,15 +6,15 @@
         {{#each productos }}
         <div class="col">
           <div class="card h-100 shadow-sm">
-            <img src="{{producto.foto}}" class="card-img-top" alt="..." />
+            <img src="{{foto}}" class="card-img-top" alt="..." />
             <div class="card-body">
               <div class="clearfix mb-3">
-                <span>COD {{producto.codigo}}</span>
+                <span>COD {{codigo}}</span>
 
               </div>
-              <h5>{{producto.nombre}}</h5>
-              <p>{{producto.descripcion}}</p>
-              <h5>${{producto.precio}}</h5>
+              <h5>{{nombre}}</h5>
+              <p>{{descripcion}}</p>
+              <h5>${{precio}}</h5>
               <div class="text-center my-4">
 
                 <a class="btn btn-lg btn-primary" onclick="detail('{{id}}')">Detalle</a>

@@ -1,9 +1,30 @@
-const CartDAOMongoDB = require('../services/cartDAOMongo'),
-  uuidv1 = require('uuidv1'),
-  session_id = uuidv1();
+const { CartDAOMongoDB } = require('../services/DAOMongo'),
+  { CartDAOFile } = require('../services/DAOFile'),
+  { CartDAOMemory } = require('../services/DAOMemory');
+(ProductsController = require('../controllers/products.controller')),
+  (CustomError = require('../classes/CustomError.class')),
+  (uuidv1 = require('uuidv1')),
+  (session_id = uuidv1()),
+  (config = require('../utils/config'));
 
-const ProductsController = require('../controllers/products.controller');
-const CartDAO = new CartDAOMongoDB();
+let CartDAO = null;
+let condition
+switch (config.SRV.persistencia) {
+  case 'mongodb':
+    CartDAO = new CartDAOMongoDB();
+    condition=true;
+    break;
+  case 'file':
+    CartDAO = new CartDAOFile();
+    condition = false;
+    break;
+  case 'memory':
+    CartDAO = new CartDAOMemory();
+        condition = false;
+    break;
+  default:
+    break;
+}
 
 const CartController = {
   postCart: async (req, res) => {
@@ -14,17 +35,18 @@ const CartController = {
         total: 0,
         timestamps: new Date(),
       };
-      const resultado = await CartDAO.guardar(newCarrito);
-      console.log('OK');
-      res.status(200).send({ msg: 'Carrito Creado', data: newCarrito });
-      return newCarrito;
-    } catch (error) {
+
+      const cart = await CartDAO.guardar(newCarrito);
       res.json({
-        estado: false,
-        mensaje: 'error',
+        cart: cart,
       });
+      console.log(cart);
+      //  res.sendStatus(200);
+    } catch (error) {
+      new CustomError(500, 'Error al guardar carrito', error);
     }
   },
+
   deleteCart: async (req, res) => {
     const idCart = req.params.id,
       condicion = 'buyerID';
@@ -50,14 +72,20 @@ const CartController = {
     const idCart = req.params.id,
       itemId = req.params.id_prod,
       cantidad = 1;
-
+    console.log('idCart', idCart);
+        console.log('itemId', itemId);
+ 
     try {
-      const item = await ProductsController.showID(itemId);
-      const cart = await CartDAO.mostrarId('buyerID', idCart);
 
+      let item = await ProductsController.showID(itemId);
+      let cart = await CartDAO.mostrarIdCart(idCart);
+  
+      console.log("ITEM",item)
+        console.log('cart', cart);
       const precio = item.precio,
         nombre = item.nombre,
         foto = item.foto;
+        
       id = item._id;
       if (cart.items == undefined) {
         cart.items = [];
@@ -94,7 +122,7 @@ const CartController = {
     const idCart = req.params.id;
     let list;
     try {
-      const carritoCompleto = await CartDAO.mostrarId('buyerID', idCart);
+      const carritoCompleto = await CartDAO.mostrarIdCart(idCart);
 
       if (carritoCompleto) {
         list = carritoCompleto.items.map((item) => {
@@ -104,7 +132,7 @@ const CartController = {
             precio: item.precio,
             quantity: item.cantidad,
             subtotal: item.cantidad * item.precio,
-            id: item.id,
+            itemId: item.id,
           };
         });
       } else {
@@ -115,6 +143,7 @@ const CartController = {
         cartID: idCart,
         error: false,
       });
+      console.log(list)
     } catch (error) {
       console.log('error', error);
       res.render('carrito', {
@@ -125,7 +154,7 @@ const CartController = {
   },
   getCartOrder: async (id) => {
     try {
-      const cartComplete = await CartDAO.mostrarId('buyerID', id);
+      const cartComplete = await CartDAO.mostrarIdCart( id);
       console.log('CART', id);
       return cartComplete;
     } catch (error) {}
@@ -137,10 +166,10 @@ const CartController = {
       condicion = 'buyerID';
 
     try {
-      let carrito = await CartDAO.mostrarId(condicion, idCart);
-
+      let carrito = await CartDAO.mostrarIdCart(idCart);
+   console.log(carrito);
       const itemIndex = carrito.items.findIndex((item) => item.id == itemId);
-
+   console.log(itemIndex);
       if (itemIndex > -1) {
         let item = carrito.items[itemIndex];
         carrito.total -= item.cantidad * item.precio;
@@ -155,9 +184,10 @@ const CartController = {
         }, 0);
 
         CartDAO.actualizar(condicion, idCart, carrito);
+ 
         //carrito = await carrito.save();
 
-        res.status(200).send(carrito);
+        res.status(200)
       } else {
         res.status(404).send('No se encontro el item');
       }

@@ -1,7 +1,8 @@
-const UserDAOMongoDB = require('../services/userDAOMongo');
+const {UserDAOMongoDB} = require('../services/DAOMongo');
 const bcrypt = require('bcrypt');
 const sendEmail = require('../../notificaciones/emails/Registration/newUser')
 const UserDAO = new UserDAOMongoDB();
+
 
 const UserController = {
   renderRegisterForm: (req, res) => {
