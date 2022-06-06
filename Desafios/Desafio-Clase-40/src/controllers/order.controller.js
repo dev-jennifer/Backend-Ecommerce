@@ -6,6 +6,7 @@ const {OrderDAOMongoDB} = require('../services/DAOMongo'),
 const OrderDAO = new OrderDAOMongoDB();
  
 
+
 const OrderController = {
 renderThanks: (req, res) => {
     res.render('gracias');

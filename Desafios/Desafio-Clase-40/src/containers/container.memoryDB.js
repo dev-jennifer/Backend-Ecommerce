@@ -25,9 +25,11 @@ class ContainerMemory {
     let elem = null;
 
     try {
+    
       elem = this.colecction.find((elem) => {
-        return elem.id == id;
+        return elem[condition] == id;
       });
+      console.log(elem)
       return elem;
     } catch (error) {
       const cuserr = new CustomError(500, 'Error al listar(id)', error);
@@ -35,20 +37,7 @@ class ContainerMemory {
       throw cuserr;
     }
   }
-  async mostrarIdCart(buyerID) {
-    let elem = null;
-
-    try {
-      elem = this.colecction.find((elem) => {
-        return elem.buyerID == buyerID;
-      });
-      return elem;
-    } catch (error) {
-      const cuserr = new CustomError(500, 'Error al listar(buyerID)', error);
-      logger.error(cuserr);
-      throw cuserr;
-    }
-  }
+   
 
   async guardar(elemento) {
     try {
@@ -75,13 +64,11 @@ class ContainerMemory {
       console.log(this.colecction);
     }
   }
- 
-  
+
   async actualizar(condition, id, body) {
     let doc = null;
-
     try {
-      const index = this.colecction.findIndex((x) => x.condition == id);
+      const index = this.colecction.findIndex((x) => x[condition] == id);
       console.log(index);
       if (index == -1) {
         doc = { code: 401, msg: 'Producto no encontrado' };
@@ -90,6 +77,7 @@ class ContainerMemory {
         this.colecction[index] = doc;
         console.log(this.colecction);
       }
+
       logger.info(`Elemento modificado `);
       return doc;
     } catch (error) {
@@ -99,33 +87,13 @@ class ContainerMemory {
     }
   }
 
-  async actualizarCart(buyerID, body) {
-    let doc = null;
 
-    try {
-      const index = this.colecction.findIndex((x) => x.buyerID == buyerID);
-      console.log(index);
-      if (index == -1) {
-        doc = { code: 401, msg: 'buyerID no encontrado' };
-      } else {
-        doc = { buyerID: id, ...body };
-        this.colecction[index] = doc;
-        console.log(this.colecction);
-      }
-      logger.info(`Elemento modificado `);
-      return doc;
-    } catch (error) {
-      const cuserr = new CustomError(500, 'Error al actualizar()', error);
-      logger.error(cuserr);
-      throw cuserr;
-    }
-  }
 
   async eliminar(condicion, id) {
     let doc = null;
 
     try {
-      const index = this.colecction.findIndex((elem) => elem.id == id);
+      const index = this.colecction.findIndex((elem) => elem[condicion] == id);
       console.log(index);
       if (index == -1) {
         doc = { code: 401, msg: 'ID no encontrado' };

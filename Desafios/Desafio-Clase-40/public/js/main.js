@@ -115,7 +115,7 @@ async function deleteItemCart(idProducto) {
     method: 'DELETE',
   })
     .then(function (response) {
-      if (response.ok) {
+      if (response) {
         window.location.href = `/api/carrito/${idCart}/productos`;
       }
     })
@@ -130,7 +130,7 @@ async function borrarCarrito() {
     method: 'DELETE',
   })
     .then(function (response) {
-      if (response.ok) {
+      if (response) {
         console.log('Carrito Eliminado');
         window.location.href = `/api/carrito/${idCart}/productos`;
       }
@@ -139,6 +139,8 @@ async function borrarCarrito() {
       console.log(error);
     });
 }
+
+
 async function comprar() {
   const idCart = window.localStorage.getItem('my_token');
   console.log('ID', idCart);

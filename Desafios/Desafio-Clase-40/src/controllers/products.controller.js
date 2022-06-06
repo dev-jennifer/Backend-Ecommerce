@@ -76,7 +76,7 @@ const ProductsController = {
       const valueID = req.params.id;
 
       try {
-        await ProductsDAO.eliminar(valueID).then(() => {
+        await ProductsDAO.eliminar("id",valueID).then(() => {
           res.redirect('/api/productos/');
         });
       } catch (error) {
@@ -118,7 +118,7 @@ const ProductsController = {
     if (admin == true) {
       const id = req.params.id;
       try {
-        await ProductsDAO.mostrarId(id).then((result) => {
+        await ProductsDAO.mostrarId("id",id).then((result) => {
           res.render('productEdit', {
             title: 'Editar',
             data: result,
