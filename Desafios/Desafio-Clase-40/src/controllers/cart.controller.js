@@ -1,11 +1,11 @@
 const { CartDAOMongoDB } = require('../services/DAOMongo'),
   { CartDAOFile } = require('../services/DAOFile'),
-  { CartDAOMemory } = require('../services/DAOMemory');
-(ProductsController = require('../controllers/products.controller')),
-  (CustomError = require('../classes/CustomError.class')),
-  (uuidv1 = require('uuidv1')),
-  (session_id = uuidv1()),
-  (config = require('../utils/config'));
+  { CartDAOMemory } = require('../services/DAOMemory'),
+ProductsController = require('../controllers/products.controller'),
+  CustomError = require('../classes/CustomError.class'),
+  uuidv1 = require('uuidv1'),
+  session_id = uuidv1(),
+  config = require('../utils/config');
 
 let CartDAO = null;
 

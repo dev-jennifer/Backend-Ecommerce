@@ -1,7 +1,30 @@
-const {UserDAOMongoDB} = require('../services/DAOMongo');
 const bcrypt = require('bcrypt');
-const sendEmail = require('../../notificaciones/emails/Registration/newUser')
-const UserDAO = new UserDAOMongoDB();
+const sendEmail = require('../../notificaciones/emails/Registration/newUser'),
+   config = require('../utils/config');
+ 
+const { UserDAOFile } = require('../services/DAOFile');
+const { UserDAOMongoDB } = require('../services/DAOMongo');
+const { UserDAOMemory } = require('../services/DAOMemory');
+
+let UserDAO = null;
+
+switch (config.SRV.persistencia) {
+  case 'mongodb':
+    UserDAO = new UserDAOMongoDB();
+
+    break;
+  case 'file':
+    UserDAO = new UserDAOFile();
+
+    break;
+  case 'memory':
+    UserDAO = new UserDAOMemory();
+    break;
+  default:
+    break;
+}
+
+
 
 
 const UserController = {

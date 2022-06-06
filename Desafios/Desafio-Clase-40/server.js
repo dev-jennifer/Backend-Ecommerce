@@ -90,7 +90,11 @@ app.use('/api/carrito', routerCart);
 app.use('/api/pedido', routerOrder);
 app.use('/template/email', routerEmail);
 app.use('/', routerUser);
-
+app.get('/*', (req, res) => {
+  res.status(400).json({
+    msg: "error : 404, descripcion: ruta  no implementada",
+  });
+});
 /* ---------------------- Servidor ----------------------*/
 
 // For Master process

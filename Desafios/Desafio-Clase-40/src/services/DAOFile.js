@@ -11,4 +11,14 @@ class CartDAOFile extends ContainerFile {
   }
 }
 
-module.exports = {ProductDAOFile,CartDAOFile}
+class UserDAOFile extends ContainerFile {
+  constructor() {
+    super('./DB/user.json');
+  }
+}
+class OrdenDAOFile extends ContainerFile {
+  constructor() {
+    super('./DB/order.json');
+  }
+}
+module.exports = { ProductDAOFile, CartDAOFile, UserDAOFile, OrdenDAOFile };

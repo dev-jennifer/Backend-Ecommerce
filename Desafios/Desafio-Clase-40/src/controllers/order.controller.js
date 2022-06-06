@@ -1,10 +1,30 @@
-const {OrderDAOMongoDB} = require('../services/DAOMongo'),
+const { OrderDAOMongoDB } = require('../services/DAOMongo'),
+  { OrdenDAOFile } = require('../services/DAOFile'),
+  { OrdenDAOMemory } = require('../services/DAOMemory'),
   msgSend = require('../../notificaciones/config/msjConfig'),
   newOrderEmail = require('../../notificaciones/emails/Order/newOrder'),
   UserController = require('../controllers/user.controller'),
-  CartController = require('../controllers/cart.controller');
-const OrderDAO = new OrderDAOMongoDB();
- 
+  CartController = require('../controllers/cart.controller'),
+  config = require('../utils/config');
+
+let OrdenDAO = null;
+
+switch (config.SRV.persistencia) {
+  case 'mongodb':
+    OrdenDAO = new OrderDAOMongoDB();
+
+    break;
+  case 'file':
+    OrdenDAO = new OrdenDAOFile();
+
+    break;
+  case 'memory':
+    OrdenDAO = new OrdenDAOMemory();
+    break;
+  default:
+    break;
+}
+
 
 
 const OrderController = {

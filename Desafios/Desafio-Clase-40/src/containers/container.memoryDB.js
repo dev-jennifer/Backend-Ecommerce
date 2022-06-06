@@ -25,11 +25,10 @@ class ContainerMemory {
     let elem = null;
 
     try {
-    
       elem = this.colecction.find((elem) => {
         return elem[condition] == id;
       });
-      console.log(elem)
+      console.log(elem);
       return elem;
     } catch (error) {
       const cuserr = new CustomError(500, 'Error al listar(id)', error);
@@ -37,13 +36,12 @@ class ContainerMemory {
       throw cuserr;
     }
   }
-   
 
   async guardar(elemento) {
     try {
       let nuevoId;
       let doc = null;
- 
+
       const listMemory = await this.mostrarTodos();
       if (listMemory.length === 0) {
         nuevoId = 1;
@@ -64,6 +62,18 @@ class ContainerMemory {
       console.log(this.colecction);
     }
   }
+
+    existUser = async (email) => {
+    try {
+    const doc = this.colecction.findIndex((x) => x[email] == email);
+ 
+      return doc;
+    } catch (error) {
+      const cuserr = new CustomError(500, 'Error al mostrarId()', error);
+      logger.error(cuserr);
+      throw cuserr;
+    }  
+  };
 
   async actualizar(condition, id, body) {
     let doc = null;
@@ -86,8 +96,6 @@ class ContainerMemory {
       throw cuserr;
     }
   }
-
-
 
   async eliminar(condicion, id) {
     let doc = null;

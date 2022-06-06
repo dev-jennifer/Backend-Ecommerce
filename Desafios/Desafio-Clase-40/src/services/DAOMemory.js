@@ -12,4 +12,19 @@ class CartDAOMemory extends ContainerMemory {
   }
 }
 
-module.exports={ProductDAOMemory,CartDAOMemory}
+class OrdenDAOMemory extends ContainerMemory {
+  constructor() {
+    super();
+  }
+}
+class UserDAOMemory extends ContainerMemory {
+  constructor() {
+    super();
+  }
+}
+module.exports = {
+  ProductDAOMemory,
+  CartDAOMemory,
+  OrdenDAOMemory,
+  UserDAOMemory,
+};
