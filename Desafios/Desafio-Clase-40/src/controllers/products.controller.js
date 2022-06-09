@@ -1,7 +1,7 @@
 const ProductDTO = require('../classes/ProductsDTO.class');
-const {ProductDAOFile} = require('../services/DAOFile');
-const {ProductosDAOMongoDB} = require('../services/DAOMongo');
-const {ProductDAOMemory}=require('../services/DAOMemory')
+const { ProductDAOFile } = require('../services/DAOFile');
+const { ProductosDAOMongoDB } = require('../services/DAOMongo');
+const { ProductDAOMemory } = require('../services/DAOMemory');
 const config = require('../utils/config');
 let admin = true;
 
@@ -15,7 +15,7 @@ switch (config.SRV.persistencia) {
     ProductsDAO = new ProductDAOFile();
     break;
   case 'memory':
-    ProductsDAO = new  ProductDAOMemory();
+    ProductsDAO = new ProductDAOMemory();
     break;
   default:
     break;
@@ -34,9 +34,9 @@ const ProductsController = {
   },
   renderProducts: async (req, res) => {
     try {
-      console.log("AQI ESTOY")
+      console.log('AQI ESTOY');
       const docs = await ProductsDAO.mostrarTodos();
-       console.log("DOCS",docs)
+      console.log('DOCS', docs);
       const productos = docs.map((p) => {
         return new ProductDTO(
           p.id,
@@ -48,7 +48,7 @@ const ProductsController = {
           p.stock
         );
       });
- 
+
       res.render('products', {
         title: 'Products',
         productos: productos,
@@ -61,7 +61,7 @@ const ProductsController = {
   saveProducts: async (req, res) => {
     if (admin == true) {
       const body = req.body;
-      console.log("body", body)
+      console.log('body', body);
       await ProductsDAO.guardar(body).then(() => {
         try {
           res.redirect('/api/productos/');
@@ -78,7 +78,7 @@ const ProductsController = {
       const valueID = req.params.id;
 
       try {
-        await ProductsDAO.eliminar("id",valueID).then(() => {
+        await ProductsDAO.eliminar('id', valueID).then(() => {
           res.redirect('/api/productos/');
         });
       } catch (error) {
@@ -93,7 +93,7 @@ const ProductsController = {
     const id = req.params.id;
     try {
       const doc = await ProductsDAO.mostrarId(id);
-console.log("DOC",doc)
+      console.log('DOC', doc);
       const productsDto = new ProductDTO(
         doc.id,
         doc.nombre,
@@ -120,13 +120,12 @@ console.log("DOC",doc)
     if (admin == true) {
       const id = req.params.id;
       try {
-        await ProductsDAO.mostrarId("id",id).then((result) => {
+        await ProductsDAO.mostrarId('id', id).then((result) => {
           res.render('productEdit', {
             title: 'Editar',
             data: result,
           });
         });
-        
       } catch (error) {
         throw new Error(`Error al  editar producto ${id}, ${error}`);
       }
@@ -137,7 +136,7 @@ console.log("DOC",doc)
   showID: async (itemId) => {
     try {
       const product = await ProductsDAO.mostrarId('id', itemId);
-      console.log("product",product)
+      console.log('product', product);
       return product;
     } catch (error) {
       throw new Error(`Error al mostrar producto ${itemId}`);
@@ -147,11 +146,10 @@ console.log("DOC",doc)
     if (admin == true) {
       const id = req.params.id;
       const body = req.body;
- 
 
       try {
-        await ProductsDAO.actualizar("id", id, body);
-       res.status(200).send();
+        await ProductsDAO.actualizar('id', id, body);
+        res.status(200).send();
       } catch (error) {
         throw new Error(`Error al editar producto`);
       }

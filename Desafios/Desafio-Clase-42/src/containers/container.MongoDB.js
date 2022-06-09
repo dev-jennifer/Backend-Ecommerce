@@ -1,4 +1,5 @@
 const MongoDBClient = require('../classes/MongoDBClient.class');
+const CustomError = require('../classes/CustomError.class');
 const logger = require('../utils/loggers');
 class ContenedorMongoDB {
   constructor(nombreColeccion) {
@@ -55,18 +56,27 @@ class ContenedorMongoDB {
   };
 
   mostrarId = async (condition, id) => {
-    condition ? '_id' : condition;
+    console.log("CONDICION ORIGINAL", condition)
+    let value=condition
+    
+    if (value == 'id' || null) {
+      value = '_id';
+    } else {
+      value;
+    };
+    console.log('CONDICION', value);
     try {
       await this.conn.connect();
-      let doc = await this.coleccion.findOne({ [condition]: id });
+      let doc = await this.coleccion.findOne({ [value]: id });
       return doc;
     } catch (error) {
       const cuserr = new CustomError(500, 'Error al mostrarId()', error);
       logger.error(cuserr);
       throw cuserr;
     } finally {
-      this.conn.disconnect();
-      logger.info(`MostrarId: ${id}`);
+           logger.info(`MostrarId: ${id}`);
+      //this.conn.disconnect();
+ 
     }
   };
 
@@ -74,31 +84,32 @@ class ContenedorMongoDB {
     try {
       await this.conn.connect();
       let doc = this.coleccion.findOne({ email: email });
+ console.log(doc)
       return doc;
     } catch (error) {
       const cuserr = new CustomError(500, 'Error al mostrarId()', error);
       logger.error(cuserr);
       throw cuserr;
-    } finally {
-      this.conn.disconnect();
-    }
+    } 
+ 
   };
 
   actualizar = async (condition, id, body) => {
- console.log(condition)
+
      try {
-      await this.conn.connect();
-     let doc= await this.coleccion.updateOne(
-        {
-        [condition]: id,
-         $set: body }
-      );
-      console.log(doc);
-    }    catch (error) {
-        throw new Error(`Error al actualizar: ${error}`);
-      }finally {
-      this.conn.disconnect();
-    }
+       await this.conn.connect();
+       let doc = await this.coleccion.updateOne(
+         {
+           [condition]: id,
+         },
+         { $set: body }
+       );
+       return doc;
+     } catch (error) {
+       throw new Error(`Error al actualizar: ${error}`);
+     } finally {
+       this.conn.disconnect();
+     }
     }
   };
  

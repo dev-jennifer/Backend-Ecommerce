@@ -58,7 +58,7 @@ const httpServer = new createServer(app);
 const MongoStore = connectMongo.create({
   mongoUrl: CONFIG.MONGO_DB.MONGO_CONNECT.connection_string,
   //expiracion autorenovable
-  ttl: 60,
+  ttl: 120,
 });
 
 app.use(cookieParser());

@@ -60,13 +60,14 @@ const UserController = {
   register: async (req, email, password, done) => {
     const user = await UserDAO.existUser(email);
 
-    if (user >-1) {
+    if (user ) {
       return done(
         null,
         false,
         req.flash('signupMessage', 'The Email is already Taken.')
       );
     } else {
+      console.log("AQUI")
       req.body.email = email;
       password = bcrypt.hashSync(
         req.body.password,

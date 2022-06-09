@@ -63,14 +63,11 @@ const CartController = {
     const idCart = req.params.id,
       itemId = req.params.id_prod,
       cantidad = 1;
-   
-
 
     try {
       let item = await ProductsController.showID(itemId);
       let cart = await CartDAO.mostrarId('buyerID', idCart);
 
- 
       const precio = item.precio,
         nombre = item.nombre,
         foto = item.foto;
@@ -82,24 +79,24 @@ const CartController = {
 
       const itemIndex = cart.items.findIndex((item) => item.itemId == itemId);
 
- if (itemIndex > -1) {
-   let product = cart.items[itemIndex];
+      if (itemIndex > -1) {
+        let product = cart.items[itemIndex];
 
-   product.cantidad += cantidad;
+        product.cantidad += cantidad;
 
-   cart.total = cart.items.reduce((acc, curr) => {
-     return acc + curr.cantidad * curr.precio;
-   }, 0);
+        cart.total = cart.items.reduce((acc, curr) => {
+          return acc + curr.cantidad * curr.precio;
+        }, 0);
 
-   cart.items[itemIndex] = product;
- } else {
-   cart.items.push({ itemId, nombre, cantidad, precio, foto });
+        cart.items[itemIndex] = product;
+      } else {
+        cart.items.push({ itemId, nombre, cantidad, precio, foto });
 
-   cart.total = cart.items.reduce((acc, curr) => {
-     return acc + curr.cantidad * curr.precio;
-   }, 0);
- }
-     
+        cart.total = cart.items.reduce((acc, curr) => {
+          return acc + curr.cantidad * curr.precio;
+        }, 0);
+      }
+
       CartDAO.actualizar('buyerID', idCart, cart);
 
       res.status(200).send(cart);
@@ -134,7 +131,6 @@ const CartController = {
         cartID: idCart,
         error: false,
       });
-
     } catch (error) {
       console.log('error', error);
       res.render('carrito', {
@@ -180,12 +176,11 @@ const CartController = {
 
         //carrito = await carrito.save();
 
-         res.status(200).send(cart);
+        res.status(200).send(cart);
       } else {
         res.status(404).send('No se encontro el item');
       }
     } catch (error) {
-
       res.status(400).send();
     }
   },

@@ -1,5 +1,5 @@
 const log4js =require('log4js');
-const config =require("./config")
+const config =require("../utils/config")
 const path =require ('path');
 
 log4js.configure({

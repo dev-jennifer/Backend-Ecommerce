@@ -121,6 +121,7 @@ class ContainerFile {
     }
   };
 
+  
   actualizar = async (condicion, id, body) => {
     let doc = null;
     const objs = await this.mostrarTodos();

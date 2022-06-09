@@ -13,4 +13,4 @@ class ProductDTO {
     return this.nombre;
   }
 }
-module.exports=ProductDTO
+module.exports = ProductDTO;

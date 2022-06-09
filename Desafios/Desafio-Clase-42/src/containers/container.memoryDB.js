@@ -66,9 +66,12 @@ class ContainerMemory {
 
   existUser = async (email) => {
     try {
-      const doc = this.colecction.findIndex((x) => x['email'] == email);
+      let doc = this.colecction.findIndex((x) => x['email'] == email);
+ 
+ doc==-1?doc=null:doc
 
       return doc;
+    
     } catch (error) {
       const cuserr = new CustomError(500, 'Error al mostrarId()', error);
       logger.error(cuserr);
@@ -97,8 +100,6 @@ class ContainerMemory {
       throw cuserr;
     }
   }
-
- 
 
   async eliminar(condicion, id) {
     let doc = null;

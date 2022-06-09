@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const sendEmail = require('../../notificaciones/emails/Registration/newUser'),
-   config = require('../utils/config');
- 
+  config = require('../utils/config');
+
 const { UserDAOFile } = require('../services/DAOFile');
 const { UserDAOMongoDB } = require('../services/DAOMongo');
 const { UserDAOMemory } = require('../services/DAOMemory');
@@ -23,7 +23,6 @@ switch (config.SRV.persistencia) {
   default:
     break;
 }
-
 
 const UserController = {
   renderRegisterForm: (req, res) => {
@@ -60,14 +59,14 @@ const UserController = {
   register: async (req, email, password, done) => {
     const user = await UserDAO.existUser(email);
 
-    if (user ) {
+    if (user) {
       return done(
         null,
         false,
         req.flash('signupMessage', 'The Email is already Taken.')
       );
     } else {
-      console.log("AQUI")
+      console.log('AQUI');
       req.body.email = email;
       password = bcrypt.hashSync(
         req.body.password,
@@ -91,19 +90,19 @@ const UserController = {
       done(null, newUserRegister, sendEmail(newUserRegister));
     }
   },
-  existPassport: async  (req, email) => {
+  existPassport: async (req, email) => {
     const user = await UserDAO.mostrarId(email);
- 
-    return   user;
+
+    return user;
   },
 
   login: async (req, email, password, done) => {
     const user = await UserDAO.mostrarId(email);
-console.log('user', user);
+    console.log('user', user);
     if (!user) {
       return done(null, false, req.flash('signinMessage', 'No User Found'));
     }
- 
+
     bcrypt.compare(password, user.password, function (err, result) {
       if (result == true) {
         return done(null, user);
@@ -118,4 +117,4 @@ console.log('user', user);
   },
 };
 
-module.exports =  UserController;
+module.exports = UserController;

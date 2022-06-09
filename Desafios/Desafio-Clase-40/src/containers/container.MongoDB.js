@@ -95,7 +95,6 @@ class ContenedorMongoDB {
   };
 
   actualizar = async (condition, id, body) => {
-
      try {
        await this.conn.connect();
        let doc = await this.coleccion.updateOne(

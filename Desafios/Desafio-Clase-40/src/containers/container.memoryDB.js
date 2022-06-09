@@ -42,7 +42,6 @@ class ContainerMemory {
     try {
       let nuevoId;
       let doc = null;
-
       const listMemory = await this.mostrarTodos();
       if (listMemory.length === 0) {
         nuevoId = 1;
