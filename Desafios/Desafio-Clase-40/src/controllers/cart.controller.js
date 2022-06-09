@@ -1,7 +1,7 @@
 const { CartDAOMongoDB } = require('../services/DAOMongo'),
   { CartDAOFile } = require('../services/DAOFile'),
   { CartDAOMemory } = require('../services/DAOMemory'),
-ProductsController = require('../controllers/products.controller'),
+  ProductsController = require('../controllers/products.controller'),
   CustomError = require('../classes/CustomError.class'),
   uuidv1 = require('uuidv1'),
   session_id = uuidv1(),
@@ -39,8 +39,6 @@ const CartController = {
       res.json({
         cart: cart,
       });
-      console.log(cart);
-      //  res.sendStatus(200);
     } catch (error) {
       new CustomError(500, 'Error al guardar carrito', error);
     }
@@ -56,7 +54,7 @@ const CartController = {
       carrito.total = 0;
 
       CartDAO.actualizar(condicion, idCart, carrito);
-      res.status(200).send(carrito)
+      res.status(200).send(carrito);
     } catch (error) {
       console.log(error);
     }
@@ -65,8 +63,6 @@ const CartController = {
     const idCart = req.params.id,
       itemId = req.params.id_prod,
       cantidad = 1;
-    console.log('idCart', idCart);
-    console.log('itemId', itemId);
 
     try {
       let item = await ProductsController.showID(itemId);
@@ -82,8 +78,9 @@ const CartController = {
       if (cart.items == undefined) {
         cart.items = [];
       }
-      const itemIndex = cart.items.findIndex((item) => item.itemId == itemId);
 
+      const itemIndex = cart.items.findIndex((item) => item.itemId == itemId);
+      console.log('itemIndex', itemIndex);
       if (itemIndex > -1) {
         let product = cart.items[itemIndex];
         product.cantidad += cantidad;
@@ -94,13 +91,13 @@ const CartController = {
 
         cart.items[itemIndex] = product;
       } else {
-        cart.items.push({ itemId, nombre, cantidad, precio, foto });
-
+        cart.items.push({itemId, nombre, cantidad, precio, foto} );
+        console.log(cart.items);
         cart.total = cart.items.reduce((acc, curr) => {
           return acc + curr.cantidad * curr.precio;
         }, 0);
       }
-
+      console.log("CART",cart)
       CartDAO.actualizar('buyerID', idCart, cart);
 
       res.status(200).send(cart);

@@ -36,39 +36,51 @@ getCartOrder:async (req, res) => {
   const idCart = req.params.id;
   const cart = await CartController.getCartOrder(idCart);
 
-  console.log(cart)
+  console.log("CART1",cart)
   res.render('order', { title:"Orden",producto: cart.items });
 },
+
 postOrder:async (req, res, done) => {
 
   const idCart = req.params.id;
   const body = req.body;
-  console.log('idCart ORDER', idCart);
-   console.log('body', body);
+  // console.log('idCart ORDER', idCart);
+  //  console.log('body', body);
   try {
     const cart = await CartController.getCartOrder(idCart);
     const newOrder = {
       buyerID: body.email,
       name: body.name,
+      phone: body.phone,
       items: cart.items,
       total: cart.total,
       timestamps: new Date(),
     };
+    console.log("cart,",cart)
+    console.log("newOrder,",newOrder)
+    try {
+   
+      await OrdenDAO.guardar(newOrder)
 
-    await OrderDAO.guardar(newOrder)
+        .then((order) => {
+   
+          console.log('ORDEN', order);
+          newOrderEmail(order);
 
-      .then((order) => {
-        console.log("ORDEN", order)
-        newOrderEmail(order);
-        UserController.existPassport(newOrder.buyerID).then((userId) => {
-          msgSend(userId.phone, order);
-              console.log('userId.phone', userId.phone);
-        });
-      })
-      .then(localStorage.setItem('my_token', ''))
-      .finally(res.redirect('/'))
-      .catch((err) => console.error('ERROR', err));
-
+          UserController.existPassport(newOrder.buyerID).then((userId) => {
+            msgSend(newOrder.phone, order);
+            
+          });
+        })
+ 
+  
+        .catch((err) => console.error('ERROR', err));
+    } catch (error) {
+      res.json({
+        estado: error,
+        mensaje: 'error',
+      });
+    }
 
   } catch (error) {
     res.json({

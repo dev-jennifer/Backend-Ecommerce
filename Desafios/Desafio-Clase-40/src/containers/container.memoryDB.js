@@ -28,6 +28,7 @@ class ContainerMemory {
       elem = this.colecction.find((elem) => {
         return elem[condition] == id;
       });
+
       console.log(elem);
       return elem;
     } catch (error) {
@@ -63,16 +64,16 @@ class ContainerMemory {
     }
   }
 
-    existUser = async (email) => {
+  existUser = async (email) => {
     try {
-    const doc = this.colecction.findIndex((x) => x[email] == email);
- 
+      const doc = this.colecction.findIndex((x) => x['email'] == email);
+
       return doc;
     } catch (error) {
       const cuserr = new CustomError(500, 'Error al mostrarId()', error);
       logger.error(cuserr);
       throw cuserr;
-    }  
+    }
   };
 
   async actualizar(condition, id, body) {
@@ -83,7 +84,7 @@ class ContainerMemory {
       if (index == -1) {
         doc = { code: 401, msg: 'Producto no encontrado' };
       } else {
-        doc = { id: id, ...body };
+        doc = { id: id, ... body };
         this.colecction[index] = doc;
         console.log(this.colecction);
       }
@@ -96,6 +97,8 @@ class ContainerMemory {
       throw cuserr;
     }
   }
+
+ 
 
   async eliminar(condicion, id) {
     let doc = null;

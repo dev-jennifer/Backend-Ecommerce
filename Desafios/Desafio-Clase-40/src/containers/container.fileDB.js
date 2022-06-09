@@ -1,4 +1,5 @@
 const fs = require('fs').promises;
+const logger = require('../utils/loggers');
 const CustomError = require('../classes/CustomError.class');
 class ContainerFile {
   constructor(file) {
@@ -18,27 +19,26 @@ class ContainerFile {
 
   guardar = async (obj) => {
     let nuevoId;
-    const o = await this.mostrarTodos();
-    if (o.length === 0) {
+
+    const doc = await this.mostrarTodos();
+    if (doc.length === 0) {
       nuevoId = 1;
     } else {
-      nuevoId = o.length + 1;
+      nuevoId = doc.length + 1;
     }
     const newObj = { id: nuevoId, ...obj };
-     o.push(newObj);
-   console.log('newObj', newObj);
+    doc.push(newObj);
+    console.log('newObj', newObj);
+
     try {
-     const resultado= fs.writeFile(this.ruta, JSON.stringify(o, null, 2));
-    console.log('this.ruta', this.ruta);
-        console.log('newObj', resultado);
-     return resultado
-    
+      await fs.writeFile(this.ruta, JSON.stringify(doc, null, 2));
+      return newObj;
     } catch (error) {
       new CustomError(500, 'Error al guardar', error);
+      logger.error(cuserr);
     }
   };
 
- 
 
   save(idCart, ProductoAgregado) {
     let fecha = new Date().toDateString();
@@ -84,9 +84,9 @@ class ContainerFile {
     return cart[index];
   }
 
-  eliminar = async (id) => {
+  eliminar = async (condicion, id) => {
     const objs = await this.mostrarTodos();
-    const index = objs.findIndex((o) => o.id == id);
+    const index = objs.findIndex((o) => o[condicion] == id);
     if (index == -1) {
       throw new Error(`Error al borrar: no se encontró el id ${id}`);
     }
@@ -99,19 +99,22 @@ class ContainerFile {
     }
   };
 
-  mostrarId = async (id) => {
+  mostrarId = async (condition, id) => {
     try {
       const objs = await this.mostrarTodos();
-      const doc = objs.find((o) => o.id == id);
+      const doc = objs.find((o) => o[condition] == id);
       return doc;
     } catch (error) {
       throw new Error(`Error al mostrar producto. Id ${id} no encontrado`);
     }
   };
 
-  existUser = (email) => {
+  existUser = async (email) => {
     try {
-      let doc = this.coleccion.findOne({ email: email });
+      const mostrar = await this.mostrarTodos();
+      console.log('mostrar', mostrar);
+      const doc = mostrar.find((o) => o.email == email);
+      console.log('doc', doc);
       return doc;
     } catch (error) {
       throw new Error(`Error al mostrar user. Id ${id} no encontrado`);
@@ -119,31 +122,31 @@ class ContainerFile {
   };
 
   actualizar = async (condicion, id, body) => {
-    const valueID = id;
-    const productos = await this.mostrarTodos();
-    let productosActualizar = {
-      nombre: body.nombre,
-      descripcion: body.descripcion,
-      foto: body.foto,
-      codigo: body.codigo,
-      precio: body.precio,
-      stock: body.stock,
-    };
-    const index = productos.findIndex((x) => x.id === parseInt(valueID));
+    let doc = null;
+    const objs = await this.mostrarTodos();
+    const index = objs.findIndex((o) => o[condicion] == id);
+    console.log('CART ACTUAL', objs);
+    console.log(index);
     if (index == -1) {
-      throw new Error(`Error al modificar. Id ${id} no encontrado`);
+      doc = { code: 401, msg: 'No encontrado' };
     } else {
-      for (let key of Object.keys(productosActualizar)) {
-        productosActualizar[key]
-          ? (productos[index][key] = productosActualizar[key])
-          : productos[index][key];
-      }
-      try {
-        await fs.writeFile(this.ruta, JSON.stringify(productos, null, 2));
-      } catch (error) {
-        throw new Error(`Error al modificar: ${error}`);
-      }
+      doc = { id: id, ...body };
+      objs[index] = doc;
+    }
+
+    try {
+      await fs.writeFile(this.ruta, JSON.stringify(objs, null, 2));
+      console.log('CART nuevo', objs);
+      logger.info(`Elemento modificado `);
+      return doc;
+    } catch (error) {
+      const cuserr = new Error(`Error al modificar: ${error}`);
+      logger.error(cuserr);
+      throw cuserr;
     }
   };
+
+ 
 }
+
 module.exports = ContainerFile;

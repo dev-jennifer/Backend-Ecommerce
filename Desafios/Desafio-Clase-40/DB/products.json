@@ -1,20 +1,11 @@
 [
   {
     "id": 1,
-    "nombre": "Anana",
-    "descripcion": "Esta es anana",
-    "foto": "https://www.grupoelnene.com.ar/5786-large_default/anana-pi%C3%B1a-xu.jpg",
-    "codigo": "c-1",
-    "precio": "350",
-    "stock": "100"
-  },
-  {
-    "id": 2,
-    "nombre": "Manzana10",
-    "descripcion": "Esta es manzana",
-    "foto": "https://elegifruta.com.ar/onepage/wp-content/uploads/2017/07/manzana_roja.jpg",
-    "codigo": "c-10",
-    "precio": "200",
-    "stock": "100"
+    "nombre": "Manzana",
+    "descripcion": "",
+    "foto": "",
+    "codigo": "",
+    "precio": "150",
+    "stock": ""
   }
 ]

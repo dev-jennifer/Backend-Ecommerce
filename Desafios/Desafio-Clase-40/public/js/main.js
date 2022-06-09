@@ -91,13 +91,22 @@ async function agregar(idProducto) {
       })
       .catch((err) => {
         console.error('Request failed', err);
+      })
+      .finally(()=>{
+        
+          const idCart = window.localStorage.getItem('my_token');
+        fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
+        method: 'POST',
       });
+      })}else{
+
+            const idCart = window.localStorage.getItem('my_token');
+            fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
+              method: 'POST',
+            });
   }
 
-  const idCart = window.localStorage.getItem('my_token');
-  await fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
-    method: 'POST',
-  });
+   
 }
 
 function cart() {

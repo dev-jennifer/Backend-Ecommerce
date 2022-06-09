@@ -25,8 +25,6 @@ switch (config.SRV.persistencia) {
 }
 
 
-
-
 const UserController = {
   renderRegisterForm: (req, res) => {
     if (req.isAuthenticated()) {
@@ -62,7 +60,7 @@ const UserController = {
   register: async (req, email, password, done) => {
     const user = await UserDAO.existUser(email);
 
-    if (user) {
+    if (user >-1) {
       return done(
         null,
         false,
@@ -99,11 +97,12 @@ const UserController = {
   },
 
   login: async (req, email, password, done) => {
-    const user = await UserDAO.existUser(email);
+    const user = await UserDAO.mostrarId(email);
+console.log('user', user);
     if (!user) {
       return done(null, false, req.flash('signinMessage', 'No User Found'));
     }
-
+ 
     bcrypt.compare(password, user.password, function (err, result) {
       if (result == true) {
         return done(null, user);

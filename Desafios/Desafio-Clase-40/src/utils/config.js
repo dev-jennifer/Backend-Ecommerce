@@ -37,6 +37,7 @@ module.exports = {
   SRV: {
     port: process.env.PORT,
     logger: process.env.LOG || 'DEV',
-    persistencia: 'memory',
+    persistencia: 'mongodb',
   },
 };
+

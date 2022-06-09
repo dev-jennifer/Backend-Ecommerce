@@ -34,8 +34,9 @@ const ProductsController = {
   },
   renderProducts: async (req, res) => {
     try {
+      console.log("AQI ESTOY")
       const docs = await ProductsDAO.mostrarTodos();
-
+       console.log("DOCS",docs)
       const productos = docs.map((p) => {
         return new ProductDTO(
           p.id,
@@ -47,7 +48,7 @@ const ProductsController = {
           p.stock
         );
       });
-
+ 
       res.render('products', {
         title: 'Products',
         productos: productos,
@@ -60,6 +61,7 @@ const ProductsController = {
   saveProducts: async (req, res) => {
     if (admin == true) {
       const body = req.body;
+      console.log("body", body)
       await ProductsDAO.guardar(body).then(() => {
         try {
           res.redirect('/api/productos/');
@@ -91,7 +93,7 @@ const ProductsController = {
     const id = req.params.id;
     try {
       const doc = await ProductsDAO.mostrarId(id);
-
+console.log("DOC",doc)
       const productsDto = new ProductDTO(
         doc.id,
         doc.nombre,
@@ -124,6 +126,7 @@ const ProductsController = {
             data: result,
           });
         });
+        
       } catch (error) {
         throw new Error(`Error al  editar producto ${id}, ${error}`);
       }
@@ -144,11 +147,11 @@ const ProductsController = {
     if (admin == true) {
       const id = req.params.id;
       const body = req.body;
-      const condicion = 'id';
+ 
 
       try {
-        await ProductsDAO.actualizar(condicion, id, body)
-      res.send(200);
+        await ProductsDAO.actualizar("id", id, body);
+       res.status(200).send();
       } catch (error) {
         throw new Error(`Error al editar producto`);
       }

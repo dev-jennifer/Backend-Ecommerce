@@ -1,5 +1,5 @@
 const MongoDBClient = require('../classes/MongoDBClient.class');
-
+const logger = require('../utils/loggers');
 class ContenedorMongoDB {
   constructor(nombreColeccion) {
     this.coleccion = nombreColeccion;
@@ -7,13 +7,15 @@ class ContenedorMongoDB {
   }
 
   mostrarTodos = async () => {
+    let response;
     try {
       await this.conn.connect();
       const docs = await this.coleccion.find({});
-      const response = docs.map((doc) => ({
-        id: doc._id,
-        producto: doc,
-      }));
+      if (docs == []) {
+        response = [];
+      } else {
+        response = docs.map((doc) => doc);
+      }
       return response;
     } catch (error) {
       const cuserr = new CustomError(500, 'Error al mostrarTodos()', error);
@@ -34,16 +36,15 @@ class ContenedorMongoDB {
       logger.error(cuserr);
       throw cuserr;
     } finally {
-      this.conn.disconnect();
-      logger.info(`Elemento guardado ${body}`);
+      logger.info(`Elemento guardado`);
     }
   };
 
   eliminar = async (condicion, id) => {
     try {
-          await this.conn.connect();
+      await this.conn.connect();
       await this.coleccion.deleteOne({ [condicion]: id });
-   } catch (error) {
+    } catch (error) {
       const cuserr = new CustomError(500, 'Error al eliminar()', error);
       logger.error(cuserr);
       throw cuserr;
@@ -51,15 +52,15 @@ class ContenedorMongoDB {
       this.conn.disconnect();
       logger.info(`Elemento elimindado id: ${id}`);
     }
-  
   };
 
   mostrarId = async (condition, id) => {
+    condition ? '_id' : condition;
     try {
-          await this.conn.connect();
+      await this.conn.connect();
       let doc = await this.coleccion.findOne({ [condition]: id });
       return doc;
-     } catch (error) {
+    } catch (error) {
       const cuserr = new CustomError(500, 'Error al mostrarId()', error);
       logger.error(cuserr);
       throw cuserr;
@@ -67,40 +68,38 @@ class ContenedorMongoDB {
       this.conn.disconnect();
       logger.info(`MostrarId: ${id}`);
     }
- 
   };
 
-  existUser =async (email) => {
+  existUser = async (email) => {
     try {
       await this.conn.connect();
       let doc = this.coleccion.findOne({ email: email });
       return doc;
-     } catch (error) {
+    } catch (error) {
       const cuserr = new CustomError(500, 'Error al mostrarId()', error);
       logger.error(cuserr);
       throw cuserr;
     } finally {
       this.conn.disconnect();
-     
     }
-     
   };
 
   actualizar = async (condition, id, body) => {
-    
-    const objs = await this.mostrarTodos();
-    const index = objs.findIndex((o) => o.id == id);
-    if (index == -1) {
-      throw new Error(`Error al actualizar: no se encontró el id ${id}`);
-    } else {
-      objs[index] = elem;
-      try {
 
-        await fs.writeFile(this.ruta, JSON.stringify(objs, null, 2));
-      } catch (error) {
+     try {
+      await this.conn.connect();
+     let doc= await this.coleccion.updateOne(
+        {
+        [condition]: id,
+         $set: body }
+      );
+      console.log(doc);
+    }    catch (error) {
         throw new Error(`Error al actualizar: ${error}`);
-      }
+      }finally {
+      this.conn.disconnect();
+    }
     }
   };
-}
+ 
 module.exports = ContenedorMongoDB;
