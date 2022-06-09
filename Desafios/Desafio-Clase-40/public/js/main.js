@@ -73,6 +73,7 @@ async function actualizar(value) {
 
 /* ---------------------- Cart ----------------------*/
 async function agregar(idProducto) {
+  console.log("PRODUCTOP", idProducto)
   if (!localStorage.getItem('my_token')) {
     await fetch('/api/carrito/', {
       method: 'POST',

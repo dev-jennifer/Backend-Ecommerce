@@ -58,7 +58,7 @@ postOrder:async (req, res, done) => {
     };
     console.log("cart,",cart)
     console.log("newOrder,",newOrder)
-    try {
+
    
       await OrdenDAO.guardar(newOrder)
 
@@ -75,12 +75,7 @@ postOrder:async (req, res, done) => {
  
   
         .catch((err) => console.error('ERROR', err));
-    } catch (error) {
-      res.json({
-        estado: error,
-        mensaje: 'error',
-      });
-    }
+   
 
   } catch (error) {
     res.json({
