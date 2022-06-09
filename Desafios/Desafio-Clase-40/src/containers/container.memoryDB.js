@@ -101,8 +101,6 @@ class ContainerMemory {
     }
   }
 
- 
-
   async eliminar(condicion, id) {
     let doc = null;
 
