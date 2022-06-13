@@ -7,21 +7,24 @@ const express = require('express'),
   connectMongo = require('connect-mongo'),
   { createServer } = require('http'),
   cluster = require('cluster'),
-  logger = require('./logger'),
-  CONFIG = require('./src/utils/config'),
+  logger = require('./src/utils/loggers'),
+  config = require('./src/utils/config'),
   CONFIG_SERVER = require('./src/utils/configServer'),
- morgan = require('morgan'), 
- path=require("path")
+  morgan = require('morgan'),
+  path = require('path');
  compression = require('compression'),
   { engine } = require('express-handlebars'),
  { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access'),
- exphbs = require('express-handlebars');
- 
-const routerProducts = require('./src/routes/products.router'),
-  routerCart = require('./src/routes/cart.router'),
-  routerOrder = require('./src/routes/order.router'),
-  routerUser = require('./src/routes/user.router'),
-  routerEmail = require('./src/routes/email.router');
+ exphbs = require('express-handlebars'),
+ cors=require('cors')
+ require("./src/passport/local-auth")
+ const Handlebars = require('handlebars');
+
+const RouterProduct = require('./src/routes/products.router'),
+  RouterCart = require('./src/routes/cart.router'),
+  RouterOrder = require('./src/routes/order.router'),
+  RouterUser = require('./src/routes/user.router'),
+  RouterEmail = require('./src/routes/email.router');
 const app = express();
 
 // app.use(express.static(__dirname + '/public'));
@@ -30,9 +33,9 @@ const app = express();
 app.use(compression());
 app.use(morgan('tiny'));
 
- 
+
 app.use('/uploads', express.static('uploads'));
-const Handlebars = require('handlebars');
+
 app.engine(
   '.hbs',
   exphbs.engine({
@@ -54,14 +57,28 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const httpServer = new createServer(app);
+/****  Configurando el cors de forma dinamica */
+if (config.SRV.entorno == 'development') {
+ 
+  app.use(cors());
+} else {
+  app.use(
+    cors({
+      origin: 'http://localhost:5000',
+      optionsSucessStatus: 200,
+      methods: 'GET, PUT, POST',
+    })
+  );
+}
 
 const MongoStore = connectMongo.create({
-  mongoUrl: CONFIG.MONGO_DB.MONGO_CONNECT.connection_string,
+  mongoUrl: config.MONGO_DB.MONGO_CONNECT.connection_string,
   //expiracion autorenovable
   ttl: 120,
 });
 
 app.use(cookieParser());
+ 
 app.use(
   session({
     store: MongoStore,
@@ -71,10 +88,7 @@ app.use(
     rolling: true,
   })
 );
-app.use(function (req, res, next) {
-  res.locals.session = req.session;
-  next();
-});
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -85,16 +99,26 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/api/productos', routerProducts);
-app.use('/api/carrito', routerCart);
-app.use('/api/pedido', routerOrder);
-app.use('/template/email', routerEmail);
-app.use('/', routerUser);
-app.get('/*', (req, res) => {
-  res.status(400).json({
-    msg: "error : 404, descripcion: ruta  no implementada",
-  });
+app.use(function (req, res, next) {
+  res.locals.session = req.session;
+  next();
 });
+
+
+
+
+app.use('/api/productos', new RouterProduct().start());
+app.use('/api/carrito', new RouterCart().start());
+app.use('/api/pedido', new RouterOrder().start());
+
+app.use('/template/email', new RouterEmail().start());
+app.use('/', new RouterUser().start());
+ 
+// app.get('/*', (req, res) => {
+//   res.status(400).json({
+//     msg: "error : 404, descripcion: ruta  no implementada",
+//   });
+// });
 /* ---------------------- Servidor ----------------------*/
 
 // For Master process

@@ -1,22 +1,22 @@
-const ContainerFile = require('../containers/container.fileDB');
-class ProductDAOFile extends ContainerFile {
+const ServiceDAOFile = require('./serviceDAO.fileDB');
+class ProductDAOFile extends ServiceDAOFile {
   constructor() {
     super('./DB/products.json');
   }
 }
 
-class CartDAOFile extends ContainerFile {
+class CartDAOFile extends ServiceDAOFile {
   constructor() {
     super('./DB/cart.json');
   }
 }
 
-class UserDAOFile extends ContainerFile {
+class UserDAOFile extends ServiceDAOFile {
   constructor() {
     super('./DB/user.json');
   }
 }
-class OrdenDAOFile extends ContainerFile {
+class OrdenDAOFile extends ServiceDAOFile {
   constructor() {
     super('./DB/order.json');
   }

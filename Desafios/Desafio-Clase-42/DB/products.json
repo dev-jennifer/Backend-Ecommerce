@@ -1,11 +1,47 @@
 [
   {
     "id": 1,
-    "nombre": "Manzana",
-    "descripcion": "",
-    "foto": "",
-    "codigo": "",
-    "precio": "150",
-    "stock": ""
+    "nombre": "Sorprendente Metal Pollo",
+    "descripcion": "Artesanal Plástico Bicicleta",
+    "precio": "102.00",
+    "foto": "https://loremflickr.com/300/300/commerce?50013",
+    "codigo": "c2",
+    "stock": 100
+  },
+  {
+    "id": 3,
+    "nombre": "Genérico Metal Sopa",
+    "descripcion": "Inteligente Hormigon Pizza",
+    "precio": "760.00",
+    "foto": "https://loremflickr.com/300/300/commerce?54666",
+    "codigo": "c2",
+    "stock": 100
+  },
+  {
+    "id": 4,
+    "nombre": "Increible Ladrillo Pizza",
+    "descripcion": "Genérico Metal Ensalada",
+    "precio": "956.00",
+    "foto": "https://loremflickr.com/300/300/commerce?9964",
+    "codigo": "c2",
+    "stock": 100
+  },
+  {
+    "id": 5,
+    "nombre": "Sabroso Acero Atún",
+    "descripcion": "Guapo Plástico Raton",
+    "precio": "572.00",
+    "foto": "https://loremflickr.com/300/300/commerce?90839",
+    "codigo": "c2",
+    "stock": 100
+  },
+  {
+    "id": 6,
+    "nombre": "Increible Madera Raton",
+    "descripcion": "Genérico Madera Bacon",
+    "precio": "320.00",
+    "foto": "https://loremflickr.com/300/300/commerce?94661",
+    "codigo": "c2",
+    "stock": 100
   }
 ]

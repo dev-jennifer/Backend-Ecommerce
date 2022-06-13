@@ -1,11 +1,18 @@
 const express = require('express'),
-  routerCart = express.Router(),
+  router = express.Router(),
   CartController = require('../controllers/cart.controller');
 
-routerCart.post('/', CartController.postCart);
-routerCart.delete('/:id', CartController.deleteCart);
-routerCart.post(`/:id/productos/:id_prod`, CartController.postProductCart);
-routerCart.get('/:id/productos', CartController.getCart);
-routerCart.delete('/:id/productos/:id_prod', CartController.deleteItemCart);
-
-module.exports = routerCart;
+class RouterCart {
+  constructor() {
+    this.controlador = new CartController();
+  }
+  start() {
+    router.post('/', this.controlador.postCart);
+    router.delete('/:id', this.controlador.deleteCart);
+    router.post(`/:id/productos/:id_prod`, this.controlador.postProductCart);
+    router.get('/:id/productos', this.controlador.getCart);
+    router.delete('/:id/productos/:id_prod', this.controlador.deleteItemCart);
+    return router;
+  }
+}
+module.exports = RouterCart;

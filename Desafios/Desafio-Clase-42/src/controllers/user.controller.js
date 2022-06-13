@@ -1,73 +1,52 @@
 const bcrypt = require('bcrypt');
-const sendEmail = require('../../notificaciones/emails/Registration/newUser'),
-   config = require('../utils/config');
- 
-const { UserDAOFile } = require('../services/DAOFile');
-const { UserDAOMongoDB } = require('../services/DAOMongo');
-const { UserDAOMemory } = require('../services/DAOMemory');
+const sendEmail = require('../../notificaciones/emails/Registration/newUser');
+const CustomError = require('../classes/CustomError.class');
+const logger = require('../utils/loggers');
+const UserFactory = require('../classes/User/UserFactory.class');
 
-let UserDAO = null;
-
-switch (config.SRV.persistencia) {
-  case 'mongodb':
-    UserDAO = new UserDAOMongoDB();
-
-    break;
-  case 'file':
-    UserDAO = new UserDAOFile();
-
-    break;
-  case 'memory':
-    UserDAO = new UserDAOMemory();
-    break;
-  default:
-    break;
-}
-
-
-const UserController = {
-  renderRegisterForm: (req, res) => {
+class UserController {
+  constructor() {
+    this.userDAO = UserFactory.get();
+  }
+  renderRegisterForm = async (req, res) => {
     if (req.isAuthenticated()) {
       res.redirect('/api/productos');
     }
     res.render('register', {
       title: 'Register',
       layout: 'register',
-      newUser: UserDAO,
+      newUser: this.userDAO,
     });
-  },
+  };
 
-  renderLoginForm: (req, res) => {
+  renderLoginForm = async (req, res) => {
     if (req.isAuthenticated()) {
       res.redirect('/api/productos');
     }
     res.render('login', { title: 'Login' });
-  },
+  };
 
-  renderLogOut: (req, res) => {
+  renderLogOut = (req, res) => {
     req.logout();
     req.session.destroy();
     // req.flash('success', 'You are logged out');
     res.redirect('/login');
-  },
+  };
 
-  renderProfile: (req, res) => {
-    console.log(req.user);
-
+  renderProfile = (req, res) => {
+    console.log('REQ', req.user);
     res.render('profile', { title: 'Profile' });
-  },
+  };
+  register = async (req, email, password, done) => {
+    const user = await this.userDAO.existUser(email);
 
-  register: async (req, email, password, done) => {
-    const user = await UserDAO.existUser(email);
-
-    if (user ) {
+    if (user) {
       return done(
         null,
         false,
         req.flash('signupMessage', 'The Email is already Taken.')
       );
     } else {
-      console.log("AQUI")
       req.body.email = email;
       password = bcrypt.hashSync(
         req.body.password,
@@ -87,35 +66,42 @@ const UserController = {
         avatar: req.file.filename,
       };
 
-      await UserDAO.guardar(newUserRegister);
+      await this.userDAO.guardar(newUserRegister);
       done(null, newUserRegister, sendEmail(newUserRegister));
     }
-  },
-  existPassport: async  (req, email) => {
-    const user = await UserDAO.mostrarId(email);
- 
-    return   user;
-  },
+  };
 
-  login: async (req, email, password, done) => {
-    const user = await UserDAO.mostrarId(email);
-console.log('user', user);
-    if (!user) {
-      return done(null, false, req.flash('signinMessage', 'No User Found'));
-    }
- 
-    bcrypt.compare(password, user.password, function (err, result) {
-      if (result == true) {
-        return done(null, user);
-      } else {
-        return done(
-          null,
-          false,
-          req.flash('signinMessage', 'Incorrect Password')
-        );
+  existPassport = async (email) => {
+    const user = await this.userDAO.existUser(email);
+    console.log('user', user);
+    return user;
+  };
+
+  login = async (req, email, password, done) => {
+    try {
+      const user = await this.userDAO.mostrarId('email', email);
+      if (!user) {
+        return done(null, false, req.flash('signinMessage', 'No User Found'));
       }
-    });
-  },
-};
 
-module.exports =  UserController;
+      bcrypt.compare(password, user.password, function (err, result) {
+        if (result == true) {
+          console.log('USEROK', user);
+          return done(null, user);
+        } else {
+          console.log('false');
+          return done(
+            null,
+            false,
+            req.flash('signinMessage', 'Incorrect Password')
+          );
+        }
+      });
+    } catch (err) {
+      const error = new CustomError(500, 'Error al mostrarId()', err);
+      logger.error(error);
+    }
+  };
+}
+
+module.exports = UserController;

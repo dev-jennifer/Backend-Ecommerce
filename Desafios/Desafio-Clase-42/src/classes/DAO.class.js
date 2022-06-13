@@ -1,4 +1,4 @@
-const CustomError =require('../classes/CustomError.class')
+const CustomError =require('./CustomError.class.js');
 
 class DAO {
   async mostrarTodos() {
@@ -25,5 +25,4 @@ class DAO {
     throw new CustomError(500, "Falta implementar 'actualizar' en Sub Clase");
   }
 }
-
 module.exports= DAO;

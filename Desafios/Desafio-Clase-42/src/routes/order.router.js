@@ -1,8 +1,17 @@
 const express = require('express'),
-  routerOrder = express.Router(),
+  router = express.Router(),
   OrderController = require('../controllers/order.controller');
 
-routerOrder.get('/gracias', OrderController.renderThanks);
-routerOrder.get('/:id', OrderController.getCartOrder);
-routerOrder.post('/:id', OrderController.postOrder);
-module.exports = routerOrder;
+class RouterOrder {
+  constructor() {
+    this.controlador = new OrderController();
+  }
+
+  start() {
+    router.get('/gracias', this.controlador.renderThanks);
+    router.get('/:id', this.controlador.getCartOrder);
+    router.post('/:id', this.controlador.postOrder);
+    return router;
+  }
+}
+module.exports = RouterOrder;

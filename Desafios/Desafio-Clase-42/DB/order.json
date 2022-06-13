@@ -24,5 +24,39 @@
     "items": [],
     "total": 0,
     "timestamps": "2022-06-08T23:09:02.466Z"
+  },
+  {
+    "id": 3,
+    "buyerID": "jennis015@hotmail.com",
+    "name": "Lidia",
+    "phone": "1131467302",
+    "items": [
+      {
+        "itemId": "1",
+        "nombre": "Manzana",
+        "cantidad": 1,
+        "precio": "150",
+        "foto": ""
+      }
+    ],
+    "total": 150,
+    "timestamps": "2022-06-12T15:55:58.225Z"
+  },
+  {
+    "id": 4,
+    "buyerID": "jennis015@hotmail.com",
+    "name": "Lidia",
+    "phone": "1131467302",
+    "items": [
+      {
+        "itemId": "1",
+        "nombre": "Manzana",
+        "cantidad": 1,
+        "precio": "150",
+        "foto": ""
+      }
+    ],
+    "total": 150,
+    "timestamps": "2022-06-12T15:56:00.093Z"
   }
 ]

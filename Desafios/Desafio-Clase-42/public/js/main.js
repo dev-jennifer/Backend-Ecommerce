@@ -2,7 +2,7 @@
 
 ///PRODUCTOS
 async function detail(value) {
- 
+ console.log("VALUE",value)
   await fetch(`/api/productos/${value}`, { method: 'GET' })
     .then(function (response) {
       if (response.ok) {

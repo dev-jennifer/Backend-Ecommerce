@@ -1,8 +1,10 @@
-const MongoDBClient = require('../classes/MongoDBClient.class');
-const CustomError = require('../classes/CustomError.class');
-const logger = require('../utils/loggers');
-class ContenedorMongoDB {
+const DAO = require('../../classes/DAO.class');
+const MongoDBClient = require('../../classes/MongoDBClient.class');
+const logger = require('../../utils/loggers');
+
+class ServiceDAOMongoDB extends DAO {
   constructor(nombreColeccion) {
+    super();
     this.coleccion = nombreColeccion;
     this.conn = new MongoDBClient();
   }
@@ -10,19 +12,20 @@ class ContenedorMongoDB {
   mostrarTodos = async () => {
     let response;
     try {
-      await this.conn.connect();
-      const docs = await this.coleccion.find({});
-      if (docs == []) {
+      await this.conn.connect()
+  const docs = await this.coleccion.find({})  
+  if (docs == []) {
         response = [];
       } else {
         response = docs.map((doc) => doc);
       }
-      return response;
+    return response;
+  
     } catch (error) {
-      const cuserr = new CustomError(500, 'Error al mostrarTodos()', error);
-      logger.error(cuserr);
+      logger.error(`Error al obtener mostrar todos`);
+ 
     } finally {
-      this.conn.disconnect();
+       this.conn.disconnect();
       logger.info(`Elementos listados ${response.length}`);
     }
   };
@@ -33,9 +36,7 @@ class ContenedorMongoDB {
       const newObj = this.coleccion.create(body);
       return newObj;
     } catch (error) {
-      const cuserr = new CustomError(500, 'Error al guardar()', error);
-      logger.error(cuserr);
-      throw cuserr;
+      throw new Error(`Error al guardar() ${error}`);
     } finally {
       logger.info(`Elemento guardado`);
     }
@@ -46,9 +47,7 @@ class ContenedorMongoDB {
       await this.conn.connect();
       await this.coleccion.deleteOne({ [condicion]: id });
     } catch (error) {
-      const cuserr = new CustomError(500, 'Error al eliminar()', error);
-      logger.error(cuserr);
-      throw cuserr;
+      throw new Error(`Error al eliminar() ${error}`);
     } finally {
       this.conn.disconnect();
       logger.info(`Elemento elimindado id: ${id}`);
@@ -56,61 +55,55 @@ class ContenedorMongoDB {
   };
 
   mostrarId = async (condition, id) => {
-    console.log("CONDICION ORIGINAL", condition)
-    let value=condition
-    
+    let value = condition;
+
     if (value == 'id' || null) {
       value = '_id';
     } else {
       value;
-    };
-    console.log('CONDICION', value);
+    }
+
     try {
       await this.conn.connect();
       let doc = await this.coleccion.findOne({ [value]: id });
       return doc;
     } catch (error) {
-      const cuserr = new CustomError(500, 'Error al mostrarId()', error);
-      logger.error(cuserr);
-      throw cuserr;
+      throw new Error(`Error al mostrarId() ${error}`);
     } finally {
-           logger.info(`MostrarId: ${id}`);
+      logger.info(`MostrarId: ${id}`);
       //this.conn.disconnect();
- 
     }
   };
 
   existUser = async (email) => {
     try {
       await this.conn.connect();
-      let doc = this.coleccion.findOne({ email: email });
- console.log(doc)
+      let doc = await this.coleccion.findOne({ email: email });
+      console.log('DOC', doc);
       return doc;
     } catch (error) {
       const cuserr = new CustomError(500, 'Error al mostrarId()', error);
       logger.error(cuserr);
       throw cuserr;
-    } 
- 
+    }
   };
 
   actualizar = async (condition, id, body) => {
-
-     try {
-       await this.conn.connect();
-       let doc = await this.coleccion.updateOne(
-         {
-           [condition]: id,
-         },
-         { $set: body }
-       );
-       return doc;
-     } catch (error) {
-       throw new Error(`Error al actualizar: ${error}`);
-     } finally {
-       this.conn.disconnect();
-     }
+    try {
+      await this.conn.connect();
+      let doc = await this.coleccion.updateOne(
+        {
+          [condition]: id,
+        },
+        { $set: body }
+      );
+      return doc;
+    } catch (error) {
+      throw new Error(`Error al actualizar: ${error}`);
+    } finally {
+      this.conn.disconnect();
     }
   };
- 
-module.exports = ContenedorMongoDB;
+}
+
+module.exports = ServiceDAOMongoDB;

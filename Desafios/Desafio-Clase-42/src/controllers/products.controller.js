@@ -1,42 +1,25 @@
-const ProductDTO = require('../classes/ProductsDTO.class');
-const {ProductDAOFile} = require('../services/DAOFile');
-const {ProductosDAOMongoDB} = require('../services/DAOMongo');
-const {ProductDAOMemory}=require('../services/DAOMemory')
-const config = require('../utils/config');
+const ProductDTO = require('../classes/Products/ProductsDTO.class');
+const CustomError = require('../classes/CustomError.class');
+const ProductDAOFactory = require('../classes/Products/ProductDAOFactory.class');
+
 let admin = true;
 
-let ProductsDAO = null;
+class ProductsController {
+  constructor() {
+    this.ProductsDAO = ProductDAOFactory.get();
+  }
 
-switch (config.SRV.persistencia) {
-  case 'mongodb':
-    ProductsDAO = new ProductosDAOMongoDB();
-    break;
-  case 'file':
-    ProductsDAO = new ProductDAOFile();
-    break;
-  case 'memory':
-    ProductsDAO = new  ProductDAOMemory();
-    break;
-  default:
-    break;
-}
-
-const ProductsController = {
-  renderNewProduct: (req, res) => {
+  renderNewProduct = async (req, res) => {
     if (admin == true) {
       res.render('productNew', { title: 'Nuevo Producto' });
     } else {
-      res.json({
-        error: -1,
-        descripcion: `ruta ${'/'} método POST no autorizado`,
-      });
+      throw new CustomError(500, 'Error en Metodo Render Producto' );
     }
-  },
-  renderProducts: async (req, res) => {
+  };
+  renderProducts = async (req, res) => {
     try {
-      console.log("AQI ESTOY")
-      const docs = await ProductsDAO.mostrarTodos();
-       console.log("DOCS",docs)
+      const docs = await this.ProductsDAO.mostrarTodos();
+
       const productos = docs.map((p) => {
         return new ProductDTO(
           p.id,
@@ -48,52 +31,51 @@ const ProductsController = {
           p.stock
         );
       });
- 
+
       res.render('products', {
         title: 'Products',
         productos: productos,
       });
     } catch (error) {
-      throw new Error(`Error al renderizar productos: ${error}`);
+     return res.send('Hubo un error');
     }
-  },
+  };
 
-  saveProducts: async (req, res) => {
+  saveProducts = async (req, res) => {
     if (admin == true) {
       const body = req.body;
-      console.log("body", body)
-      await ProductsDAO.guardar(body).then(() => {
+
+      await this.ProductsDAO.guardar(body).then(() => {
         try {
           res.redirect('/api/productos/');
         } catch (error) {
-          throw new Error(`Error al guardar productos productos: ${error}`);
+           res.status(error.response.status);
+           return res.send(error.message);
         }
       });
     } else {
-      throw new Error(`Acceso no autorizado: ${error}`);
+        return res.send('No autorizado');
     }
-  },
-  deleteProduct: async (req, res) => {
+  };
+  deleteProduct = async (req, res) => {
     if (admin == true) {
       const valueID = req.params.id;
 
       try {
-        await ProductsDAO.eliminar("id",valueID).then(() => {
+        await this.ProductsDAO.eliminar('id', valueID).then(() => {
           res.redirect('/api/productos/');
         });
       } catch (error) {
-        throw new Error(`Error al  eliminar ${valueID}, ${error}`);
+        return res.send("No se ha podido eliminar");
       }
-    } else {
-      throw new Error(`Acceso no autorizado: ${error}`);
     }
-  },
+  };
 
-  getProduct: async (req, res) => {
+  getProduct = async (req, res) => {
     const id = req.params.id;
     try {
-      const doc = await ProductsDAO.mostrarId(id);
-console.log("DOC",doc)
+      const doc = await this.ProductsDAO.mostrarId(id);
+
       const productsDto = new ProductDTO(
         doc.id,
         doc.nombre,
@@ -113,52 +95,55 @@ console.log("DOC",doc)
         error: true,
         mensaje: 'No se encuentra el producto',
       });
-      throw new Error(`Error al  obtener producto ${id}, ${error}`);
+      throw new CustomError(500, `Error al  obtener producto ${id},${error}`);
     }
-  },
-  formEditProduct: async (req, res) => {
+  };
+  formEditProduct = async (req, res) => {
     if (admin == true) {
       const id = req.params.id;
       try {
-        await ProductsDAO.mostrarId("id",id).then((result) => {
+        await this.ProductsDAO.mostrarId('id', id).then((result) => {
           res.render('productEdit', {
             title: 'Editar',
             data: result,
           });
         });
-        
       } catch (error) {
-        throw new Error(`Error al  editar producto ${id}, ${error}`);
+        throw new CustomError(
+          500,
+          `Error al  editar producto ${id},},${error}`
+        );
       }
     } else {
-      throw new Error(`Ruta no autorizada`);
+      throw new CustomError(500, `Ruta no autorizada `);
     }
-  },
-  showID: async (itemId) => {
+  };
+  showID = async (itemId) => {
     try {
-      const product = await ProductsDAO.mostrarId('id', itemId);
-      console.log("product",product)
+
+      const product = await this.ProductsDAO.mostrarId('id', itemId);
+      console.log('ITEM_show', itemId);
+      console.log(product);
       return product;
     } catch (error) {
-      throw new Error(`Error al mostrar producto ${itemId}`);
+      throw new CustomError(500, `Error al mostrar producto ${itemId}`);
     }
-  },
-  editProduct: async (req, res) => {
+  };
+  editProduct = async (req, res) => {
     if (admin == true) {
       const id = req.params.id;
       const body = req.body;
- 
 
       try {
-        await ProductsDAO.actualizar("id", id, body);
-       res.status(200).send();
+        await this.ProductsDAO.actualizar('id', id, body);
+        res.status(200).send("Producto actualizado");
       } catch (error) {
-        throw new Error(`Error al editar producto`);
+        res.send("No se ha podido actualizar");
       }
     } else {
-      throw new Error(`Ruta no autorizada`);
+      throw new CustomError(500, `Ruta no autorizada`);
     }
-  },
-};
+  };
+}
 
 module.exports = ProductsController;

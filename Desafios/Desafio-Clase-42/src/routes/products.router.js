@@ -1,15 +1,22 @@
 const express =require("express");
-const ProductsController = require("../controllers/products.controller");
+const router = express.Router();
+const ProductsController = require('../controllers/products.controller');
 
-const routerProducts = express.Router({ mergeParams: true });
+class RouterProduct {
+  constructor() {
+    this.controlador = new ProductsController();
+  }
 
-routerProducts.get("/nuevo", ProductsController.renderNewProduct)
-routerProducts.get("/", ProductsController.renderProducts)
-routerProducts.post("/", ProductsController.saveProducts)
-routerProducts.delete("/:id", ProductsController.deleteProduct)
-routerProducts.get("/:id",ProductsController.getProduct)
-routerProducts.get("/edit/:id", ProductsController.formEditProduct)
-routerProducts.put("/:id", ProductsController.editProduct)
+  start() {
+    router.get('/nuevo', this.controlador.renderNewProduct);
+    router.get('/', this.controlador.renderProducts);
+    router.post('/', this.controlador.saveProducts);
+    router.delete('/:id', this.controlador.deleteProduct);
+    router.get('/:id', this.controlador.getProduct);
+    router.get('/edit/:id', this.controlador.formEditProduct);
+    router.put('/:id', this.controlador.editProduct);
 
-
-module.exports=routerProducts;
+    return router;
+  }
+}
+module.exports = RouterProduct;

@@ -1,69 +1,40 @@
-const express = require('express'),
+const { middleware, isAuthenticated } = require('../utils/functions'),
+  UserController = require('../controllers/user.controller'),
+  router = require('express').Router(),
   passport = require('passport'),
   passportLocal = require('passport-local'),
-  { middleware, isAuthenticated } = require('../utils/functions');
+  LocalStrategy = passportLocal.Strategy;
 
-  
-const LocalStrategy = passportLocal.Strategy;
+class RouterUser {
+  constructor() {
+    this.controlador = new UserController();
+  }
+  start() {
+    router.post(
+      '/register',
+      middleware,
+      passport.authenticate('local-signup', {
+        successRedirect: '/api/productos',
+        failureRedirect: '/register',
+        failureFlash: true,
+      })
+    );
 
-const UserController = require('../controllers/user.controller');
-const routerUser = express.Router();
+    router.post('/login', function (req, res, next) {
+      passport.authenticate('local-signin', {
+        // A error also means, an unsuccessful login attempt
 
-passport.serializeUser(function (user, done) {
-  done(null, user.email);
-});
+        successRedirect: '/api/productos',
+        failureRedirect: '/login',
+        failureFlash: true,
+      })(req, res, next);
+    });
 
-passport.deserializeUser(async (id, done) => {
-  const user = await UserController.existPassport(id)
-    console.log(user)
-  done(null, user);
-});
-
-passport.use(
-  'local-signup',
-  new LocalStrategy(
-    {
-      usernameField: 'email',
-      passwordField: 'password',
-      passReqToCallback: true,
-    },
-    UserController.register
-  )
-);
-
-passport.use(
-  'local-signin',
-  new LocalStrategy(
-    {
-      usernameField: 'email',
-      passwordField: 'password',
-      passReqToCallback: true,
-    },
-    UserController.login
-  )
-);
-
-routerUser.post(
-  '/register',
-  middleware,
-  passport.authenticate('local-signup', {
-    successRedirect: '/api/productos',
-    failureRedirect: '/register',
-  })
-);
-
-routerUser.post('/login', function (req, res, next) {
-  passport.authenticate('local-signin', {
-    successRedirect: '/api/productos',
-    failureRedirect: '/login',
-  })(req, res, next);
-});
-
-
-routerUser.get('/register', UserController.renderRegisterForm);
-routerUser.get('/profile', isAuthenticated, UserController.renderProfile);
-routerUser.get('/login', UserController.renderLoginForm);
-routerUser.get('/logout', UserController.renderLogOut);
-
-
-module.exports =  routerUser;
+    router.get('/register', this.controlador.renderRegisterForm);
+    router.get('/profile', isAuthenticated, this.controlador.renderProfile);
+    router.get('/login', this.controlador.renderLoginForm);
+    router.get('/logout', this.controlador.renderLogOut);
+    return router;
+  }
+}
+module.exports = RouterUser;

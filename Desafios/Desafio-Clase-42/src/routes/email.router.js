@@ -1,11 +1,17 @@
-const express=require("express")
-const routerEmail = express.Router();
+const express = require('express'),
+  router = express.Router(),
+ EmailController = require('../controllers/emails.controller');
 
-routerEmail.post('/:template', function (req, res) {
-  res.render(`${req.params.template}`, {
-    data: req.body,
-  });
-});
+class RouterEmail {
+  constructor() {
+    this.controlador = new EmailController();
+  }
 
+  start() {
+    router.post('/:template', this.controlador.postEmail);
+      return router;
+  
+  }
+}
 
-module.exports = routerEmail;
+module.exports = RouterEmail;

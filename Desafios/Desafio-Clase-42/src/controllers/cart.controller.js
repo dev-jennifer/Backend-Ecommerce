@@ -1,119 +1,119 @@
-const { CartDAOMongoDB } = require('../services/DAOMongo'),
-  { CartDAOFile } = require('../services/DAOFile'),
-  { CartDAOMemory } = require('../services/DAOMemory'),
+const CartDTO = require('../classes/Cart/CartDTO.class');
+const CartDAOBase = require('../models/DAOs/cart');
+const CartDAOFactory = require('../classes/Cart/CartDAOFactory.class'),
   ProductsController = require('../controllers/products.controller'),
   CustomError = require('../classes/CustomError.class'),
+  logger = require('../utils/loggers'),
   uuidv1 = require('uuidv1'),
-  session_id = uuidv1(),
-  config = require('../utils/config');
+  session_id = uuidv1();
 
-let CartDAO = null;
-
-switch (config.SRV.persistencia) {
-  case 'mongodb':
-    CartDAO = new CartDAOMongoDB();
-
-    break;
-  case 'file':
-    CartDAO = new CartDAOFile();
-
-    break;
-  case 'memory':
-    CartDAO = new CartDAOMemory();
-    break;
-  default:
-    break;
-}
-
-const CartController = {
-  postCart: async (req, res) => {
+class CartController extends ProductsController {
+  constructor() {
+    super();
+    this.producto = new ProductsController();
+    this.cartDAO = CartDAOFactory.get();
+    this.funciones = new CartDAOBase();
+  }
+  postCart = async (req, res) => {
     try {
-      const newCarrito = {
-        buyerID: session_id,
-        items: [],
-        total: 0,
-        timestamps: new Date(),
-      };
+      let items = [];
+      let buyerID = session_id;
+      let total = 0;
+      let timestamps = new Date().toLocaleString();
+      let id = this.funciones.getNext_id(this.cartDAO);
 
-      const cart = await CartDAO.guardar(newCarrito);
+      let carritoGuardado = CartDTO(id, items, buyerID, total, timestamps);
+      console.log(carritoGuardado);
+      const cart = await this.cartDAO.guardar(carritoGuardado);
       res.json({
         cart: cart,
       });
     } catch (error) {
-      new CustomError(500, 'Error al guardar carrito', error);
+      const errorCustom = new CustomError(
+        500,
+        'Error al guardar carrito',
+        error
+      );
+      logger.error(errorCustom);
     }
-  },
-
-  deleteCart: async (req, res) => {
+  };
+  deleteCart = async (req, res) => {
     const idCart = req.params.id,
       condicion = 'buyerID';
     try {
-      let carrito = await CartDAO.mostrarId(condicion, idCart);
+      let carrito = await this.cartDAO.mostrarId(condicion, idCart);
 
       carrito.items = [];
       carrito.total = 0;
 
-      CartDAO.actualizar(condicion, idCart, carrito);
+      this.cartDAO.actualizar(condicion, idCart, carrito);
       res.status(200).send(carrito);
     } catch (error) {
-      console.log(error);
+      const errorCustom = new CustomError(
+        500,
+        'Error al borrar carrito',
+        error
+      );
+      logger.error(errorCustom);
     }
-  },
-  postProductCart: async (req, res) => {
+  };
+  postProductCart = async (req, res) => {
     const idCart = req.params.id,
       itemId = req.params.id_prod,
       cantidad = 1;
-   
-
+    console.log(`Cart ${idCart}, itemID ${itemId}`);
 
     try {
-      let item = await ProductsController.showID(itemId);
-      let cart = await CartDAO.mostrarId('buyerID', idCart);
-
- 
-      const precio = item.precio,
-        nombre = item.nombre,
-        foto = item.foto;
-
-      id = item._id;
+      let item = await this.producto.showID(itemId);
+      console.log('ITEM_CART', item);
+      let cart = await this.cartDAO.mostrarId('buyerID', idCart);
+     
       if (cart.items == undefined) {
         cart.items = [];
-      }
+      } 
+        const precio = item.precio,
+          nombre = item.nombre,
+          foto = item.foto;
+     
 
       const itemIndex = cart.items.findIndex((item) => item.itemId == itemId);
 
- if (itemIndex > -1) {
-   let product = cart.items[itemIndex];
+      if (itemIndex > -1) {
+        let product = cart.items[itemIndex];
 
-   product.cantidad += cantidad;
+        product.cantidad += cantidad;
 
-   cart.total = cart.items.reduce((acc, curr) => {
-     return acc + curr.cantidad * curr.precio;
-   }, 0);
+        cart.total = cart.items.reduce((acc, curr) => {
+          return acc + curr.cantidad * curr.precio;
+        }, 0);
 
-   cart.items[itemIndex] = product;
- } else {
-   cart.items.push({ itemId, nombre, cantidad, precio, foto });
+        cart.items[itemIndex] = product;
+      } else {
+        cart.items.push({ itemId, nombre, cantidad, precio, foto });
 
-   cart.total = cart.items.reduce((acc, curr) => {
-     return acc + curr.cantidad * curr.precio;
-   }, 0);
- }
-     
-      CartDAO.actualizar('buyerID', idCart, cart);
+        cart.total = cart.items.reduce((acc, curr) => {
+          return acc + curr.cantidad * curr.precio;
+        }, 0);
+      }
+
+      this.cartDAO.actualizar('buyerID', idCart, cart);
 
       res.status(200).send(cart);
     } catch (error) {
-      console.log(error);
-      res.status(500).send('Algo fue mal');
+      const errorCustom = new CustomError(
+        500,
+        'Error al agregar producto al carrito',
+        error
+      );
+      logger.error(errorCustom);
     }
-  },
+  };
 
-  getCart: async (req, res) => {
+  getCart = async (req, res) => {
     const idCart = req.params.id;
     let list;
     try {
-      const carritoCompleto = await CartDAO.mostrarId('buyerID', idCart);
+      const carritoCompleto = await this.cartDAO.mostrarId('buyerID', idCart);
 
       if (carritoCompleto) {
         list = carritoCompleto.items.map((item) => {
@@ -134,30 +134,41 @@ const CartController = {
         cartID: idCart,
         error: false,
       });
-
     } catch (error) {
-      console.log('error', error);
+      const errorCustom = new CustomError(
+        500,
+        'Error al obtener carrito',
+        error
+      );
+      logger.error(errorCustom);
       res.render('carrito', {
         producto: [],
         error: true,
       });
     }
-  },
-  getCartOrder: async (id) => {
+  };
+  getCartOrder = async (id) => {
     try {
-      const cartComplete = await CartDAO.mostrarId('buyerID', id);
+      const cartComplete = await this.cartDAO.mostrarId('buyerID', id);
 
       return cartComplete;
-    } catch (error) {}
-  },
+    } catch (error) {
+      const errorCustom = new CustomError(
+        500,
+        'Error al obtener orden del carrito',
+        error
+      );
+      logger.error(errorCustom);
+    }
+  };
 
-  deleteItemCart: async (req, res) => {
+  deleteItemCart = async (req, res) => {
     const idCart = req.params.id,
       itemId = req.params.id_prod,
       condicion = 'buyerID';
 
     try {
-      let carrito = await CartDAO.mostrarId(condicion, idCart);
+      let carrito = await this.cartDAO.mostrarId(condicion, idCart);
 
       const itemIndex = carrito.items.findIndex(
         (item) => item.itemId == itemId
@@ -176,19 +187,21 @@ const CartController = {
           return acc + curr.cantidad * curr.precio;
         }, 0);
 
-        CartDAO.actualizar(condicion, idCart, carrito);
+        this.cartDAO.actualizar(condicion, idCart, carrito);
 
-        //carrito = await carrito.save();
-
-         res.status(200).send(cart);
+        res.status(200).send(carrito);
       } else {
         res.status(404).send('No se encontro el item');
       }
     } catch (error) {
-
-      res.status(400).send();
+      const errorCustom = new CustomError(
+        500,
+        'Error al borrar item carrito',
+        error
+      );
+      logger.error(errorCustom);
     }
-  },
-};
+  };
+}
 
 module.exports = CartController;
