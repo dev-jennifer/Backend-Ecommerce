@@ -22,14 +22,13 @@ class ServiceDAOMongoDB extends DAO {
       }
       return response;
     } catch (error) {
-        const errorCustom = new APIError(
-          `Error al obtener mostrar todos`,
-          httpStatusCodes.NOT_FOUND,
-          true,
-          `${error}`
-        );
-        logger.error(errorCustom);
-      
+      const errorCustom = new APIError(
+        `Error al obtener mostrar todos`,
+        httpStatusCodes.NOT_FOUND,
+        true,
+        `${error}`
+      );
+      logger.error(errorCustom);
     } finally {
       this.conn.disconnect();
       logger.info(`Elementos listados ${response.length}`);
@@ -40,18 +39,17 @@ class ServiceDAOMongoDB extends DAO {
     try {
       await this.conn.connect();
       const newObj = this.coleccion.create(body);
-      console.log(body);
       return newObj;
     } catch (error) {
- 
-       const errorCustom = new APIError(
-         `Error al guardar() ${id}`,
-         httpStatusCodes.NOT_FOUND,
-         true,
-         `${error}`
-       );
-       logger.error(errorCustom);
+      const errorCustom = new APIError(
+        `Error al guardar() ${id}`,
+        httpStatusCodes.NOT_FOUND,
+        true,
+        `${error}`
+      );
+      logger.error(errorCustom);
     } finally {
+     //    this.conn.disconnect();
       logger.info(`Elemento guardado`);
     }
   };

@@ -1,6 +1,5 @@
 const ProductDTO = require('../classes/Products/ProductsDTO.class');
 const ProductDAOFactory = require('../classes/Products/ProductDAOFactory.class');
-const { APIError, httpStatusCodes } = require('../classes/Error/error');
 
 let admin = true;
 
@@ -9,13 +8,6 @@ class ProductsController {
     this.ProductsDAO = ProductDAOFactory.get();
   }
 
-  renderNewProduct = async (req, res) => {
-    if (admin == true) {
-      res.render('productNew', { title: 'Nuevo Producto' });
-    } else {
-      throw new CustomError(500, 'Error en Metodo Render Producto');
-    }
-  };
   renderProducts = async (req, res) => {
     try {
       const docs = await this.ProductsDAO.mostrarTodos();
@@ -37,36 +29,7 @@ class ProductsController {
         productos: productos,
       });
     } catch (error) {
-         res.status(400).send('Status: No se ha renderizar productos');
-    }
-  };
-
-  saveProducts = async (req, res) => {
-    if (admin == true) {
-      const body = req.body;
-
-      await this.ProductsDAO.guardar(body).then(() => {
-        try {
-          res.redirect('/api/productos/');
-        } catch (error) {
-          res.status(400).send('Status: No se ha podido eliminar producto');
-        }
-      });
-    } else {
-      return res.send('No autorizado');
-    }
-  };
-  deleteProduct = async (req, res) => {
-    if (admin == true) {
-      const valueID = req.params.id;
-
-      try {
-        await this.ProductsDAO.eliminar('id', valueID).then(() => {
-          res.redirect('/api/productos/');
-        });
-      } catch (error) {
-          res.status(404).send('Status: No se ha podido eliminar producto');
-      }
+      res.status(400).send('Status: No se ha renderizar productos');
     }
   };
 
@@ -74,7 +37,6 @@ class ProductsController {
     const id = req.params.id;
     try {
       const doc = await this.ProductsDAO.mostrarId('id', id);
-
       const productsDto = new ProductDTO(
         doc.id,
         doc.nombre,
@@ -84,47 +46,81 @@ class ProductsController {
         doc.precio,
         doc.stock
       );
-      res.json({
+
+      res.render('productDetail', {
         producto: productsDto,
+        error: false,
       });
-      // res.render('productDetail', {
-      //   producto: productsDto,
-      //   error: false,
-      // });
     } catch (error) {
       res.status(404).send('Status: Not Found');
+    }
+  };
+  showID = async (itemId) => {
+    // const product = await this.ProductsDAO.mostrarId('id', itemId);
+    // return product;
+    await this.ProductsDAO.mostrarId('id', itemId)
+      .then((res) => {
+        res.status(200).send(res);
+      })
+      .catch((error) => {
+        res.status(404).send('Status: Not Found');
+      });
+  };
+  saveProducts = async (req, res) => {
+    if (admin == true) {
+      try {
+        await this.ProductsDAO.guardar(req.body);
+
+        res.status(200).send('Status: Producto Guardado');
+      } catch {
+        res.status(400).send('Status: No se ha podido guardar el producto');
+      }
+    } else {
+      res.status(401).send('Status: Acceso no autorizado');
+    }
+  };
+
+  deleteProduct = async (req, res) => {
+    if (admin == true) {
+      await this.ProductsDAO.eliminar('id', req.params.id)
+        .then(() => {
+          res.status(200).send('Status: Producto Eliminado');
+        })
+        .catch((error) =>
+          res.status(404).send('Status: No se ha podido eliminar producto')
+        );
+    }
+  };
+  renderNewProduct = async (req, res) => {
+    if (admin == true) {
+      try {
+        res.render('productNew', { title: 'Nuevo Producto' });
+      } catch {
+        res.status(400).send('Status: Error en ruta');
+      }
+    } else {
+      res.status(401).send('Status: Acceso no autorizado');
     }
   };
   formEditProduct = async (req, res) => {
     if (admin == true) {
       const id = req.params.id;
-      try {
-        await this.ProductsDAO.mostrarId('id', id).then((result) => {
+
+      await this.ProductsDAO.mostrarId('id', id)
+        .then((result) => {
           res.render('productEdit', {
             title: 'Editar',
             data: result,
           });
-        });
-      } catch (error) {
-        throw new CustomError(
-          500,
-          `Error al  editar producto ${id},},${error}`
+        })
+        .catch((error) =>
+          res.status(404).send('Status: No se ha podido eliminar producto')
         );
-      }
     } else {
-      throw new CustomError(500, `Ruta no autorizada `);
+      res.status(401).send('Status: Acceso no autorizado');
     }
   };
-  showID = async (itemId) => {
-    try {
-      const product = await this.ProductsDAO.mostrarId('id', itemId);
-      console.log('ITEM_show', itemId);
-      console.log(product);
-      return product;
-    } catch (error) {
-      throw new CustomError(500, `Error al mostrar producto ${itemId}`);
-    }
-  };
+
   editProduct = async (req, res) => {
     if (admin == true) {
       const id = req.params.id;
@@ -134,10 +130,10 @@ class ProductsController {
         await this.ProductsDAO.actualizar('id', id, body);
         res.status(200).send('Producto actualizado');
       } catch (error) {
-        res.send('No se ha podido actualizar');
+        res.status(400).send('Status: No se ha podido actualizar');
       }
     } else {
-      throw new CustomError(500, `Ruta no autorizada`);
+      res.status(401).send('Status: Acceso no autorizado');
     }
   };
 }
