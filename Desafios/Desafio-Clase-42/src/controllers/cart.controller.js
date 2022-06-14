@@ -23,7 +23,7 @@ class CartController extends ProductsController {
       let id = this.funciones.getNext_id(this.cartDAO);
 
       let carritoGuardado = CartDTO(id, items, buyerID, total, timestamps);
-      console.log(carritoGuardado);
+
       const cart = await this.cartDAO.guardar(carritoGuardado);
       res.json({
         cart: cart,
@@ -67,14 +67,13 @@ class CartController extends ProductsController {
       let item = await this.producto.showID(itemId);
       console.log('ITEM_CART', item);
       let cart = await this.cartDAO.mostrarId('buyerID', idCart);
-     
+
       if (cart.items == undefined) {
         cart.items = [];
-      } 
-        const precio = item.precio,
-          nombre = item.nombre,
-          foto = item.foto;
-     
+      }
+      const precio = item.precio,
+        nombre = item.nombre,
+        foto = item.foto;
 
       const itemIndex = cart.items.findIndex((item) => item.itemId == itemId);
 

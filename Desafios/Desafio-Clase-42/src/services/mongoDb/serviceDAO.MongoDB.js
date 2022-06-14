@@ -1,5 +1,6 @@
 const DAO = require('../../classes/DAO.class');
 const MongoDBClient = require('../../classes/MongoDBClient.class');
+const { APIError, httpStatusCodes } = require('../../classes/Error/error');
 const logger = require('../../utils/loggers');
 
 class ServiceDAOMongoDB extends DAO {
@@ -12,20 +13,25 @@ class ServiceDAOMongoDB extends DAO {
   mostrarTodos = async () => {
     let response;
     try {
-      await this.conn.connect()
-  const docs = await this.coleccion.find({})  
-  if (docs == []) {
+      await this.conn.connect();
+      const docs = await this.coleccion.find({});
+      if (docs == []) {
         response = [];
       } else {
         response = docs.map((doc) => doc);
       }
-    return response;
-  
+      return response;
     } catch (error) {
-      logger.error(`Error al obtener mostrar todos`);
- 
+        const errorCustom = new APIError(
+          `Error al obtener mostrar todos`,
+          httpStatusCodes.NOT_FOUND,
+          true,
+          `${error}`
+        );
+        logger.error(errorCustom);
+      
     } finally {
-       this.conn.disconnect();
+      this.conn.disconnect();
       logger.info(`Elementos listados ${response.length}`);
     }
   };
@@ -34,9 +40,17 @@ class ServiceDAOMongoDB extends DAO {
     try {
       await this.conn.connect();
       const newObj = this.coleccion.create(body);
+      console.log(body);
       return newObj;
     } catch (error) {
-      throw new Error(`Error al guardar() ${error}`);
+ 
+       const errorCustom = new APIError(
+         `Error al guardar() ${id}`,
+         httpStatusCodes.NOT_FOUND,
+         true,
+         `${error}`
+       );
+       logger.error(errorCustom);
     } finally {
       logger.info(`Elemento guardado`);
     }
@@ -47,7 +61,13 @@ class ServiceDAOMongoDB extends DAO {
       await this.conn.connect();
       await this.coleccion.deleteOne({ [condicion]: id });
     } catch (error) {
-      throw new Error(`Error al eliminar() ${error}`);
+      const errorCustom = new APIError(
+        `Error al eliminar id ${id}`,
+        httpStatusCodes.NOT_FOUND,
+        true,
+        `${error}`
+      );
+      logger.error(errorCustom);
     } finally {
       this.conn.disconnect();
       logger.info(`Elemento elimindado id: ${id}`);
@@ -55,23 +75,26 @@ class ServiceDAOMongoDB extends DAO {
   };
 
   mostrarId = async (condition, id) => {
-    let value = condition;
-
-    if (value == 'id' || null) {
-      value = '_id';
+    if (condition == 'id' || null) {
+      condition = '_id';
     } else {
-      value;
+      condition;
     }
 
     try {
       await this.conn.connect();
-      let doc = await this.coleccion.findOne({ [value]: id });
+      let doc = await this.coleccion.findOne({ [condition]: id });
       return doc;
     } catch (error) {
-      throw new Error(`Error al mostrarId() ${error}`);
+      const errorCustom = new APIError(
+        `NOT FOUND mostrar id: ${id}`,
+        httpStatusCodes.NOT_FOUND,
+        true,
+        `${error}`
+      );
+      logger.error(errorCustom);
     } finally {
-      logger.info(`MostrarId: ${id}`);
-      //this.conn.disconnect();
+      this.conn.disconnect();
     }
   };
 
@@ -82,9 +105,13 @@ class ServiceDAOMongoDB extends DAO {
       console.log('DOC', doc);
       return doc;
     } catch (error) {
-      const cuserr = new CustomError(500, 'Error al mostrarId()', error);
-      logger.error(cuserr);
-      throw cuserr;
+      const errorCustom = new APIError(
+        `NOT FOUND exist user email: ${id}`,
+        httpStatusCodes.NOT_FOUND,
+        true,
+        `${error}`
+      );
+      logger.error(errorCustom);
     }
   };
 
@@ -99,7 +126,13 @@ class ServiceDAOMongoDB extends DAO {
       );
       return doc;
     } catch (error) {
-      throw new Error(`Error al actualizar: ${error}`);
+      const errorCustom = new APIError(
+        `Error al actualizar: ${id}`,
+        httpStatusCodes.NOT_FOUND,
+        true,
+        `${error}`
+      );
+      logger.error(errorCustom);
     } finally {
       this.conn.disconnect();
     }

@@ -14,11 +14,11 @@ const express = require('express'),
   path = require('path');
  compression = require('compression'),
   { engine } = require('express-handlebars'),
- { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access'),
  exphbs = require('express-handlebars'),
  cors=require('cors')
  require("./src/passport/local-auth")
  const Handlebars = require('handlebars');
+ 
 
 const RouterProduct = require('./src/routes/products.router'),
   RouterCart = require('./src/routes/cart.router'),
@@ -30,8 +30,11 @@ const app = express();
 // app.use(express.static(__dirname + '/public'));
 
 
+ 
 app.use(compression());
 app.use(morgan('tiny'));
+// middleware
+
 
 
 app.use('/uploads', express.static('uploads'));
@@ -42,8 +45,7 @@ app.engine(
     extname: '.hbs',
     defaultLayout: 'main',
     partialsDir: path.join(__dirname, 'public/views/partials'),
-    layoutsDir: path.join(__dirname, 'public/views/layouts'),
-     handlebars: allowInsecurePrototypeAccess(Handlebars) 
+    layoutsDir: path.join(__dirname, 'public/views/layouts')
   })
 );
 app.set('view engine', '.hbs');
@@ -55,6 +57,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+ 
+ 
 
 const httpServer = new createServer(app);
 /****  Configurando el cors de forma dinamica */

@@ -44,7 +44,7 @@ module.exports = {
     PATH: './DB',
   },
   SRV: {
-   entorno: process.env.NODE_ENV || 'development',
+    entorno: process.env.NODE_ENV || 'development',
     port: process.env.PORT || 3000,
     logger: process.env.LOG || 'DEV',
     persistencia: process.env.PERSISTENCIA || 'mongodb',

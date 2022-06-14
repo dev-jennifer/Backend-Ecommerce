@@ -2,52 +2,38 @@ const log4js =require('log4js');
 const config =require("../utils/config")
 const path =require ('path');
 
+
 log4js.configure({
   appenders: {
-    consola: { type: 'console' },
-    archivoErrores: {
-      type: 'file',
-      filename: path.join(path.dirname(''), './logs/errors.log'),
-    },
-    archivoDebug: {
-      type: 'file',
-      filename: path.join(path.dirname(''), './logs/debug.log'),
-    },
-    //Se difine los niveles
-    loggerConsola: {
+    console: { type: 'console' },
+    warnings: { type: 'file', filename: 'warn.log' },
+    errors: { type: 'file', filename: 'error.log' },
+    loggerConsole: {
       type: 'logLevelFilter',
-      appender: 'consola',
+      appender: 'console',
       level: 'info',
     },
-    loggerArchivoErrores: {
+    loggerWarns: {
       type: 'logLevelFilter',
-      appender: 'archivoErrores',
+      appender: 'warnings',
+      level: 'warn',
+    },
+    loggerErrors: {
+      type: 'logLevelFilter',
+      appender: 'errors',
       level: 'error',
-    },
-    loggerArchivoDebug: {
-      type: 'logLevelFilter',
-      appender: 'archivoDebug',
-      level: 'info',
     },
   },
   categories: {
-    default: {
-      appenders: ['loggerConsola'],
-      level: 'all',
-    },
-    prod: {
-      appenders: ['loggerArchivoErrores', 'loggerArchivoDebug'],
+    default: { appenders: ['loggerConsole'], level: 'all' },
+    custom: {
+      appenders: ['loggerConsole', 'loggerWarns', 'loggerErrors'],
       level: 'all',
     },
   },
 });
 
-let logger = null;
-
-if (config.SRV.logger === 'PRD') {
-  logger = log4js.getLogger('prod');
-} else {
-  logger = log4js.getLogger();
-}
+let logger = log4js.getLogger('custom');
+ 
 
 module.exports= logger;
