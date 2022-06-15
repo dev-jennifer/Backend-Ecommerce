@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <form>
+            <div class="form-group">
+              <label for="txtTituloRecordatorio">Producto</label>
+              <input type="text" class="form-control" id="nombre" aria-describedby="emailHelp" placeholder="Ingrese producto">
+              <small id="emailHelp" class="form-text text-muted">Asigne nombre al producto.</small>
+            </div>
+            <div class="form-group">
+              <label for="txtDescripcionRecordatorio">Descripcion</label>
+              <input type="text" class="form-control" id="descripcion" placeholder="descripcion">
+            </div>
+                 <div class="form-group">
+              <label for="txtDescripcionRecordatorio">Foto Url</label>
+              <input type="text" class="form-control" id="foto" placeholder="URL">
+            </div>
+                 <div class="form-group">
+              <label for="txtDescripcionRecordatorio">Codigo</label>
+              <input type="text" class="form-control" id="codigo" placeholder="codigo">
+            </div>
+           <div class="form-group">
+              <label for="txtDescripcionRecordatorio">Precio</label>
+              <input type="text" class="form-control" id="precio" placeholder="precio">
+            </div>
+                    <div class="form-group">
+              <label for="txtDescripcionRecordatorio">Stock</label>
+              <input type="text" class="form-control" id="stock" placeholder="stock">
+            </div>
+        
+            <button class="btn btn-primary" type="button" onclick="crearProducto()">Enviar Producto</button>
+        </form>
+    </div>
+</body>
+
+<script>
+    function crearProducto() {
+
+        const graphqlQuery = {
+            "operationName": "saveProducts",
+            "query": `mutation saveProducts {
+                        saveProducts (datos: {
+                            nombre: "${document.getElementById ('nombre').value}",
+                            descripcion: "${document.getElementById ('descripcion').value}"
+                            foto: "${document.getElementById ('foto').value}",
+                            codigo: "${document.getElementById ('codigo').value}"
+                            precio: "${document.getElementById ('precio').value}",
+                            stock: "${document.getElementById ('stock').value}"
+                        }) {
+                            nombre
+                        }
+                    }`
+        }
+
+        const options = {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: "POST",
+            body: JSON.stringify(graphqlQuery)
+        }
+
+        console.log(document.getElementById ('nombre').value)
+
+        fetch('/graphql', options)
+            .then(data=> data.json() )
+            .then(json=> console.log(json))
+            .catch(err=>console.log('fetch() failed'))
+    }
+</script>
+</html>
