@@ -2,7 +2,6 @@ const express = require('express')
 const { graphqlHTTP }=require("express-graphql")
 const app = express();
 
-// import RecordatorioController from './src/controllers/Recordatorio.controller.js';
 const ProductoSchema =require('./src/graphql/product.schema');
 const ProductsController=require("./src/controllers/products.controller")
 
@@ -15,11 +14,13 @@ app.use(
     schema: ProductoSchema,
     rootValue: {
       renderProducts: ProductsController.renderProducts,
-    //  getProduct: ProductsController.getProduct,
       saveProducts: ProductsController.saveProducts,
       deleteProduct: ProductsController.deleteProduct,
       editProduct: ProductsController.editProduct,
     },
+
+
+
     graphiql: true,
   })
 );
@@ -29,6 +30,7 @@ app.listen(PORT, () => {
   const msg = `Servidor corriendo en puerto: http://localhost:${PORT}`;
   console.log(msg);
 });
+
 
  /* GRAPQL
       query queryRender{

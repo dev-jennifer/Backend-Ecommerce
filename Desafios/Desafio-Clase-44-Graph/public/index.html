@@ -29,16 +29,19 @@
             </div>
            <div class="form-group">
               <label for="txtDescripcionRecordatorio">Precio</label>
-              <input type="text" class="form-control" id="precio" placeholder="precio">
+              <input type="text" class="form-control" id="precio" placeholder="precio" required>
             </div>
                     <div class="form-group">
               <label for="txtDescripcionRecordatorio">Stock</label>
-              <input type="text" class="form-control" id="stock" placeholder="stock">
+              <input type="text" class="form-control" id="stock" placeholder="stock" required>
             </div>
         
             <button class="btn btn-primary" type="button" onclick="crearProducto()">Enviar Producto</button>
+
         </form>
     </div>
+
+ 
 </body>
 
 <script>
@@ -52,8 +55,8 @@
                             descripcion: "${document.getElementById ('descripcion').value}"
                             foto: "${document.getElementById ('foto').value}",
                             codigo: "${document.getElementById ('codigo').value}"
-                            precio: "${document.getElementById ('precio').value}",
-                            stock: "${document.getElementById ('stock').value}"
+                            precio: ${parseInt(document.getElementById ('precio').value, 10)},
+                            stock: ${parseInt(document.getElementById ('stock').value)}
                         }) {
                             nombre
                         }
@@ -67,13 +70,12 @@
             method: "POST",
             body: JSON.stringify(graphqlQuery)
         }
-
-        console.log(document.getElementById ('nombre').value)
-
         fetch('/graphql', options)
             .then(data=> data.json() )
             .then(json=> console.log(json))
             .catch(err=>console.log('fetch() failed'))
     }
+
+
 </script>
 </html>
