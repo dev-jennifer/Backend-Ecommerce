@@ -1,0 +1,13 @@
+{ "type":"module",
+  "name": "desafio-clase-47-deno",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.tsx",
+  "scripts": {
+      "start": "deno run --allow-net server.tsx",
+      "start:clean": "deno run --allow-net --allow-read --unstable --reload server.tsx -c tsconfig.json",
+      "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
