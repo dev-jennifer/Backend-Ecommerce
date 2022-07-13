@@ -4,11 +4,8 @@ async function sendEmail(newUser) {
  
     const templateFile = 'templateRegistration',
       toEmail = newUser.email,
-      subject = 'Nueva Usuario',
-
+      subject = 'Nuevo Usuario',
       info = {name:newUser.name};
-
-      console.log("INFO", info);
 
    return await send(templateFile,  subject, info);
 }

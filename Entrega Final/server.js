@@ -17,9 +17,7 @@ const express = require('express'),
   exphbs = require('express-handlebars'),
   cors = require('cors');
 
-  RequestViews=require("./src/request/requestProduct")
 require('./src/passport/local-auth');
-
 
 // const Handlebars = require('handlebars');
 const { Server: HttpServer } = require('http');
@@ -30,7 +28,7 @@ const RouterProduct = require('./src/routes/products.router'),
   RouterOrder = require('./src/routes/order.router'),
   RouterUser = require('./src/routes/user.router'),
   RouterEmail = require('./src/routes/email.router'),
-RouterViews=require("./src/routes/views.router")
+  RouterViews = require('./src/routes/views.router');
 
 const app = express();
 
@@ -45,17 +43,14 @@ app.use('/uploads', express.static('uploads'));
 app.engine(
   '.hbs',
   exphbs.engine({
+    helpers: require('./public/js/helpers.js').helpers,
     extname: '.hbs',
-    defaultLayout: 'main',
     partialsDir: path.join(__dirname, 'public/views/partials'),
     layoutsDir: path.join(__dirname, 'public/views/layouts'),
   })
 );
 app.set('view engine', '.hbs');
-
- 
-
-  app.set('views', path.join(__dirname, 'public/views'));
+app.set('views', path.join(__dirname, 'public/views'));
 app.use(express.static('public'));
 
 app.use(express.json());
@@ -72,18 +67,17 @@ if (config.SRV.entorno == 'development') {
       origin: 'http://localhost:8080',
       optionsSucessStatus: 200,
       methods: 'GET, PUT, POST',
-      
     })
   );
 }
 
-
 //----------COOKIES------------//
 app.use(cookieParser());
 const MongoStore = connectMongo.create({
-  mongoUrl:config.MONGO_DB.MONGO_CONNECT.url,
+  mongoUrl: config.MONGO_DB.MONGO_CONNECT.url,
   ttl: 3000,
 });
+const oneDay = 1000 * 60 * 60 * 24;
 app.use(
   session({
     store: MongoStore,
@@ -91,6 +85,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     rolling: true,
+    cookie: { maxAge: oneDay },
   })
 );
 //----------------------//
@@ -98,41 +93,43 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-app.use((req,res, next) => {
+app.use((req, res, next) => {
   app.locals.signinMessage = req.flash('signinMessage');
   app.locals.signupMessage = req.flash('signupMessage');
   app.locals.user = req.user;
+
   next();
 });
-
 app.use(function (req, res, next) {
   res.locals.session = req.session;
   next();
 });
+
+//---------VIEWS----------///
+
+app.use('/', new RouterViews().start());
 
 //---------ROUTER----------///
 app.use('/api/productos', new RouterProduct().start());
 app.use('/api/carrito', new RouterCart().start());
 app.use('/api/pedido', new RouterOrder().start());
 app.use('/template/email', new RouterEmail().start());
-app.use('/user', new RouterUser().start());
+app.use('/', new RouterUser().start());
 
+// app.get('/*', (req, res) => {
+//   res.status(400).json({
+//     msg: "error : 404, descripcion: ruta  no implementada",
+//   });
+// });
 
-
-//---------VIEWS----------///
-app.use('/', new RouterViews().start())
-
-
-//ARREGLAR
-app.get('/chat', (req, res) => {
-  res.render('chat');
-});
 /* ---------------------- Servidor ----------------------*/
 
 const httpServer = new HttpServer(app);
 const io = new IOServer(httpServer);
+app.get('/chat', (req, res) => {
+  res.render('chat');
+});
 
- 
 /*============================[Mensaje Socket]============================*/
 io.on('connection', async (socket) => {
   console.log(`Nuevo cliente conectado ${socket.id}`);

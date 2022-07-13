@@ -9,7 +9,7 @@ body {
   background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
 }
 .row {
-  margin-top: 50px;
+  margin-top: 20px;
 }
 
 h1,
@@ -358,7 +358,7 @@ a.buy-btn:focus {
   opacity: 0.9;
 }
 
-@media screen and (min-width: 992px) {
+ 
   .card {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -417,7 +417,7 @@ a.buy-btn:focus {
   .form button {
     text-transform: uppercase;
     outline: 0;
-    background: #4b6cb7;
+    background: #3a404c;
     width: 100%;
     border: 0;
     border-radius: 5px;
@@ -431,7 +431,7 @@ a.buy-btn:focus {
   .form input#submit {
     text-transform: uppercase;
     outline: 0;
-    background: #4b6cb7;
+    background: #3a404c;
     width: 100%;
     border: 0;
     border-radius: 5px;
@@ -449,7 +449,7 @@ a.buy-btn:focus {
   .form button:active {
     background: #395591;
   }
-}
+ 
 input#country {
   display: none;
 }
@@ -462,14 +462,15 @@ input#country {
   margin: auto;
 }
 
-span#message{
-    color: red;
-    font-weight: 600;
+span#message {
+  color: red;
+  font-weight: 600;
 }
 @media only screen and (max-width: 767px) {
   h1 {
     text-align: center;
   }
+
   .user-profile {
     max-width: 550px;
     margin: 0 auto;
@@ -479,4 +480,84 @@ span#message{
     display: block;
     margin-bottom: 20px;
   }
+}
+
+#Menu {
+  display: block;
+  font: 0.85em arial;
+  clear: both;
+  background: #e3e3e3;
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
+ul,
+li {
+  list-style-type: none;
+  display: inline-flex;
+}
+.navbar-nav {
+  display: unset;
+}
+.top-bar {
+  padding: 15px;
+  color: black;
+  display: inline-flex;
+}
+.nav-link {
+  margin: 0 10px;
+}
+#Menu ul {
+  padding: 0;
+  list-style-type: none;
+  text-align: center; /* set to left, center, or right to align the tabs as desired */
+}
+
+#Menu ul li {
+  font-size: 12px;
+  margin: 2px; /* height distance between tabs */
+}
+
+#Menu ul li a {
+  display: block;
+  font-size: 12px;
+  text-decoration: none;
+  padding: 15px 15px;
+  color: #000000;
+  background: #f1f1f1;
+  text-transform: uppercase;
+}
+
+#Menu ul li a:hover {
+  font-size: 12px;
+  color: #ffffff;
+  background: #4b6cb7; /* tab hover color */
+}
+#Menu span {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 40px;
+  display: block;
+  text-transform: uppercase;
+}
+
+.loginBtnfacebook {
+  background: #0062cc;
+  color: white;
+  width: 200px;
+
+}
+.loginBtnfacebook:hover{
+  background: black;
+  color: white;
+}
+.loginBtngoogle {
+  margin-top:20px;
+  background: #bf2323;
+  color: white;
+  width: 200px;
+}
+.loginBtngoogle:hover{
+  background: black;
+  color: white;
 }

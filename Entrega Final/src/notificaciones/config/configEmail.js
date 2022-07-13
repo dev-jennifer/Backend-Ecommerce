@@ -1,13 +1,13 @@
 const nodemailer = require('nodemailer');
 const request = require('request');
-const CONFIG = require('../../src/utils/config');
+const CONFIG = require('../../utils/config');
 
 function send(templateFile,  subject, info) {
   console.log('DATA', info);
   let options = {
     uri: `http://localhost:8080/template/email/${templateFile}`,
     method: 'POST',
-    json: info,
+    json: info
   };
   request(options, async function (error, response, body) {
     if (error) console.log(error);

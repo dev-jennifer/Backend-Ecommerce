@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const sendEmail = require('../../notificaciones/emails/Registration/newUser');
+const sendEmail = require('../notificaciones/emails/Registration/newUser');
 const CustomError = require('../classes/CustomError.class');
 const logger = require('../utils/loggers');
 const UserFactory = require('../classes/User/UserFactory.class');
@@ -8,37 +8,30 @@ class UserController {
   constructor() {
     this.userDAO = UserFactory.get();
   }
-  renderRegisterForm = async (req, res) => {
+  renderAuth = (req, res) => {
     if (req.isAuthenticated()) {
       res.redirect('/productos');
     }
-    res.render('register', {
-      title: 'Auth',
-      layout: 'index',
-      newUser: this.userDAO,
-    });
-  };
-
-  renderLoginForm = async (req, res) => {
-    if (req.isAuthenticated()) {
-      res.redirect('/productos');
-    }
-    res.render('index', { title: 'Auth' });
-  };
-
-  renderLogOut = (req, res) => {
-    req.logout();
-    req.session.destroy();
-    // req.flash('success', 'You are logged out');
-    res.redirect('/login');
   };
 
   renderProfile = (req, res) => {
-    console.log('REQ', req.user);
-    res.render('profile', { title: 'Profile' });
+    console.log(req.user.toJSON());
+    res.render('profile', { user: req.user.toJSON() });
   };
+
+  renderLogOut = (req, res, next) => {
+    try {
+      req.session.destroy((err) => {
+        res.redirect('/');
+        if (err) next(err);
+      });
+    } catch (error) {
+      logger.error('Error al cerrar sesion', error);
+    }
+  };
+
   register = async (req, email, password, done) => {
-    const user = await this.userDAO.existUser(email);
+    const user = await this.userDAO.mostrarId('email', email);
 
     if (user) {
       return done(
@@ -64,6 +57,7 @@ class UserController {
         address: req.body.address,
         age: req.body.age,
         avatar: req.file.filename,
+        membershipID: 2,
       };
 
       await this.userDAO.guardar(newUserRegister);
@@ -72,24 +66,33 @@ class UserController {
   };
 
   existPassport = async (email) => {
-    const user = await this.userDAO.existUser(email);
-    console.log('user', user);
+    const user = await this.userDAO.mostrarId('email', email);
+
     return user;
   };
+  editProfile = async (req, res) => {
+    const id = req.params.id;
+    const body = req.body;
 
+    try {
+      await this.userDAO.actualizar(id, body);
+      res.status(200).send('Perfil actualizado');
+    } catch (error) {
+      res.status(400).send('Status: No se ha podido actualizar');
+    }
+  };
   login = async (req, email, password, done) => {
     try {
       const user = await this.userDAO.mostrarId('email', email);
+
       if (!user) {
         return done(null, false, req.flash('signinMessage', 'No User Found'));
       }
 
       bcrypt.compare(password, user.password, function (err, result) {
         if (result == true) {
-          console.log('USEROK', user);
           return done(null, user);
         } else {
-          console.log('false');
           return done(
             null,
             false,

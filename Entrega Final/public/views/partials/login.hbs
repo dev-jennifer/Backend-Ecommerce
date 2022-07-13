@@ -6,22 +6,27 @@
   {{/if}}
   <div class="login">
     <div class="form">
-      <form action="/login" method="post">
+      <form action="/signin" method="post">
         <span>
           Acceso
         </span>
         <input type="email" name="email" placeholder="Email" />
         <input type="password" name="password" placeholder="Password" />
         <button type="submit">
-          SignIn
+          Iniciar Sesión
         </button>
       </form>
       <br />
-      <a href="/auth/facebook" class="btn btn-primary">
-        <span class="fa fa-facebook"></span>
 
-        Login con Facebook
-      </a>
+      <div>
+        <a class="btn loginBtnfacebook" href="/auth/facebook">
+          Login with Facebook
+        </a>
+<br />
+        <a class="btn loginBtngoogle" href="/auth/google">
+          Login with Google
+        </a>
+      </div>
     </div>
   </div>
 </div>

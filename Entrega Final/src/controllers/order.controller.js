@@ -1,5 +1,5 @@
-const  msgSend = require('../../notificaciones/config/msjConfig'),
-  newOrderEmail = require('../../notificaciones/emails/Order/newOrder'),
+const  msgSend = require('../notificaciones/config/msjConfig'),
+  newOrderEmail = require('../notificaciones/emails/Order/newOrder'),
   UserController = require('../controllers/user.controller'),
   CartController = require('../controllers/cart.controller'), 
   logger = require('../utils/loggers.js'),

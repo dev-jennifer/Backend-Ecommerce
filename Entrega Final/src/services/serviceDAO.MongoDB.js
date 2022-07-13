@@ -30,7 +30,7 @@ class ServiceDAOMongoDB extends DAO {
       );
       logger.error(errorCustom);
     } finally {
-      this.conn.disconnect();
+      //   this.conn.disconnect();
       logger.info(`Elementos listados ${response.length}`);
     }
   };
@@ -49,7 +49,7 @@ class ServiceDAOMongoDB extends DAO {
       );
       logger.error(errorCustom);
     } finally {
-     //    this.conn.disconnect();
+      //    this.conn.disconnect();
       logger.info(`Elemento guardado`);
     }
   };
@@ -78,14 +78,63 @@ class ServiceDAOMongoDB extends DAO {
     } else {
       condition;
     }
-
+    let result;
     try {
       await this.conn.connect();
-      let doc = await this.coleccion.findOne({ [condition]: id });
+        result = await this.coleccion.findOne({ [condition]: id });
+      return result;
+    } catch (error) {
+      result = [];
+      const errorCustom = new APIError(
+        `NOT FOUND mostrar id: ${id}`,
+        httpStatusCodes.NOT_FOUND,
+        true,
+        `${error}`
+      );
+      logger.error(errorCustom);
+    } finally {
+      await this.conn.disconnect();
+    }
+  };
+
+  mostrarCategoria = async (id) => {
+    try {
+      await this.conn.connect();
+      let doc = await this.coleccion.find({ categoria: id });
       return doc;
     } catch (error) {
       const errorCustom = new APIError(
         `NOT FOUND mostrar id: ${id}`,
+        httpStatusCodes.NOT_FOUND,
+        true,
+        `${error}`
+      );
+      logger.error(errorCustom);
+    }
+  };
+
+  mostrarTodasCategorias = async () => {
+    try {
+      await this.conn.connect();
+      let cat = await this.coleccion.distinct('categoria');
+      return cat;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      this.conn.disconnect();
+    }
+  };
+
+  actualizar = async (id, body) => {
+    try {
+      await this.conn.connect();
+      console.log(id);
+      console.log(body);
+      let doc = await this.coleccion.updateOne({ _id: id }, { $set: body });
+      return doc;
+    } catch (error) {
+      const errorCustom = new APIError(
+        `Error al actualizar: ${id}`,
         httpStatusCodes.NOT_FOUND,
         true,
         `${error}`
@@ -96,35 +145,19 @@ class ServiceDAOMongoDB extends DAO {
     }
   };
 
-  existUser = async (email) => {
+  actualizarCart = async (buyerID, body) => {
     try {
       await this.conn.connect();
-      let doc = await this.coleccion.findOne({ email: email });
-      console.log('DOC', doc);
-      return doc;
-    } catch (error) {
-      const errorCustom = new APIError(
-        `NOT FOUND exist user email: ${id}`,
-        httpStatusCodes.NOT_FOUND,
-        true,
-        `${error}`
-      );
-      logger.error(errorCustom);
-    }
-  };
-
-  actualizar = async ( id, body) => {
-    try {
-      await this.conn.connect();
-      console.log(id)
-            console.log(body);
-      let doc = await this.coleccion.updateOne({_id:id}, 
+      console.log(id);
+      console.log(body);
+      let doc = await this.coleccion.updateOne(
+        { buyerID: buyerID },
         { $set: body }
       );
       return doc;
     } catch (error) {
       const errorCustom = new APIError(
-        `Error al actualizar: ${id}`,
+        `Error al actualizar buyerID: ${buyerID}`,
         httpStatusCodes.NOT_FOUND,
         true,
         `${error}`

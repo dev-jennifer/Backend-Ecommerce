@@ -11,29 +11,56 @@ class RouterUser {
   }
   start() {
     router.post(
-      '/register',
+      '/signup',
       middleware,
       passport.authenticate('local-signup', {
-        successRedirect: '/api/productos',
-        failureRedirect: '/register',
+        successRedirect: '/productos',
+        failureRedirect: '/',
         failureFlash: true,
       })
     );
 
-    router.post('/login', function (req, res, next) {
+    router.post('/signin', function (req, res, next) {
       passport.authenticate('local-signin', {
-        // A error also means, an unsuccessful login attempt
-
-        successRedirect: '/api/productos',
-        failureRedirect: '/login',
+        successRedirect: '/productos',
+        failureRedirect: '/',
         failureFlash: true,
       })(req, res, next);
     });
+    router.get(
+      '/auth/facebook',
+      passport.authenticate('facebook', { scope: ['public_profile', 'email'] })
+    );
+  
+    router.get(
+      '/auth/facebook/callback',
+      passport.authenticate('facebook', {
+        failureRedirect: '/',
+        successRedirect: '/productos',
+        authType: 'reauthenticate',
+      })
+    );
 
-    router.get('/register', this.controlador.renderRegisterForm);
+
+
+    router.get(
+      '/auth/google',
+      passport.authenticate('google', { scope: ['email', 'profile'] })
+    );
+
+    router.get(
+      '/auth/google/callback',
+      passport.authenticate('google', {
+        successRedirect: '/productos',
+        failureRedirect: '/',
+      })
+    );
+
+    router.get('/', isAuthenticated, this.controlador.renderAuth);
     router.get('/profile', isAuthenticated, this.controlador.renderProfile);
-    router.get('/login', this.controlador.renderLoginForm);
     router.get('/logout', this.controlador.renderLogOut);
+    router.put('/profile/:id', this.controlador.editProfile);
+
     return router;
   }
 }

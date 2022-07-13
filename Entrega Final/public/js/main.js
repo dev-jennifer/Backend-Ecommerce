@@ -218,6 +218,9 @@ async function actualizarOrder() {
       document.getElementById('confirm_password').value
     ) {
       document.getElementById('submit').disabled = false;
+       document.getElementById('message').innerHTML =
+        ' ';
+ 
     } else {
       document.getElementById('submit').disabled = true;
       document.getElementById('message').innerHTML =
@@ -225,3 +228,34 @@ async function actualizarOrder() {
     }
   }
  
+
+
+  async function actualizarProfile(value) {
+    console.log(value)
+    const name = document.getElementById('first_name').value;
+    const lastName = document.getElementById('last_name').value;
+    const age = document.getElementById('age').value;
+    const phone = document.getElementById('phone').value;
+    const address = document.getElementById('location').value;
+
+    await fetch(`/profile/${value}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        lastName,
+        age,
+        phone,
+        address,
+      }),
+    })
+      .then((response) => {
+        if (response) {
+          window.location.href = '/profile';
+        }
+      })
+
+      .catch((error) => {
+        console.log(error);
+      });
+  }

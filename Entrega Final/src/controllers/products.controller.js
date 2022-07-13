@@ -1,7 +1,7 @@
 const ProductDTO = require('../classes/Products/ProductsDTO.class');
 const ProductDAOFactory = require('../classes/Products/ProductDAOFactory.class');
 const logger = '../utils/loggers.js';
-let admin = true;
+
 
 class ProductsController {
   constructor() {
@@ -16,10 +16,23 @@ class ProductsController {
     return productos;
   };
 
+  categories = async () => {
+    const cat = await this.ProductsDAO.mostrarTodasCategorias();
+    return cat;
+  };
+
   productId = async (id) => {
     const doc = await this.ProductsDAO.mostrarId('id', id);
     const productsDto = new ProductDTO(doc);
     return productsDto;
+  };
+
+  productCategory = async (id) => {
+    const docs = await this.ProductsDAO.mostrarCategoria(id);
+    const productos = docs.map((p) => {
+      return new ProductDTO(p);
+    });
+    return productos;
   };
 
   ///////PRINT JSON////////
@@ -42,6 +55,17 @@ class ProductsController {
     }
   };
 
+  getCategoriaId = async (req, res) => {
+    const id = req.params.id;
+    try {
+      res.status(200).json({
+        producto: await this.ProductsDAO.mostrarCategoria(id),
+      });
+    } catch (error) {
+      logger.error('Error al renderizar categoria Id:', error);
+      res.status(404).send('Status: Not Found');
+    }
+  };
 
   // showID = async (itemId) => {
   //   // const product = await this.ProductsDAO.mostrarId('id', itemId);

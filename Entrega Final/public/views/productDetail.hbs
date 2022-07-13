@@ -68,10 +68,11 @@
                 Add to Cart
               </i>
             </button>
-
+           {{#when session.passport.user.membership 'eq' 1 }}
             <button type="button" class="btn" onclick="edit('{{producto.id}}')">
               Editar
             </button>
+           {{/when}}
           </div>
         </div>
       </div>

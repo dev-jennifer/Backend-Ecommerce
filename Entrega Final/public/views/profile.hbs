@@ -1,21 +1,37 @@
-<section class="user-profile">
+ <section class="user-profile">
   <div class="container">
   <div class="row">
     <div class="col-sm-12"><h1>Perfil de usuario</h1></div>
     <div class="row">
       <div class="col-sm-3">
         <div class="text-center">
-       <img alt="profile" class="avatar img-circle img-thumbnail" src="./uploads/{{user.avatar}}">
-     
+          {{#when user.ref 'eq' 'Facebook'}}
+ 
+          <img alt="profile" class="avatar img-circle img-thumbnail" src="{{user.avatar}}">
+              {{else}}
+                    <img
+                  alt="profile"
+                  class="avatar img-circle img-thumbnail"
+                  src="./uploads/{{user.avatar}}"
+                />
+           {{/when}}
+ 
+
           {{!-- <h6>Upload a different photo...</h6>
           <input type="file" class="text-center center-block file-upload" /> --}}
         </div>
       </div>
       <!--/col-3-->
       <div class="col-sm-9">
+
+
+
         <div class="tab-content">
-          <form class="form" action="##" method="post" id="registrationForm">
+         {{#if user}}
+ 
+          <form class="form"  id="registrationForm" data-id={{id}}>
             <div class="form-group">
+           
               <div class="col-sm-12">
                 <label for="first_name"><h4>First name</h4></label>
                 <input
@@ -23,9 +39,8 @@
                   class="form-control"
                   name="first_name"
                   id="first_name"
-                  value ={{user.name}}
-                  title="enter your first name if any."
-                />
+                 value="{{user.name}}"
+               />
               </div>
  
               <div class="col-sm-12">
@@ -35,8 +50,7 @@
                   class="form-control"
                   name="last_name"
                   id="last_name"
-                  value={{user.lastName}}
-                  title="enter your last name if any."
+                  value="{{user.lastName}}"
                 />
               </div>
             </div>
@@ -48,33 +62,20 @@
                   class="form-control"
                   name="number"
                   id="age"
-                  value=  {{user.age}}
-                  title="enter your phone number if any."
+                  value=  "{{user.age}}"
                 />
               </div>
  
               <div class="col-sm-12">
-                <label for="mobile"><h4>Mobile</h4></label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="mobile"
-                  id="mobile"
-                  value={{user.phone}} 
-                  title="enter your mobile number if any."
-                />
+                <label for="phone"><h4>Phone</h4></label>
+                  <input id="phone" type="tel" name="phone" value="{{user.phone}}" />
+                 
               </div>
-   
+  
               <div class="col-sm-12">
                 <label for="email"><h4>Email</h4></label>
-                <input
-                  type="email"
-                  class="form-control"
-                  name="email"
-                  id="email"
-                  value={{user.email}}
- 
-                />
+                <p>{{user.email}}</p>
+                  
               </div>
             </div>
             <div class="form-group">
@@ -84,56 +85,23 @@
                   type="email"
                   class="form-control"
                   id="location"
-                  value={{user.address  }}
-                  title="enter a location"
-                />
+                  value="{{user.address}}" />
               </div>
 
-              {{!-- <div class="col-sm-6">
-                <label for="password"><h4>Password</h4></label>
-                <input
-                  type="password"
-                  class="form-control"
-                  name="password"
-                  id="password"
-                  value="password"
-                  title="enter your password."
-                />
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="col-sm-6">
-                <label for="password2"><h4>Verify</h4></label>
-                <input
-                  type="password"
-                  class="form-control"
-                  name="password2"
-                  id="password2"
-                  value="password2"
-                  title="enter your password2."
-                />
-              </div> --}}
-    
-            
-            {{!-- <div class="form-group">
-              <div class="col-sm-12">
-                <br />
-                <button class="btn btn-lg btn-success" type="submit">
-                  <i class="glyphicon glyphicon-ok-sign"></i> Save
-                </button>
-                <button class="btn btn-lg" type="reset">
-                  <i class="glyphicon glyphicon-repeat"></i> Reset
-                </button>
-              </div>
-            </div> --}}
+         
+            <a class="btn btn-primary" onclick="actualizarProfile('{{user._id}}')">
+              Actualizar
+            </a>
+
           </form>
+
+          {{/if}}
         </div>
-        <!--/tab-content-->
+
       </div>
-      <!--/col-9-->
     </div>
-    <!--/row-->
   </div>
 </div>  
 </section>
 
+ 

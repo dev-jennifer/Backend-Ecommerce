@@ -8,12 +8,6 @@ class UserDAOFactory {
         console.log('Persistencia: ', config.SRV.persistencia);
         return new UserDAOMongoDB();
 
-      case 'file':
-        return new UserDAOFile();
-
-      case 'memory':
-        return new UserDAOMemory();
-
       default:
         return new UserDAOMongoDB();
     }

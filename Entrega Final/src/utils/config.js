@@ -1,14 +1,14 @@
 const dotenv = require('dotenv');
-const path=require("path")
+const path = require('path');
 dotenv.config({
-   silent: process.env.NODE_ENV === 'production' ,
+  silent: process.env.NODE_ENV === 'production',
   // path: path.resolve(process.cwd(), process.env.NODE_ENV + '.env')
 });
 
 module.exports = {
   MONGO_DB: {
     MONGO_CONNECT: {
-      db:process.env.DB_NAME,
+      db: process.env.DB_NAME,
       url: process.env.MONGOURL,
       options: {
         useNewUrlParser: true,
@@ -47,5 +47,13 @@ module.exports = {
     logger: process.env.LOG || 'DEV',
     persistencia: process.env.PERSISTENCIA || 'mongodb',
   },
-};
 
+  FACEBOOK: {
+    FACE_APP_ID: process.env.FACEBOOK_APP_ID,
+    FACE_APP_SECRET: process.env.FACEBOOK_APP_SECRET,
+  },
+  GOOGLE: {
+    GOOGLE_ID: process.env.GOOGLE_ID,
+    GOOGLE_SECRET: process.env.SECRET_ID,
+  },
+};
