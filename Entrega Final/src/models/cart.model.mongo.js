@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
-const ObjectID = mongoose.Schema.Types.ObjectId;
+ 
 
 const CartSchema = mongoose.Schema({
   buyerID: {
     type: String,
-    required: true,
     ref: 'User',
   },
   items: [
@@ -25,8 +24,8 @@ const CartSchema = mongoose.Schema({
     required: true,
     default: 0,
   },
-
-  timestamps: String,
+  shippingAddress: String,
+  timestamps: String
 });
 
 const CartModel = mongoose.model('cart', CartSchema);

@@ -75,7 +75,7 @@ if (config.SRV.entorno == 'development') {
 app.use(cookieParser());
 const MongoStore = connectMongo.create({
   mongoUrl: config.MONGO_DB.MONGO_CONNECT.url,
-  ttl: 3000,
+  ttl: 30000,
 });
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(

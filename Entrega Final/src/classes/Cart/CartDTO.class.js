@@ -1,10 +1,12 @@
-function CartDTO(id,items, buyerID,total, timestamps) {
+function CartDTO(shippingAddress, items, buyerID, total, timestamps) {
   return {
-    id,
+    shippingAddress,
     items,
     buyerID,
     total,
     timestamps,
   };
+
+  
 }
 module.exports = CartDTO;

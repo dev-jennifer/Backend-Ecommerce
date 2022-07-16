@@ -2,7 +2,7 @@
 
 ///PRODUCTOS
 async function detail(value) {
- console.log("VALUE",value)
+  console.log('VALUE', value);
   await fetch(`/api/productos/${value}`, { method: 'GET' })
     .then(function (response) {
       if (response.ok) {
@@ -48,7 +48,7 @@ async function actualizar(value) {
   let precio = document.getElementById('precio').value;
   let stock = document.getElementById('stock').value;
 
-    await fetch(`/api/productos/${value}`, {
+  await fetch(`/api/productos/${value}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -60,12 +60,12 @@ async function actualizar(value) {
       stock,
     }),
   })
-    .then((response)=>{         
-        if(response){
-            window.location.href = "/productos";
-        }
-    })   
- 
+    .then((response) => {
+      if (response) {
+        window.location.href = '/productos';
+      }
+    })
+
     .catch((error) => {
       console.log(error);
     });
@@ -73,8 +73,9 @@ async function actualizar(value) {
 
 /* ---------------------- Cart ----------------------*/
 async function agregar(idProducto) {
-  console.log("PRODUCTOP", idProducto)
-  if (!localStorage.getItem('my_token')) {
+  const idCart = localStorage.getItem('my_token');
+
+  if (!idCart) {
     await fetch('/api/carrito/', {
       method: 'POST',
     })
@@ -82,32 +83,20 @@ async function agregar(idProducto) {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
-        const id = data.cart.buyerID;
+        const id = data.cart._id;
         localStorage.setItem('my_token', id);
-
-        return fetch(`/api/carrito/${id}/productos/${idProducto}`, {
+        fetch(`/api/carrito/${id}/productos/${idProducto}`, {
           method: 'POST',
         });
       })
       .catch((err) => {
         console.error('Request failed', err);
-      })
-      .finally(()=>{
-        
-          const idCart = window.localStorage.getItem('my_token');
-        fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
-        method: 'POST',
       });
-      })}else{
-
-            const idCart = window.localStorage.getItem('my_token');
-            fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
-              method: 'POST',
-            });
+  } else {
+    fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
+      method: 'POST',
+    });
   }
-
-   
 }
 
 function cart() {
@@ -115,18 +104,42 @@ function cart() {
   localStorage.getItem('my_token')
     ? (idCart = window.localStorage.getItem('my_token'))
     : (idCart = 0);
-  window.location.href = `/api/carrito/${idCart}/productos`;
+  window.location.href = `/carrito/${idCart}`;
 }
 
+async function actualizarCarrito() {
+  const idCart = localStorage.getItem('my_token');
+  const address = document.getElementById('address').value;
+  const email = document.getElementById('email').value;
+
+  await fetch(`/api/carrito/${idCart}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      address,
+      email,
+    }),
+  })
+    .then((response) => {
+      console.log('AQUI', response);
+      if (response) {
+        window.location.href = `/api/pedido/${idCart}`;
+      }
+    })
+
+    .catch((error) => {
+      console.log(error);
+    });
+}
 async function deleteItemCart(idProducto) {
-  console.log(idProducto)
+  console.log(idProducto);
   const idCart = window.localStorage.getItem('my_token');
   await fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
     method: 'DELETE',
   })
     .then(function (response) {
       if (response) {
-        window.location.href = `/api/carrito/${idCart}/productos`;
+        window.location.href = `/carrito/${idCart}`;
       }
     })
     .catch(function (error) {
@@ -142,14 +155,13 @@ async function borrarCarrito() {
     .then(function (response) {
       if (response) {
         console.log('Carrito Eliminado');
-        window.location.href = `/api/carrito/${idCart}/productos`;
+        window.location.href = `/carrito/${idCart}`;
       }
     })
     .catch(function (error) {
       console.log(error);
     });
 }
-
 
 async function comprar() {
   const idCart = window.localStorage.getItem('my_token');
@@ -210,52 +222,48 @@ async function actualizarOrder() {
       console.log(error);
     });
 }
- 
-  //login
-  function check_pass() {
-    if (
-      document.getElementById('password').value ==
-      document.getElementById('confirm_password').value
-    ) {
-      document.getElementById('submit').disabled = false;
-       document.getElementById('message').innerHTML =
-        ' ';
- 
-    } else {
-      document.getElementById('submit').disabled = true;
-      document.getElementById('message').innerHTML =
-        'Las contraseñas no coinciden';
-    }
+
+//login
+function check_pass() {
+  if (
+    document.getElementById('password').value ==
+    document.getElementById('confirm_password').value
+  ) {
+    document.getElementById('submit').disabled = false;
+    document.getElementById('message').innerHTML = ' ';
+  } else {
+    document.getElementById('submit').disabled = true;
+    document.getElementById('message').innerHTML =
+      'Las contraseñas no coinciden';
   }
- 
+}
 
+async function actualizarProfile(value) {
+  console.log(value);
+  const name = document.getElementById('first_name').value;
+  const lastName = document.getElementById('last_name').value;
+  const age = document.getElementById('age').value;
+  const phone = document.getElementById('phone').value;
+  const address = document.getElementById('location').value;
 
-  async function actualizarProfile(value) {
-    console.log(value)
-    const name = document.getElementById('first_name').value;
-    const lastName = document.getElementById('last_name').value;
-    const age = document.getElementById('age').value;
-    const phone = document.getElementById('phone').value;
-    const address = document.getElementById('location').value;
-
-    await fetch(`/profile/${value}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name,
-        lastName,
-        age,
-        phone,
-        address,
-      }),
+  await fetch(`/profile/${value}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name,
+      lastName,
+      age,
+      phone,
+      address,
+    }),
+  })
+    .then((response) => {
+      if (response) {
+        window.location.href = '/profile';
+      }
     })
-      .then((response) => {
-        if (response) {
-          window.location.href = '/profile';
-        }
-      })
 
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+    .catch((error) => {
+      console.log(error);
+    });
+}

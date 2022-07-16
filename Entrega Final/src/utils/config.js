@@ -13,16 +13,10 @@ module.exports = {
       options: {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        serverSelectionTimeoutMS: 5000,
       },
     },
     // MONGO_URI: `mongodb://${process.env.DB_USER || 'localhost'}:${
     //   process.env.PORTDB || 27017 } /${process.env.DB_NAME_P}`,
-    OPTIONS: {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000,
-    },
   },
 
   EMAIL: {

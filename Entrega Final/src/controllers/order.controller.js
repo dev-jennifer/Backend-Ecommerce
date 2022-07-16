@@ -20,7 +20,7 @@ class OrderController {
   getCartOrder = async (req, res) => {
     const idCart = req.params.id;
     const cart = await this.cart.getCartOrder(idCart);
-
+console.log('cart', cart.items);
     res.render('order', { title: 'Orden', producto: cart.items });
   };
 

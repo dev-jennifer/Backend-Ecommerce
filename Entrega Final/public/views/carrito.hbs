@@ -1,5 +1,6 @@
 <h1>Carrito </h1>
-{{#if producto.length}}
+ 
+{{#if producto}}
 <div class="vh-100 d-flex justify-content-center align-items-center">
   <table class="table">
     <thead>
@@ -12,18 +13,36 @@
       </tr>
     </thead>
     <tbody>
-
-
       {{> carritoDetalle}}
-
-
     </tbody>
   </table>
+  </div>
 
-</div>
-<button onclick="borrarCarrito()">Borrar todo</button>
+<button onclick="borrarCarrito()">
+  Borrar todo
+</button>
+    {{#if session.passport.user}}
+    <button onclick="comprar()">
+  Continuar Compra
+</button>
 
-<button onclick="comprar()">Continuar Compra</button>
+    {{else}}
+      <div class="form">
+        <form>
+          <input name="email" id="email" type="email" placeholder="email" required />
+          <input name="address" id="address" type="text" placeholder="address" required/>
+          <input
+            type="submit"
+            onclick="actualizarCarrito()"
+            value="Continuar Compra"
+            id="submit"
+          />
+        </form>
+      </div>
+    {{/if}}
+
+
+
 {{else}}
 
 

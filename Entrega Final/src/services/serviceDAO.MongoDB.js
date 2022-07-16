@@ -57,7 +57,7 @@ class ServiceDAOMongoDB extends DAO {
   eliminar = async (condicion, id) => {
     try {
       await this.conn.connect();
-      await this.coleccion.deleteOne({ [condicion]: id });
+      return await this.coleccion.deleteOne({ [condicion]: id });
     } catch (error) {
       const errorCustom = new APIError(
         `Error al eliminar id ${id}`,
@@ -72,30 +72,43 @@ class ServiceDAOMongoDB extends DAO {
     }
   };
 
-  mostrarId = async (condition, id) => {
-    if (condition == 'id' || null) {
-      condition = '_id';
-    } else {
-      condition;
-    }
-    let result;
-    try {
-      await this.conn.connect();
-        result = await this.coleccion.findOne({ [condition]: id });
-      return result;
-    } catch (error) {
-      result = [];
-      const errorCustom = new APIError(
-        `NOT FOUND mostrar id: ${id}`,
-        httpStatusCodes.NOT_FOUND,
-        true,
-        `${error}`
-      );
-      logger.error(errorCustom);
-    } finally {
-      await this.conn.disconnect();
+  mostrarId = async (id) => {
+    const client = await this.conn.connect().catch((err) => {
+      console.log('Error while connecting to db', err);
+    });
+    if (client) {
+      try {
+        let doc = await this.coleccion.findOne({ _id: id });
+        return doc;
+      } catch (error) {
+        console.log('Error while fetching single record::', error);
+     
+      } finally {
+        this.conn.disconnect();
+      }
     }
   };
+
+  // mostrarId = async (id) => {
+  //   return await this.conn
+  //     .connect()
+  //     .then(() => {
+  //       return this.coleccion.findOne({ _id: id });
+  //     })
+
+  //     .catch((error) => {
+  //       const errorCustom = new APIError(
+  //         `NOT FOUND mostrar id: ${id}`,
+  //         httpStatusCodes.NOT_FOUND,
+  //         true,
+  //         `${error}`
+  //       );
+  //       logger.error(errorCustom);
+  //     })
+  //     .finally(() => {
+  //       this.conn.disconnect();
+  //     });
+  // };
 
   mostrarCategoria = async (id) => {
     try {
@@ -126,47 +139,55 @@ class ServiceDAOMongoDB extends DAO {
   };
 
   actualizar = async (id, body) => {
-    try {
-      await this.conn.connect();
-      console.log(id);
-      console.log(body);
-      let doc = await this.coleccion.updateOne({ _id: id }, { $set: body });
-      return doc;
-    } catch (error) {
-      const errorCustom = new APIError(
+    const client = await this.conn.connect().catch((err) => {
+      return new APIError(
         `Error al actualizar: ${id}`,
         httpStatusCodes.NOT_FOUND,
         true,
-        `${error}`
+        `${err}`
       );
-      logger.error(errorCustom);
-    } finally {
-      this.conn.disconnect();
-    }
-  };
+    });
+    if (client) {
+      try {
+        let doc = await this.coleccion.updateOne({ _id: id }, { $set: body });
 
-  actualizarCart = async (buyerID, body) => {
-    try {
-      await this.conn.connect();
-      console.log(id);
-      console.log(body);
-      let doc = await this.coleccion.updateOne(
-        { buyerID: buyerID },
-        { $set: body }
-      );
-      return doc;
-    } catch (error) {
-      const errorCustom = new APIError(
-        `Error al actualizar buyerID: ${buyerID}`,
-        httpStatusCodes.NOT_FOUND,
-        true,
-        `${error}`
-      );
-      logger.error(errorCustom);
-    } finally {
-      this.conn.disconnect();
+        return doc;
+      } catch (error) {
+        console.log('Error while fetching single record::', error);
+        return {
+          status: 0,
+          data: error,
+        };
+      } finally {
+        this.conn.disconnect();
+      }
     }
   };
+  
+ 
+
+  // actualizarCart = async (buyerID, body) => {
+  //   try {
+  //     await this.conn.connect();
+  //     console.log(id);
+  //     console.log(body);
+  //     let doc = await this.coleccion.updateOne(
+  //       { buyerID: buyerID },
+  //       { $set: body }
+  //     );
+  //     return doc;
+  //   } catch (error) {
+  //     const errorCustom = new APIError(
+  //       `Error al actualizar buyerID: ${buyerID}`,
+  //       httpStatusCodes.NOT_FOUND,
+  //       true,
+  //       `${error}`
+  //     );
+  //     logger.error(errorCustom);
+  //   } finally {
+  //     this.conn.disconnect();
+  //   }
+  // };
 }
 
 module.exports = ServiceDAOMongoDB;

@@ -461,7 +461,9 @@ input#country {
   text-align: center;
   margin: auto;
 }
-
+.imgTable{
+  max-width: 50px;
+}
 span#message {
   color: red;
   font-weight: 600;

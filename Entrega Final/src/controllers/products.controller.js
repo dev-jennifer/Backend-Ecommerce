@@ -22,7 +22,7 @@ class ProductsController {
   };
 
   productId = async (id) => {
-    const doc = await this.ProductsDAO.mostrarId('id', id);
+    const doc = await this.ProductsDAO.mostrarId(id);
     const productsDto = new ProductDTO(doc);
     return productsDto;
   };
@@ -107,7 +107,7 @@ class ProductsController {
     if (admin == true) {
       const id = req.params.id;
 
-      await this.ProductsDAO.mostrarId('id', id)
+      await this.ProductsDAO.mostrarId(id)
         .then((result) => {
           res.status(200).json({ title: 'Editar', data: result });
         })

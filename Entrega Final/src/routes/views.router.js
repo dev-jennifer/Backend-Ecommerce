@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const RequestViews = require('../controllers/view.controller');
-const isAdmin=require("../passport/admin")
+const isAdmin = require('../passport/admin');
 
 class RouterViews {
   constructor() {
@@ -15,8 +15,9 @@ class RouterViews {
     router.get('/productos/:id', this.view.getProductId);
     router.get('/productos/edit/:id', isAdmin, this.view.editProductId);
     router.get('/productos/categoria/:id', this.view.getCategoryId);
-
- //   router.get('/*', this.view.notFound);
+    router.get('/carrito/:id', this.view.getCartView);
+    router.get('/pedido/:id', this.view.getOrderView);
+    //   router.get('/*', this.view.notFound);
 
     return router;
   }
