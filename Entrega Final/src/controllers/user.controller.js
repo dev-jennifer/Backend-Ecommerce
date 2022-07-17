@@ -2,7 +2,8 @@ const bcrypt = require('bcrypt');
 const sendEmail = require('../notificaciones/emails/Registration/newUser');
 const CustomError = require('../classes/CustomError.class');
 const logger = require('../utils/loggers');
-const UserFactory = require('../classes/User/UserFactory.class');
+const UserFactory = require('../classes/User/UserFactory.class'),
+  jwt = require('jsonwebtoken'); 
 
 class UserController {
   constructor() {
@@ -81,6 +82,8 @@ class UserController {
       res.status(400).send('Status: No se ha podido actualizar');
     }
   };
+
+  
   login = async (req, email, password, done) => {
     try {
       const user = await this.userDAO.mostrarId('email', email);

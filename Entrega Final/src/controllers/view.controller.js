@@ -1,5 +1,6 @@
 const ProductsController = require('./products.controller');
 const CartController = require('./cart.controller');
+const os =require('os');
 class RequestViews {
   constructor() {
     this.controladorProductos = new ProductsController();
@@ -92,9 +93,39 @@ class RequestViews {
     let cartItem;
     const id = req.params.id;
     const carrito = await this.controladorCarrito.getItemsInCart(id);
-   
 
     res.render('order', { title: 'Orden', producto: carrito.items });
   };
+
+  
+serverInfo= (req, res) => {
+	let argumentos= [];
+   process.argv.forEach((val, index) => {
+    argumentos+=`${index}: ${val}`;
+  });
+ 
+  const folder = process.cwd();
+  const versionNode = process.version;
+  const processId = process.version;
+  const so = process.platform;
+  const memory = process.memoryUsage().rss;
+  const memoryRss = Math.round((memory / 1024 / 1024) * 100) / 100;
+  const pid = process.pid;
+
+
+  res.render("info", {
+    argumentos: argumentos,
+    path: pid,
+    so: so,
+    processId: processId,
+    versionNode: versionNode,
+    folder: folder,
+    memory: memoryRss,
+  });
+ 
+} 
+
+ 
+
 }
 module.exports = RequestViews;

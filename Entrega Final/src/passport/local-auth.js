@@ -10,6 +10,8 @@ const UserController = require('../controllers/user.controller'),
   FacebookStrategy = Strategy,
   GoogleStrategy = require('passport-google-oauth2').Strategy;
 
+
+
 authUser = async (request, accessToken, refreshToken, profile, cb) => {
   const exist = await UserFactory.get().mostrarId(
     'email',

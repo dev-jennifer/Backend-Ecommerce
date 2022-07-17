@@ -16,12 +16,14 @@ const express = require('express'),
   //{ engine } = require('express-handlebars'),
   exphbs = require('express-handlebars'),
   cors = require('cors');
-
 require('./src/passport/local-auth');
 
 // const Handlebars = require('handlebars');
+const app = express();
 const { Server: HttpServer } = require('http');
 const { Server: IOServer } = require('socket.io');
+const httpServer = new HttpServer(app);
+const io = new IOServer(httpServer);
 
 const RouterProduct = require('./src/routes/products.router'),
   RouterCart = require('./src/routes/cart.router'),
@@ -29,8 +31,7 @@ const RouterProduct = require('./src/routes/products.router'),
   RouterUser = require('./src/routes/user.router'),
   RouterEmail = require('./src/routes/email.router'),
   RouterViews = require('./src/routes/views.router');
-
-const app = express();
+RouterChat = require('./src/routes/chat.router');
 
 // app.use(express.static(__dirname + '/public'));
 
@@ -105,6 +106,13 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.set('socketio', io);
+
+app.set('io', io);
+
+// pass in io to the relevant route
+const chat = require('./src/routes/chat.router')(io);
+
 //---------VIEWS----------///
 
 app.use('/', new RouterViews().start());
@@ -115,40 +123,19 @@ app.use('/api/carrito', new RouterCart().start());
 app.use('/api/pedido', new RouterOrder().start());
 app.use('/template/email', new RouterEmail().start());
 app.use('/', new RouterUser().start());
+app.use('/chat', chat);
+
+// pass in io to the relevant route
 
 // app.get('/*', (req, res) => {
 //   res.status(400).json({
 //     msg: "error : 404, descripcion: ruta  no implementada",
 //   });
 // });
+/*============================[Mensaje Socket]============================*/
+ 
 
 /* ---------------------- Servidor ----------------------*/
-
-const httpServer = new HttpServer(app);
-const io = new IOServer(httpServer);
-app.get('/chat', (req, res) => {
-  res.render('chat');
-});
-
-/*============================[Mensaje Socket]============================*/
-io.on('connection', async (socket) => {
-  console.log(`Nuevo cliente conectado ${socket.id}`);
-
-  socket.on('mensajeNuevo', async (msg) => {
-    await mensajeClass.guardar(msg);
-    const mensajeGuardados = await mensajeClass.mostrarTodos();
-
-    const normalizar = normalizedHolding(mensajeGuardados);
-    const longO = JSON.stringify(mensajeGuardados).length;
-    const longN = JSON.stringify(normalizar).length;
-    const porcentaje = (longN * 100) / longO;
-
-    socket.emit('mensajes', {
-      normalizedHolding: normalizar,
-      porcentaje: porcentaje,
-    });
-  });
-});
 
 // For Master process
 if (CONFIG_SERVER.modoCluster && cluster.isPrimary) {

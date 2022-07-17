@@ -2,7 +2,8 @@ const ServiceDAOMongoDB = require('../services/serviceDAO.MongoDB'),
   ProductModel = require('../models/products.model.mongo'),
   CartModel = require('../models/cart.model.mongo'),
   OrderModel = require('../models/order.model.mongo'),
-  UserModel = require('../models/user.model.mongo');
+  UserModel = require('../models/user.model.mongo'),
+  ChatModel=require('../models/chat.model.mongo')
 
 class ProductosDAOMongoDB extends ServiceDAOMongoDB {
   constructor() {
@@ -22,6 +23,12 @@ class OrderDAOMongoDB extends ServiceDAOMongoDB {
   }
 }
 
+class ChatDAOMongoDB extends ServiceDAOMongoDB {
+  constructor() {
+    super(ChatModel);
+  }
+}
+
 class UserDAOMongoDB extends ServiceDAOMongoDB {
   constructor() {
     super(UserModel);
@@ -32,4 +39,5 @@ module.exports = {
   CartDAOMongoDB,
   OrderDAOMongoDB,
   UserDAOMongoDB,
+  ChatDAOMongoDB,
 };

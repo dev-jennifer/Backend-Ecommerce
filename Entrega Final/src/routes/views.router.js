@@ -10,6 +10,7 @@ class RouterViews {
 
   start() {
     router.get('/', this.view.indexPage);
+  //  router.get('/chat', this.view.chatPage);
     router.get('/productos/nuevo', isAdmin, this.view.newProduct);
     router.get('/productos', this.view.getProductAll);
     router.get('/productos/:id', this.view.getProductId);
@@ -17,7 +18,9 @@ class RouterViews {
     router.get('/productos/categoria/:id', this.view.getCategoryId);
     router.get('/carrito/:id', this.view.getCartView);
     router.get('/pedido/:id', this.view.getOrderView);
-    //   router.get('/*', this.view.notFound);
+    router.get('/serverInfo', this.view.serverInfo);
+    
+   
 
     return router;
   }

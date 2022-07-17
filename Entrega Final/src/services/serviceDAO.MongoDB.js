@@ -42,7 +42,7 @@ class ServiceDAOMongoDB extends DAO {
       return newObj;
     } catch (error) {
       const errorCustom = new APIError(
-        `Error al guardar() ${id}`,
+        `Error al guardar()`,
         httpStatusCodes.NOT_FOUND,
         true,
         `${error}`
@@ -82,7 +82,22 @@ class ServiceDAOMongoDB extends DAO {
         return doc;
       } catch (error) {
         console.log('Error while fetching single record::', error);
-     
+      } finally {
+        this.conn.disconnect();
+      }
+    }
+  };
+
+  mostrarByEmail = async (id) => {
+    const client = await this.conn.connect().catch((err) => {
+      console.log('Error while connecting to db', err);
+    });
+    if (client) {
+      try {
+        let doc = await this.coleccion.findOne({ email: id });
+        return doc;
+      } catch (error) {
+        console.log('Error while fetching single record::', error);
       } finally {
         this.conn.disconnect();
       }
@@ -163,8 +178,6 @@ class ServiceDAOMongoDB extends DAO {
       }
     }
   };
-  
- 
 
   // actualizarCart = async (buyerID, body) => {
   //   try {

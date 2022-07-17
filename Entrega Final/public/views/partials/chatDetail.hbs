@@ -1,0 +1,43 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h2 style="color: blue">
+      Centro de Mensajes
+    </h2>
+    <div id="title"></div>
+    <form onsubmit="enviarMensaje()">
+      <div class="form-group">
+        <input
+          id="email"
+          placeholder="email"
+          className="form-control"
+          type="email"
+          name="email"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <input
+          id="nombre"
+          placeholder="nombre"
+          className="form-control"
+          type="text"
+          name="nombre"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <input
+          id="textoMensaje"
+          placeholder="texto"
+          className="form-control"
+          type="text"
+          name="textoMensaje"
+        />
+      </div>
+
+      <input type="submit" value="Enviar" />
+    </form>
+
+    <div id="contenedorMensaje"></div>
+  </div>
+</div>

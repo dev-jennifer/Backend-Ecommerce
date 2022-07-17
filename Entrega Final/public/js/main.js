@@ -1,5 +1,3 @@
-// const socket = io.connect()
-
 ///PRODUCTOS
 async function detail(value) {
   console.log('VALUE', value);
@@ -267,3 +265,5 @@ async function actualizarProfile(value) {
       console.log(error);
     });
 }
+
+
