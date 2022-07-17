@@ -5,7 +5,6 @@ const express = require('express'),
   cookieParser = require('cookie-parser'),
   session = require('express-session'),
   connectMongo = require('connect-mongo'),
-  // { createServer } = require('http'),
   cluster = require('cluster'),
   logger = require('./src/utils/loggers'),
   config = require('./src/utils/config'),
@@ -13,12 +12,10 @@ const express = require('express'),
   morgan = require('morgan'),
   path = require('path'),
   compression = require('compression'),
-  //{ engine } = require('express-handlebars'),
   exphbs = require('express-handlebars'),
   cors = require('cors');
 require('./src/passport/local-auth');
 
-// const Handlebars = require('handlebars');
 const app = express();
 const { Server: HttpServer } = require('http');
 const { Server: IOServer } = require('socket.io');
@@ -37,7 +34,6 @@ RouterChat = require('./src/routes/chat.router');
 
 app.use(compression());
 app.use(morgan('tiny'));
-// middleware
 
 app.use('/uploads', express.static('uploads'));
 
@@ -125,37 +121,24 @@ app.use('/template/email', new RouterEmail().start());
 app.use('/', new RouterUser().start());
 app.use('/chat', chat);
 
-// pass in io to the relevant route
-
-// app.get('/*', (req, res) => {
-//   res.status(400).json({
-//     msg: "error : 404, descripcion: ruta  no implementada",
-//   });
-// });
-/*============================[Mensaje Socket]============================*/
  
-
 /* ---------------------- Servidor ----------------------*/
 
-// For Master process
 if (CONFIG_SERVER.modoCluster && cluster.isPrimary) {
   logger.info('CPUs:', CONFIG_SERVER.numeroCPUs);
   logger.info(`Master ${process.pid} is running`);
-  // Fork workers.
+
   for (let i = 0; i < CONFIG_SERVER.numeroCPUs; i++) {
     cluster.fork();
   }
-  // This event is firs when worker died
+
   cluster.on('exit', (worker) => {
-    logger.info(`worker ${worker.process.pid} died`);
+    logger.info(`  ${worker.process.pid} cerrado`);
   });
 } else {
-  // For Worker
   const server = httpServer.listen(CONFIG_SERVER.PORT, () => {
     logger.info(
-      `Servidor HTTP escuchado en puerto ${server.address().port} - PID ${
-        process.pid
-      } - ${new Date().toLocaleString()}`
+      `Servidor HTTP escuchado en puerto ${server.address().port}  - ${new Date().toLocaleString()}`
     );
   });
   server.on('error', (error) => logger.error(`Error en servidor ${error}`));

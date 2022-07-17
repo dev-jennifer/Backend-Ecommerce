@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ProductsController = require('../controllers/products.controller');
-const isAdmin = require('../passport/admin');
+const {isAdmin} = require('../passport/support');
 class RouterProduct {
   constructor() {
     this.controlador = new ProductsController();

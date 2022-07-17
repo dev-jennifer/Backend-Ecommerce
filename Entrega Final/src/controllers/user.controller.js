@@ -1,9 +1,8 @@
-const bcrypt = require('bcrypt');
-const sendEmail = require('../notificaciones/emails/Registration/newUser');
-const CustomError = require('../classes/CustomError.class');
-const logger = require('../utils/loggers');
-const UserFactory = require('../classes/User/UserFactory.class'),
-  jwt = require('jsonwebtoken'); 
+const bcrypt = require('bcrypt'),
+  APIError = require('../classes/Error/customError'),
+  sendEmail = require('../notificaciones/emails/Registration/newUser'),
+  UserFactory = require('../classes/User/UserFactory.class'),
+  { generateToken } = require('../passport/support');
 
 class UserController {
   constructor() {
@@ -27,50 +26,59 @@ class UserController {
         if (err) next(err);
       });
     } catch (error) {
-      logger.error('Error al cerrar sesion', error);
+      const mensaje = 'Error al cerrar sesion';
+      res.render('error401', new APIError(error, mensaje));
     }
   };
 
-  register = async (req, email, password, done) => {
-    const user = await this.userDAO.mostrarId('email', email);
+  register = async (req,  email, password, done) => {
+    try {
+      const user = await this.userDAO.mostrarId('email', email);
 
-    if (user) {
-      return done(
-        null,
-        false,
-        req.flash('signupMessage', 'The Email is already Taken.')
-      );
-    } else {
-      req.body.email = email;
-      password = bcrypt.hashSync(
-        req.body.password,
-        bcrypt.genSaltSync(5),
-        null
-      );
+      if (user) {
+        return done(
+          null,
+          false,
+          req.flash('signupMessage', 'The Email is already Taken.')
+        );
+      } else {
+        req.body.email = email;
+        password = bcrypt.hashSync(
+          req.body.password,
+          bcrypt.genSaltSync(5),
+          null
+        );
 
-      let phoneFull = '+' + req.body.country + req.body.phone;
-      let newUserRegister = {
-        email: email,
-        password: password,
-        phone: phoneFull,
-        name: req.body.name,
-        lastName: req.body.lastName,
-        address: req.body.address,
-        age: req.body.age,
-        avatar: req.file.filename,
-        membershipID: 2,
-      };
+        const phoneFull = '+' + req.body.country + req.body.phone;
+        const newUserRegister = {
+          email: email,
+          password: password,
+          phone: phoneFull,
+          name: req.body.name,
+          lastName: req.body.lastName,
+          address: req.body.address,
+          age: req.body.age,
+          avatar: req.file.filename,
+          membershipID: 2,
+        };
 
-      await this.userDAO.guardar(newUserRegister);
-      done(null, newUserRegister, sendEmail(newUserRegister));
+        await this.userDAO.guardar(newUserRegister);
+        done(null, newUserRegister, sendEmail(newUserRegister));
+
+        // Generate JWT token
+        res.send({ token: generateToken(newUserRegister) });
+      }
+    } catch (error) {
+      const mensaje = 'Error al crear usuario';
+        new APIError(error, mensaje) ;
     }
   };
 
   existPassport = async (email) => {
     const user = await this.userDAO.mostrarId('email', email);
-
     return user;
   };
+
   editProfile = async (req, res) => {
     const id = req.params.id;
     const body = req.body;
@@ -79,12 +87,12 @@ class UserController {
       await this.userDAO.actualizar(id, body);
       res.status(200).send('Perfil actualizado');
     } catch (error) {
-      res.status(400).send('Status: No se ha podido actualizar');
+      const mensaje = 'Error al editar el perfil';
+      new APIError(error, mensaje);
     }
   };
 
-  
-  login = async (req, email, password, done) => {
+  login = async (req,  email, password, done) => {
     try {
       const user = await this.userDAO.mostrarId('email', email);
 
@@ -103,9 +111,9 @@ class UserController {
           );
         }
       });
-    } catch (err) {
-      const error = new CustomError(500, 'Error al mostrarId()', err);
-      logger.error(error);
+    } catch (error) {
+      const mensaje = 'Error al iniciar sesion';
+     new APIError(error, mensaje);
     }
   };
 }

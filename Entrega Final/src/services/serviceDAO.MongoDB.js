@@ -1,11 +1,11 @@
-const DAO = require('../DAOs/DAO.class');
+//const DAO = require('../DAOs/DAO.class');
 const MongoDBClient = require('../classes/MongoDBClient.class');
-const { APIError, httpStatusCodes } = require('../classes/Error/error');
+ 
 const logger = require('../utils/loggers');
 
-class ServiceDAOMongoDB extends DAO {
+class ServiceDAOMongoDB   {
   constructor(nombreColeccion) {
-    super();
+ 
     this.coleccion = nombreColeccion;
     this.conn = new MongoDBClient();
   }

@@ -7,8 +7,9 @@ class ChatController {
     this.ChatDAO = ChatDAOFactory.get();
   }
   getAllChat = (req, res) => {
-    try {
-      res.render('chat');
+    try {   
+       res.render('chat', { title: 'chat', layout: 'chatLayout' });
+ 
     } catch (err) {
       res.status(400).send('Status: No se ha renderizar productos');
     }

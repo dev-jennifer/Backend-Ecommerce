@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const RequestViews = require('../controllers/view.controller');
-const isAdmin = require('../passport/admin');
+const {isAdmin} = require('../passport/support');
 
 class RouterViews {
   constructor() {

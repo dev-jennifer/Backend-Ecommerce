@@ -18,7 +18,6 @@ const { normalize, denormalize, normalizr, schema } = require('normalizr');
 //Normalizo los mensajes
 function normalizedHolding(dataObj) {
   const normalizadorMensajes = normalize(dataObj, [schemaMensajes]);
-  console.log( normalizadorMensajes );
   return normalizadorMensajes;
 }
 

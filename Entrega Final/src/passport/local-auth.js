@@ -9,9 +9,9 @@ const UserController = require('../controllers/user.controller'),
   LocalStrategy = passportLocal.Strategy,
   FacebookStrategy = Strategy,
   GoogleStrategy = require('passport-google-oauth2').Strategy;
+ 
 
-
-
+  
 authUser = async (request, accessToken, refreshToken, profile, cb) => {
   const exist = await UserFactory.get().mostrarId(
     'email',

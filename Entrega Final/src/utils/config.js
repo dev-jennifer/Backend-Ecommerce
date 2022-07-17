@@ -15,9 +15,8 @@ module.exports = {
         useUnifiedTopology: true,
       },
     },
-    // MONGO_URI: `mongodb://${process.env.DB_USER || 'localhost'}:${
-    //   process.env.PORTDB || 27017 } /${process.env.DB_NAME_P}`,
   },
+  JWT: { SECRET: process.env.PRIVATE_KEY },
 
   EMAIL: {
     TEST_EMAIL: process.env.TEST_EMAIL,
