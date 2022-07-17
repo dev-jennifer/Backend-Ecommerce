@@ -30,10 +30,10 @@ class UserController {
       res.render('error401', new APIError(error, mensaje));
     }
   };
-
-  register = async (req,  email, password, done) => {
+ register = async (req, email, password, done) => {
+ 
     try {
-      const user = await this.userDAO.mostrarId('email', email);
+      const user = await this.userDAO.mostrarEmail(email);
 
       if (user) {
         return done(
@@ -66,7 +66,7 @@ class UserController {
         done(null, newUserRegister, sendEmail(newUserRegister));
 
         // Generate JWT token
-        res.send({ token: generateToken(newUserRegister) });
+         ({ token: generateToken(newUserRegister) });
       }
     } catch (error) {
       const mensaje = 'Error al crear usuario';
@@ -75,7 +75,7 @@ class UserController {
   };
 
   existPassport = async (email) => {
-    const user = await this.userDAO.mostrarId('email', email);
+    const user = await this.userDAO.mostrarEmail(email);
     return user;
   };
 

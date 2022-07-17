@@ -3,9 +3,8 @@ const MongoDBClient = require('../classes/MongoDBClient.class');
  
 const logger = require('../utils/loggers');
 
-class ServiceDAOMongoDB   {
+class ServiceDAOMongoDB {
   constructor(nombreColeccion) {
- 
     this.coleccion = nombreColeccion;
     this.conn = new MongoDBClient();
   }
@@ -79,6 +78,22 @@ class ServiceDAOMongoDB   {
     if (client) {
       try {
         let doc = await this.coleccion.findOne({ _id: id });
+        return doc;
+      } catch (error) {
+        console.log('Error while fetching single record::', error);
+      } finally {
+        this.conn.disconnect();
+      }
+    }
+  };
+
+  mostrarEmail= async (email) => {
+    const client = await this.conn.connect().catch((err) => {
+      console.log('Error while connecting to db', err);
+    });
+    if (client) {
+      try {
+        let doc = await this.coleccion.findOne({ email: email });
         return doc;
       } catch (error) {
         console.log('Error while fetching single record::', error);

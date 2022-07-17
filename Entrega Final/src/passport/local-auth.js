@@ -13,8 +13,7 @@ const UserController = require('../controllers/user.controller'),
 
   
 authUser = async (request, accessToken, refreshToken, profile, cb) => {
-  const exist = await UserFactory.get().mostrarId(
-    'email',
+  const exist = await UserFactory.get().mostrarEmail(
     profile.emails[0].value
   );
   if (exist) {
@@ -96,11 +95,13 @@ passport.serializeUser(function (user, done) {
     membership: user.membershipID ? user.membershipID : 2,
   });
 });
+
 passport.deserializeUser(async (user, done) => {
   console.log(user);
   try {
     const userDetail = await userController.existPassport(
-      user.email ? user.email : user._json.email
+     user.email ? user.email : user._json.email
+      
     );
     done(null, userDetail);
   } catch (error) {
