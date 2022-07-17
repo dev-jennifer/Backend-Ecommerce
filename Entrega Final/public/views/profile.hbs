@@ -5,17 +5,19 @@
     <div class="row">
       <div class="col-sm-3">
         <div class="text-center">
-          {{#when user.ref 'eq' 'Facebook'}}
- 
-          <img alt="profile" class="avatar img-circle img-thumbnail" src="{{user.avatar}}">
-              {{else}}
-                    <img
-                  alt="profile"
-                  class="avatar img-circle img-thumbnail"
-                  src="./uploads/{{user.avatar}}"
-                />
-           {{/when}}
- 
+
+  
+          {{#if user.picture.data.url }}
+             <img alt="profile" class="avatar img-circle img-thumbnail" src="{{user.picture.data.url}}"/>
+          {{else}}
+               {{#if user.picture}}
+                   <img alt="profile" class="avatar img-circle img-thumbnail" src="{{user.picture}}"/> 
+                {{else}}
+               {{#if user.avatar}}
+             <img  alt="profile"  class="avatar img-circle img-thumbnail"  src="./uploads/{{user.avatar}}"/>
+              {{/if}}
+          {{/if}}{{/if}}
+
 
           {{!-- <h6>Upload a different photo...</h6>
           <input type="file" class="text-center center-block file-upload" /> --}}

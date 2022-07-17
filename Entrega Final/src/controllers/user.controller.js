@@ -2,27 +2,24 @@ const bcrypt = require('bcrypt'),
   APIError = require('../classes/Error/customError'),
   sendEmail = require('../notificaciones/emails/Registration/newUser'),
   UserFactory = require('../classes/User/UserFactory.class'),
-  { generateToken } = require('../passport/support');
-
+  { generateToken, auth } = require('../passport/support');
+const jwt = require('jsonwebtoken');
 class UserController {
   constructor() {
     this.userDAO = UserFactory.get();
   }
-  renderAuth = (req, res) => {
-    if (req.isAuthenticated()) {
-      res.redirect('/productos');
-    }
-  };
 
   renderProfile = (req, res) => {
-    console.log(req.user.toJSON());
-    res.render('profile', { user: req.user.toJSON() });
+    const user = req.user._json ? req.user._json : req.user;
+    res.render('profile', { user: user });
   };
 
   renderLogOut = (req, res, next) => {
     try {
       req.session.destroy((err) => {
+        res.clearCookie('jwt');
         res.redirect('/');
+
         if (err) next(err);
       });
     } catch (error) {
@@ -30,8 +27,7 @@ class UserController {
       res.render('error401', new APIError(error, mensaje));
     }
   };
- register = async (req, email, password, done) => {
- 
+  register = async (req, email, password, done) => {
     try {
       const user = await this.userDAO.mostrarEmail(email);
 
@@ -64,13 +60,11 @@ class UserController {
 
         await this.userDAO.guardar(newUserRegister);
         done(null, newUserRegister, sendEmail(newUserRegister));
-
-        // Generate JWT token
-         ({ token: generateToken(newUserRegister) });
       }
     } catch (error) {
+      
       const mensaje = 'Error al crear usuario';
-        new APIError(error, mensaje) ;
+      new APIError(error, mensaje);
     }
   };
 
@@ -92,9 +86,9 @@ class UserController {
     }
   };
 
-  login = async (req,  email, password, done) => {
+  login = async (req, email, password, done) => {
     try {
-      const user = await this.userDAO.mostrarId('email', email);
+      const user = await this.userDAO.mostrarEmail(email);
 
       if (!user) {
         return done(null, false, req.flash('signinMessage', 'No User Found'));
@@ -113,7 +107,7 @@ class UserController {
       });
     } catch (error) {
       const mensaje = 'Error al iniciar sesion';
-     new APIError(error, mensaje);
+      new APIError(error, mensaje);
     }
   };
 }

@@ -3,7 +3,7 @@ const  msgSend = require('../notificaciones/config/msjConfig'),
   UserController = require('../controllers/user.controller'),
   CartController = require('../controllers/cart.controller'), 
   logger = require('../utils/loggers.js'),
- CustomError = require('../classes/CustomError.class'),
+ 
  OrderFactory=require("../classes/Order/OrderFactory.class.js")
  
 
@@ -20,15 +20,13 @@ class OrderController {
   getCartOrder = async (req, res) => {
     const idCart = req.params.id;
     const cart = await this.cart.getCartOrder(idCart);
-console.log('cart', cart.items);
+
     res.render('order', { title: 'Orden', producto: cart.items });
   };
 
   postOrder = async (req, res, done) => {
     const idCart = req.params.id;
     const body = req.body;
-    // console.log('idCart ORDER', idCart);
-    //  console.log('body', body);
     try {
       const cart = await this.cart.getCartOrder(idCart);
       const newOrder = {
@@ -52,15 +50,15 @@ console.log('cart', cart.items);
         })
 
         .catch((err) => {
-          const errorCustom = new CustomError(
-            500,
-            'Error al guardar orden',
-            err
-          );
+          // const errorCustom = new CustomError(
+          //   500,
+          //   'Error al guardar orden',
+          //   err
+          // );
           logger.error(errorCustom);
         });
     } catch (error) {
-      const errorCustom = new CustomError(500, 'Error al guardar orden', error);
+     // const errorCustom = new CustomError(500, 'Error al guardar orden', error);
       logger.error(errorCustom);
     }
   };

@@ -6,20 +6,20 @@ const UserController = require('../controllers/user.controller'),
   passport = require('passport'),
   passportLocal = require('passport-local'),
   { Strategy } = require('passport-facebook'),
+  GoogleStrategy = require('passport-google-oauth2').Strategy,
+  auth = require('../passport/support'),
   LocalStrategy = passportLocal.Strategy,
+  JWTStrategy = require('passport-jwt'),
   FacebookStrategy = Strategy,
-  GoogleStrategy = require('passport-google-oauth2').Strategy;
- 
-
+  config = require('../utils/config.js'),
   
 authUser = async (request, accessToken, refreshToken, profile, cb) => {
-  const exist = await UserFactory.get().mostrarEmail(
-    profile.emails[0].value
-  );
+  console.log(profile);
+  const exist = await UserFactory.get().mostrarEmail(profile.emails[0].value);
   if (exist) {
     cb(null, profile);
   } else {
-    console.log(profile);
+
     const newUserRegister = {
       email: profile.emails[0].value,
       name: profile.name.givenName,
@@ -28,10 +28,14 @@ authUser = async (request, accessToken, refreshToken, profile, cb) => {
       avatar: profile.photos[0].value,
       ref: 'Facebook',
     };
+
     await UserFactory.get().guardar(newUserRegister);
     cb(null, newUserRegister, sendEmail(newUserRegister));
   }
 };
+
+// This is the strategy setup for Google
+
 passport.use(
   new GoogleStrategy(
     {
@@ -71,6 +75,7 @@ passport.use(
     {
       usernameField: 'email',
       passwordField: 'password',
+      //   session: false,
       passReqToCallback: true,
     },
     userController.register
@@ -82,26 +87,49 @@ passport.use(
     {
       usernameField: 'email',
       passwordField: 'password',
+      //    session: false,
       passReqToCallback: true,
     },
     userController.login
   )
 );
-
+passport.use(
+  new JWTStrategy.Strategy(
+    {
+      jwtFromRequest: (req) => {
+        let token = null;
+        if (req && req.cookies) {
+          token = req.cookies.jwt;
+              console.log('req', req.cookies);
+          console.log('TOKEN', token);
+        }
+        return token;
+      },
+      secretOrKey: config.JWT.SECRET,
+    },
+    (jwtPayload, done) => {
+      if (!jwtPayload) {
+        console.log('err');
+        return done('No token found...');
+      }
+      return done(null, jwtPayload);
+    }
+  )
+);
 passport.serializeUser(function (user, done) {
+  console.log("AQUI",user)
   done(null, {
-    name: user.name.givenName ? user.name.givenName : user.name,
+    name: user.given_name ? user.given_name : user.name,
     email: user.email ? user.email : user.emails[0].value,
     membership: user.membershipID ? user.membershipID : 2,
   });
 });
 
 passport.deserializeUser(async (user, done) => {
-  console.log(user);
+  console.log('AQUI2', user);
   try {
     const userDetail = await userController.existPassport(
-     user.email ? user.email : user._json.email
-      
+      user.email ? user.email : user._json.email
     );
     done(null, userDetail);
   } catch (error) {

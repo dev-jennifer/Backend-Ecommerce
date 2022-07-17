@@ -1,14 +1,15 @@
-const DBClient = require('./DBClient.class'),
+const APIError = require('./Error/customError'),
   config = require('../utils/config'),
   mongoose = require('mongoose'),
   logger = require('../utils/loggers');
 
-class MongoDBClient extends DBClient {
+class MongoDBClient  {
   constructor() {
-    super();
+ 
     this.connected = false;
     this.url = config.MONGO_DB.MONGO_CONNECT.url;
     this.client = mongoose; 
+    this.error=new APIError()
   }
 
   connect = async () => {
@@ -25,7 +26,7 @@ class MongoDBClient extends DBClient {
      return this.connected = true;
      
     } catch (error) {
-      throw new CustomError(500, 'Error al conectarse a mongodb', error);
+      throw this.error.errorServer(error,'Error al conectarse a mongodb');
     }
   };
   disconnect = async () => {
@@ -35,7 +36,7 @@ class MongoDBClient extends DBClient {
 
       logger.info('Base de datos desconectada');
     } catch (error) {
-      throw new CustomError(500, 'Error al desconectarse a mongodb', error);
+       throw this.error.errorServer(error, 'Error al desconectarse a mongodb');
     }
   };
 }

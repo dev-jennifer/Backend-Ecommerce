@@ -14,7 +14,7 @@ const express = require('express'),
   compression = require('compression'),
   exphbs = require('express-handlebars'),
   cors = require('cors');
-require('./src/passport/local-auth');
+
 
 const app = express();
 const { Server: HttpServer } = require('http');
