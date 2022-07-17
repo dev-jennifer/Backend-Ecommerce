@@ -15,10 +15,11 @@ module.exports = (io) => {
     socket.emit('mensajes', {
       mensajes: mensajeGuardados,
     });
- 
+
     socket.on('mensajeNuevo', async (msg) => {
-      console.log("nuevo",msg)
-      await ChatDAOFactory.get().guardar(msg)
+      console.log('nuevo', msg);
+      await ChatDAOFactory.get()
+        .guardar(msg)
 
         .then(async () =>
           socket.emit('mensajes', await ChatDAOFactory.get().mostrarTodos())
@@ -26,12 +27,13 @@ module.exports = (io) => {
         .catch((err) => {
           logger.error(`Error: ${err} al agregar mensaje`);
         });
-       
+
       // console.log('normalizar', normalizar);
     });
   });
-  router.post('/', ChatController);
-  router.get('/', (req, res) => res.render('chat'));
 
+  //router.post('/', ChatController);
+  router.get('/',  new ChatController().getAllChat );
+  router.get('/:id', new ChatController().getIdChat);
   return router;
 };

@@ -6,22 +6,21 @@ class ChatController {
   constructor() {
     this.ChatDAO = ChatDAOFactory.get();
   }
-
-  getAllChat =  (req, res) => {
+  getAllChat = (req, res) => {
     try {
-      //   res.status(200).json({ chat: await this.mostrarTodos() });
       res.render('chat');
-    } catch (error) {
-      // logger.error('Error al renderizar productos', error);
+    } catch (err) {
       res.status(400).send('Status: No se ha renderizar productos');
     }
   };
+
   getIdChat = async (req, res) => {
     const email = req.params.id;
     try {
-      res.status(200).json({ chat: await this.mostrarByEmail(email) });
-    } catch (error) {
-      logger.error('Error al renderizar producto Id:', error);
+      const chat = await this.ChatDAO.mostrarByEmail(email);
+       res.render('chatProfile', { chat });
+   //    res.status(200).send(chat)
+    } catch (err) {
       res.status(404).send('Status: Not Found');
     }
   };

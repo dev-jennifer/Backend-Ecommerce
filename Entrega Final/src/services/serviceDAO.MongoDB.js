@@ -94,7 +94,7 @@ class ServiceDAOMongoDB extends DAO {
     });
     if (client) {
       try {
-        let doc = await this.coleccion.findOne({ email: id });
+        let doc = await this.coleccion.find({ 'usuario.email': { $eq: id } });
         return doc;
       } catch (error) {
         console.log('Error while fetching single record::', error);
@@ -179,28 +179,27 @@ class ServiceDAOMongoDB extends DAO {
     }
   };
 
-  // actualizarCart = async (buyerID, body) => {
-  //   try {
-  //     await this.conn.connect();
-  //     console.log(id);
-  //     console.log(body);
-  //     let doc = await this.coleccion.updateOne(
-  //       { buyerID: buyerID },
-  //       { $set: body }
-  //     );
-  //     return doc;
-  //   } catch (error) {
-  //     const errorCustom = new APIError(
-  //       `Error al actualizar buyerID: ${buyerID}`,
-  //       httpStatusCodes.NOT_FOUND,
-  //       true,
-  //       `${error}`
-  //     );
-  //     logger.error(errorCustom);
-  //   } finally {
-  //     this.conn.disconnect();
-  //   }
-  // };
+  actualizarChat = async (email, body) => {
+    try {
+      await this.conn.connect();
+      console.log(email);
+      console.log(body);
+
+      let doc = await this.coleccion.updateOne(
+        { email: email },
+        { $set: body }
+      );
+      return doc;
+    } catch (error) {
+      console.log('Error while fetching single record::', error);
+      return {
+        status: 0,
+        data: error,
+      };
+    } finally {
+      this.conn.disconnect();
+    }
+  };
 }
 
 module.exports = ServiceDAOMongoDB;

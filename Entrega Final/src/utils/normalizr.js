@@ -3,6 +3,8 @@ const { normalize, denormalize, normalizr, schema } = require('normalizr');
 
 //Define esquema de autor
  const usuarioSchema = new schema.Entity('email');
+
+ 
  const textoSchema = new schema.Entity('mensaje', {}, { 'email': 'email' });
 
 //Define esquema de mensaje
