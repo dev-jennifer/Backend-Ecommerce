@@ -1,17 +1,15 @@
-const  msgSend = require('../notificaciones/config/msjConfig'),
+const msgSend = require('../notificaciones/config/msjConfig'),
   newOrderEmail = require('../notificaciones/emails/Order/newOrder'),
   UserController = require('../controllers/user.controller'),
-  CartController = require('../controllers/cart.controller'), 
+  CartController = require('../controllers/cart.controller'),
   logger = require('../utils/loggers.js'),
- 
- OrderFactory=require("../classes/Order/OrderFactory.class.js")
- 
+  OrderFactory = require('../classes/Order/OrderFactory.class.js');
 
- const OrdenDAO = OrderFactory.get();
+const OrdenDAO = OrderFactory.get();
 class OrderController {
-  constructor(){
-  this.user=new UserController();
-    this.cart=new CartController()
+  constructor() {
+    this.user = new UserController();
+    this.cart = new CartController();
   }
   renderThanks = (req, res) => {
     res.render('gracias');
@@ -41,12 +39,11 @@ class OrderController {
       await OrdenDAO.guardar(newOrder)
 
         .then((order) => {
-         
           newOrderEmail(order);
 
-           this.user.existPassport(newOrder.buyerID).then(( ) => {
-         //    msgSend(newOrder.phone, order);
-           });
+          this.user.existPassport(newOrder.buyerID).then(() => {
+            //    msgSend(newOrder.phone, order);
+          });
         })
 
         .catch((err) => {
@@ -58,7 +55,7 @@ class OrderController {
           logger.error(errorCustom);
         });
     } catch (error) {
-     // const errorCustom = new CustomError(500, 'Error al guardar orden', error);
+      // const errorCustom = new CustomError(500, 'Error al guardar orden', error);
       logger.error(errorCustom);
     }
   };

@@ -1,5 +1,4 @@
 const UserController = require('../controllers/user.controller'),
-  CONFIG = require('../utils/config'),
   UserFactory = require('../classes/User/UserFactory.class'),
   sendEmail = require('../notificaciones/emails/Registration/newUser'),
   userController = new UserController(),
@@ -7,14 +6,12 @@ const UserController = require('../controllers/user.controller'),
   passportLocal = require('passport-local'),
   { Strategy } = require('passport-facebook'),
   GoogleStrategy = require('passport-google-oauth2').Strategy,
-  auth = require('../passport/support'),
   LocalStrategy = passportLocal.Strategy,
   JWTStrategy = require('passport-jwt'),
   FacebookStrategy = Strategy,
   config = require('../utils/config.js'),
   
 authUser = async (request, accessToken, refreshToken, profile, cb) => {
-  console.log(profile);
   const exist = await UserFactory.get().mostrarEmail(profile.emails[0].value);
   if (exist) {
     cb(null, profile);
@@ -39,8 +36,8 @@ authUser = async (request, accessToken, refreshToken, profile, cb) => {
 passport.use(
   new GoogleStrategy(
     {
-      clientID: CONFIG.GOOGLE.GOOGLE_ID,
-      clientSecret: CONFIG.GOOGLE.GOOGLE_SECRET,
+      clientID: config.GOOGLE.GOOGLE_ID,
+      clientSecret: config.GOOGLE.GOOGLE_SECRET,
       callbackURL: '/auth/google/callback',
       passReqToCallback: true,
     },
@@ -51,8 +48,8 @@ passport.use(
 passport.use(
   new FacebookStrategy(
     {
-      clientID: CONFIG.FACEBOOK.FACE_APP_ID,
-      clientSecret: CONFIG.FACEBOOK.FACE_APP_SECRET,
+      clientID: config.FACEBOOK.FACE_APP_ID,
+      clientSecret: config.FACEBOOK.FACE_APP_SECRET,
       callbackURL: '/auth/facebook/callback',
       profileFields: [
         'id',
@@ -75,7 +72,6 @@ passport.use(
     {
       usernameField: 'email',
       passwordField: 'password',
-      //   session: false,
       passReqToCallback: true,
     },
     userController.register
@@ -87,7 +83,6 @@ passport.use(
     {
       usernameField: 'email',
       passwordField: 'password',
-      //    session: false,
       passReqToCallback: true,
     },
     userController.login
@@ -117,7 +112,6 @@ passport.use(
   )
 );
 passport.serializeUser(function (user, done) {
-  console.log("AQUI",user)
   done(null, {
     name: user.given_name ? user.given_name : user.name,
     email: user.email ? user.email : user.emails[0].value,
@@ -126,7 +120,6 @@ passport.serializeUser(function (user, done) {
 });
 
 passport.deserializeUser(async (user, done) => {
-  console.log('AQUI2', user);
   try {
     const userDetail = await userController.existPassport(
       user.email ? user.email : user._json.email

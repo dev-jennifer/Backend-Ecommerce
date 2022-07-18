@@ -2,7 +2,6 @@ const express = require('express');
 const ChatDAOFactory = require('../classes/Chat/ChatDAOFactory.class');
 const ChatController = require('../controllers/chat.controller');
 const router = express.Router();
-const { normalizedHolding } = require('../utils/normalizr');
 const logger = require('../utils/loggers.js');
 
 module.exports = (io) => {
@@ -10,7 +9,6 @@ module.exports = (io) => {
     logger.info(`Nuevo cliente conectado ${socket.id}`);
 
     const mensajeGuardados = await ChatDAOFactory.get().mostrarTodos();
-    const normalizar = normalizedHolding(mensajeGuardados);
 
     socket.emit('mensajes', {
       mensajes: mensajeGuardados,
@@ -28,11 +26,10 @@ module.exports = (io) => {
           logger.error(`Error: ${err} al agregar mensaje`);
         });
 
-      // console.log('normalizar', normalizar);
+
     });
   });
 
-  //router.post('/', ChatController);
   router.get('/',  new ChatController().getAllChat );
   router.get('/:id', new ChatController().getIdChat);
   return router;

@@ -1,12 +1,13 @@
 const bcrypt = require('bcrypt'),
-  APIError = require('../classes/Error/customError'),
+  APICustom = require('../classes/Error/customError'),
   sendEmail = require('../notificaciones/emails/Registration/newUser'),
-  UserFactory = require('../classes/User/UserFactory.class'),
-  { generateToken, auth } = require('../passport/support');
-const jwt = require('jsonwebtoken');
+  UserFactory = require('../classes/User/UserFactory.class')
+//   { generateToken, auth } = require('../passport/support');
+ const jwt = require('jsonwebtoken');
 class UserController {
   constructor() {
     this.userDAO = UserFactory.get();
+    this.message = new APICustom();
   }
 
   renderProfile = (req, res) => {
@@ -24,7 +25,7 @@ class UserController {
       });
     } catch (error) {
       const mensaje = 'Error al cerrar sesion';
-      res.render('error401', new APIError(error, mensaje));
+      res.render('error401', this.message.errorInternalServer(error, mensaje));
     }
   };
   register = async (req, email, password, done) => {
@@ -64,7 +65,7 @@ class UserController {
     } catch (error) {
       
       const mensaje = 'Error al crear usuario';
-      new APIError(error, mensaje);
+      this.message.errorInternalServer(error, mensaje);
     }
   };
 
@@ -82,7 +83,7 @@ class UserController {
       res.status(200).send('Perfil actualizado');
     } catch (error) {
       const mensaje = 'Error al editar el perfil';
-      new APIError(error, mensaje);
+      this.message.errorInternalServer(error, mensaje);
     }
   };
 
@@ -107,7 +108,7 @@ class UserController {
       });
     } catch (error) {
       const mensaje = 'Error al iniciar sesion';
-      new APIError(error, mensaje);
+      this.message.errorInternalServer(error, mensaje);
     }
   };
 }

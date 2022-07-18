@@ -1,12 +1,5 @@
 const  multer = require('multer')
 
-// function isAuthenticated(req, res, next) {
-//   if (req.isAuthenticated()) {
-//     return next();
-//   }
-//   res.redirect('/');
-// }
-
 function middleware(req, res, next) {
   let imageName;
 

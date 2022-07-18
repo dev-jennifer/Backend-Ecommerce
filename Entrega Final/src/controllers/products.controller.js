@@ -1,138 +1,128 @@
-const ProductDTO = require('../classes/Products/ProductsDTO.class');
-const ProductDAOFactory = require('../classes/Products/ProductDAOFactory.class');
-const logger = '../utils/loggers.js';
-
+const ProductDTO = require('../classes/Products/ProductsDTO.class'),
+    ProductDAOFactory = require('../classes/Products/ProductDAOFactory.class'),
+    APICustom = require('../classes/Error/customError');
 
 class ProductsController {
-  constructor() {
-    this.ProductsDAO = ProductDAOFactory.get();
-  }
-  ///////FUNCIONES GENERALES////////
-  productsAll = async () => {
-    const docs = await this.ProductsDAO.mostrarTodos();
-    const productos = docs.map((p) => {
-      return new ProductDTO(p);
-    });
-    return productos;
-  };
-
-  categories = async () => {
-    const cat = await this.ProductsDAO.mostrarTodasCategorias();
-    return cat;
-  };
-
-  productId = async (id) => {
-    const doc = await this.ProductsDAO.mostrarId(id);
-    const productsDto = new ProductDTO(doc);
-    return productsDto;
-  };
-
-  productCategory = async (id) => {
-    const docs = await this.ProductsDAO.mostrarCategoria(id);
-    const productos = docs.map((p) => {
-      return new ProductDTO(p);
-    });
-    return productos;
-  };
-
-  ///////PRINT JSON////////
-  getProducts = async (req, res) => {
-    try {
-      res.status(200).json({ product: await this.productsAll() });
-    } catch (error) {
-      logger.error('Error al renderizar productos', error);
-      res.status(400).send('Status: No se ha renderizar productos');
+    constructor() {
+        this.ProductsDAO = ProductDAOFactory.get();
+        this.message = new APICustom();
     }
-  };
+    ///////FUNCIONES GENERALES////////
+    productsAll = async () => {
+        const docs = await this.ProductsDAO.mostrarTodos();
+        const productos = docs.map((p) => {
+            return new ProductDTO(p);
+        });
+        return productos;
+    };
 
-  getProductId = async (req, res) => {
-    const id = req.params.id;
-    try {
-      res.status(200).json({ producto: await this.productId(id) });
-    } catch (error) {
-      logger.error('Error al renderizar producto Id:', error);
-      res.status(404).send('Status: Not Found');
-    }
-  };
+    categories = async () => {
+        const cat = await this.ProductsDAO.mostrarTodasCategorias();
+        return cat;
+    };
 
-  getCategoriaId = async (req, res) => {
-    const id = req.params.id;
-    try {
-      res.status(200).json({
-        producto: await this.ProductsDAO.mostrarCategoria(id),
-      });
-    } catch (error) {
-      logger.error('Error al renderizar categoria Id:', error);
-      res.status(404).send('Status: Not Found');
-    }
-  };
+    productId = async (id) => {
+        const doc = await this.ProductsDAO.mostrarId(id);
+        const productsDto = new ProductDTO(doc);
+        return productsDto;
+    };
 
-  // showID = async (itemId) => {
-  //   // const product = await this.ProductsDAO.mostrarId('id', itemId);
-  //   // return product;
-  //   await this.ProductsDAO.mostrarId('id', itemId)
-  //     .then((res) => {
-  //       res.status(200).send(res);
-  //     })
-  //     .catch((error) => {
-  //       res.status(404).send('Status: Not Found');
-  //     });
-  // };
-  saveProducts = async (req, res) => {
-    if (admin == true) {
-      try {
-        await this.ProductsDAO.guardar(req.body);
-        res.status(200).json({ status: true, result: 'Producto Guardado' });
-      } catch {
-        res.status(400).send('Status: No se ha podido guardar el producto');
-      }
-    } else {
-      res.status(401).send('Status: Acceso no autorizado');
-    }
-  };
+    productCategory = async (id) => {
+        try {
+            const docs = await this.ProductsDAO.mostrarCategoria(id);
+            const productos = docs.map((p) => {
+                return new ProductDTO(p);
+            });
+            return productos;
+        } catch (error) {
+            this.message.errorNotFound(error, 'categoria no encontrada');
+        }
+    };
 
-  deleteProduct = async (req, res) => {
-    if (admin == true) {
-      await this.ProductsDAO.eliminar('id', req.params.id)
-        .then(() => {
-          res.status(200).send('Status: Producto Eliminado');
-        })
-        .catch((error) =>
-          res.status(404).send('Status: No se ha podido eliminar producto')
-        );
-    }
-  };
+    ///////PRINT JSON////////
+    getProducts = async (req, res) => {
+        try {
+            res.status(200).json({ product: await this.productsAll() });
+        } catch (error) {
+            this.message.errorNotFound(error, 'productos no encontrado');
+        }
+    };
 
-  formEditProduct = async (req, res) => {
-    if (admin == true) {
-      const id = req.params.id;
+    getProductId = async (req, res) => {
+        const id = req.params.id;
+        try {
+            res.status(200).json({ producto: await this.productId(id) });
+        } catch (error) {
+            this.message.errorNotFound(error, 'producto no encontrado');
+        }
+    };
 
-      await this.ProductsDAO.mostrarId(id)
-        .then((result) => {
-          res.status(200).json({ title: 'Editar', data: result });
-        })
-        .catch((error) =>
-          res.status(404).send('Status: No se ha podido eliminar producto')
-        );
-    } else {
-      res.status(401).send('Status: Acceso no autorizado');
-    }
-  };
+    getCategoriaId = async (req, res) => {
+        const id = req.params.id;
+        try {
+            res.status(200).json({
+                producto: await this.ProductsDAO.mostrarCategoria(id),
+            });
+        } catch (error) {
+            this.message.errorNotFound(error, 'categoria id no encontrado');
+        }
+    };
 
-  editProduct = async (req, res) => {
-    if (admin == true) {
-      const id = req.params.id;
-      const body = req.body;
-      try {
-        await this.ProductsDAO.actualizar(id, body);
-        res.status(200).send('Producto actualizado');
-      } catch (error) {
-        res.status(400).send('Status: No se ha podido actualizar');
-      }
-    } else {
-      res.status(401).send('Status: Acceso no autorizado');
-    }
-  };
+    saveProducts = async (req, res) => {
+        try {
+            await this.ProductsDAO.guardar(req.body);
+            res.status(200).json({ status: true, result: 'Producto Guardado' });
+        } catch {
+            this.message.errorInternalServer(
+                error,
+                'No se ha podido guardar el producto'
+            );
+        }
+    };
+
+    deleteProduct = async (req, res) => {
+        if (admin == true) {
+            await this.ProductsDAO.eliminar('id', req.params.id)
+                .then(() => {
+                    res.status(200).send('Status: Producto Eliminado');
+                })
+                .catch((error) =>
+                    this.message.errorInternalServer(
+                        error,
+                        ' No se ha podido eliminar producto'
+                    )
+                );
+        }
+    };
+
+    formEditProduct = async (req, res) => {
+        const id = req.params.id;
+
+        await this.ProductsDAO.mostrarId(id)
+            .then((result) => {
+                res.status(200).json({ title: 'Editar', data: result });
+            })
+            .catch((error) => {
+                this.message.errorInternalServer(
+                    error,
+                    ' No se ha podido editar producto'
+                );
+            });
+    };
+
+    editProduct = async (req, res) => {
+        const id = req.params.id;
+        const body = req.body;
+        try {
+            await this.ProductsDAO.actualizar(id, body);
+            res.status(200).send('Producto actualizado');
+        } catch (error) {
+            this.message.errorInternalServer(
+                error,
+                ' No se ha podido editar producto'
+            );
+        }
+    };
 }
 
 module.exports = ProductsController;

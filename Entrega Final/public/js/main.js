@@ -1,170 +1,172 @@
 ///PRODUCTOS
 async function detail(value) {
-  console.log('VALUE', value);
-  await fetch(`/api/productos/${value}`, { method: 'GET' })
-    .then(function (response) {
-      if (response.ok) {
-        window.location.href = `/productos/${value}`;
-      } else {
-        console.log('Erorr');
-      }
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+    console.log('VALUE', value);
+    await fetch(`/api/productos/${value}`, { method: 'GET' })
+        .then(function (response) {
+            if (response.ok) {
+                window.location.href = `/productos/${value}`;
+            } else {
+                console.log('Erorr');
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 }
 
 async function deleting(value) {
-  await fetch(`/api/productos/${value}`, { method: 'DELETE' })
-    .then(function () {
-      window.location.href = `/productos`;
-    })
-    .catch(function () {
-      //   window.location.href = `/error/`;
-    });
+    await fetch(`/api/productos/${value}`, { method: 'DELETE' })
+        .then(function () {
+            window.location.href = `/productos`;
+        })
+        .catch(function () {
+            //   window.location.href = `/error/`;
+        });
 }
 
 async function edit(value) {
-  await fetch(`/api/productos/edit/${value}`, {
-    method: 'GET',
-  })
-    .then(function (response) {
-      if (response.ok) {
-        window.location.href = `/productos/edit/${value}`;
-      }
+    await fetch(`/api/productos/edit/${value}`, {
+        method: 'GET',
     })
-    .catch(function (error) {
-      console.log(error);
-    });
+        .then(function (response) {
+            if (response.ok) {
+                window.location.href = `/productos/edit/${value}`;
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 }
 
 async function actualizar(value) {
-  let nombre = document.getElementById('nombre').value;
-  let descripcion = document.getElementById('descripcion').value;
-  let foto = document.getElementById('foto').value;
-  let categoria = document.getElementById('categoria').value;
-  let precio = document.getElementById('precio').value;
-  let stock = document.getElementById('stock').value;
+    let nombre = document.getElementById('nombre').value;
+    let descripcion = document.getElementById('descripcion').value;
+    let foto = document.getElementById('foto').value;
+    let categoria = document.getElementById('categoria').value;
+    let precio = document.getElementById('precio').value;
+    let stock = document.getElementById('stock').value;
 
-  await fetch(`/api/productos/${value}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      nombre,
-      descripcion,
-      foto,
-      categoria,
-      precio,
-      stock,
-    }),
-  })
-    .then((response) => {
-      if (response) {
-        window.location.href = '/productos';
-      }
+    await fetch(`/api/productos/${value}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            nombre,
+            descripcion,
+            foto,
+            categoria,
+            precio,
+            stock,
+        }),
     })
+        .then((response) => {
+            if (response) {
+                window.location.href = '/productos';
+            }
+        })
 
-    .catch((error) => {
-      console.log(error);
-    });
+        .catch((error) => {
+            console.log(error);
+        });
 }
 
 /* ---------------------- Cart ----------------------*/
 async function agregar(idProducto) {
-  const idCart = localStorage.getItem('my_token');
+    const idCart = localStorage.getItem('my_token');
 
-  if (!idCart) {
-    await fetch('/api/carrito/', {
-      method: 'POST',
-    })
-      .then(function (response) {
-        return response.json();
-      })
-      .then((data) => {
-        const id = data.cart._id;
-        localStorage.setItem('my_token', id);
-        fetch(`/api/carrito/${id}/productos/${idProducto}`, {
-          method: 'POST',
+    if (!idCart) {
+        await fetch('/api/carrito/', {
+            method: 'POST',
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then((data) => {
+                console.log('data', data);
+                const id = data.cart._id;
+                localStorage.setItem('my_token', id);
+                fetch(`/api/carrito/${id}/productos/${idProducto}`, {
+                    method: 'POST',
+                });
+            })
+            .catch((err) => {
+                console.error('Request failed', err);
+            });
+    } else {
+        fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
+            method: 'POST',
         });
-      })
-      .catch((err) => {
-        console.error('Request failed', err);
-      });
-  } else {
-    fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
-      method: 'POST',
-    });
-  }
+    }
 }
 
 function cart() {
-  let idCart = 0;
-  localStorage.getItem('my_token')
-    ? (idCart = window.localStorage.getItem('my_token'))
-    : (idCart = 0);
-  window.location.href = `/carrito/${idCart}`;
+    let idCart ;
+    localStorage.getItem('my_token')
+        ? (idCart = window.localStorage.getItem('my_token'))
+        : (idCart = 0);
+    window.location.href = `/carrito/${idCart}`;
 }
+
 
 async function actualizarCarrito() {
-  const idCart = localStorage.getItem('my_token');
-  const address = document.getElementById('address').value;
-  const email = document.getElementById('email').value;
+    const idCart = localStorage.getItem('my_token');
+    const address = document.getElementById('address').value;
+    const email = document.getElementById('email').value;
 
-  await fetch(`/api/carrito/${idCart}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      address,
-      email,
-    }),
-  })
-    .then((response) => {
-      console.log('AQUI', response);
-      if (response) {
-        window.location.href = `/api/pedido/${idCart}`;
-      }
+    await fetch(`/api/carrito/${idCart}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            address,
+            email,
+        }),
     })
+        .then((response) => {
+            console.log('AQUI', response);
+            if (response) {
+                window.location.href = `/api/pedido/${idCart}`;
+            }
+        })
 
-    .catch((error) => {
-      console.log(error);
-    });
+        .catch((error) => {
+            console.log(error);
+        });
 }
 async function deleteItemCart(idProducto) {
-  console.log(idProducto);
-  const idCart = window.localStorage.getItem('my_token');
-  await fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
-    method: 'DELETE',
-  })
-    .then(function (response) {
-      if (response) {
-        window.location.href = `/carrito/${idCart}`;
-      }
+    console.log(idProducto);
+    const idCart = window.localStorage.getItem('my_token');
+    await fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
+        method: 'DELETE',
     })
-    .catch(function (error) {
-      console.log(error);
-    });
+        .then(function (response) {
+            if (response) {
+                window.location.href = `/carrito/${idCart}`;
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 }
 
 async function borrarCarrito() {
-  const idCart = window.localStorage.getItem('my_token');
-  await fetch(`/api/carrito/${idCart}`, {
-    method: 'DELETE',
-  })
-    .then(function (response) {
-      if (response) {
-        console.log('Carrito Eliminado');
-        window.location.href = `/carrito/${idCart}`;
-      }
+    const idCart = window.localStorage.getItem('my_token');
+    await fetch(`/api/carrito/${idCart}`, {
+        method: 'DELETE',
     })
-    .catch(function (error) {
-      console.log(error);
-    });
+        .then(function (response) {
+            if (response) {
+                console.log('Carrito Eliminado');
+                window.location.href = `/carrito/${idCart}`;
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 }
 
 async function comprar() {
-  const idCart = window.localStorage.getItem('my_token');
-  console.log('ID', idCart);
-  window.location.href = `/api/pedido/${idCart}`;
+    const idCart = window.localStorage.getItem('my_token');
+    console.log('ID', idCart);
+    window.location.href = `/api/pedido/${idCart}`;
 }
 
 /* ---------------------- Profile ----------------------*/
@@ -192,78 +194,76 @@ function changeImage(input) {
 
 /* ---------------------- Order ----------------------*/
 async function actualizarOrder() {
-  let email = document.getElementById('email').value;
-  let name = document.getElementById('name').value;
-  let lastName = document.getElementById('lastName').value;
-  let address = document.getElementById('address').value;
-  let phone = document.getElementById('phone').value;
+    let email = document.getElementById('email').value;
+    let name = document.getElementById('name').value;
+    let lastName = document.getElementById('lastName').value;
+    let address = document.getElementById('address').value;
+    let phone = document.getElementById('phone').value;
 
-  const idCart = window.localStorage.getItem('my_token');
-  const data = fetch(`/api/pedido/${idCart}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      email,
-      name,
-      lastName,
-      address,
-      phone,
-    }),
-  });
-
-  await fetch(`/api/carrito/${idCart}`, {
-    method: 'DELETE',
-  })
-    .then(() => localStorage.removeItem('my_token'))
-    .finally(() => (window.location.href = `/api/pedido/gracias`))
-    .catch((error) => {
-      console.log(error);
+    const idCart = window.localStorage.getItem('my_token');
+    const data = fetch(`/api/pedido/${idCart}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            email,
+            name,
+            lastName,
+            address,
+            phone,
+        }),
     });
+
+    await fetch(`/api/carrito/${idCart}`, {
+        method: 'DELETE',
+    })
+        .then(() => localStorage.removeItem('my_token'))
+        .finally(() => (window.location.href = `/api/pedido/gracias`))
+        .catch((error) => {
+            console.log(error);
+        });
 }
 
 //login
 function check_pass() {
-  if (
-    document.getElementById('password').value ==
-    document.getElementById('confirm_password').value
-  ) {
-    document.getElementById('submit').disabled = false;
-    document.getElementById('message').innerHTML = ' ';
-  } else {
-    document.getElementById('submit').disabled = true;
-    document.getElementById('message').innerHTML =
-      'Las contraseñas no coinciden';
-  }
+    if (
+        document.getElementById('password').value ==
+        document.getElementById('confirm_password').value
+    ) {
+        document.getElementById('submit').disabled = false;
+        document.getElementById('message').innerHTML = ' ';
+    } else {
+        document.getElementById('submit').disabled = true;
+        document.getElementById('message').innerHTML =
+            'Las contraseñas no coinciden';
+    }
 }
 
 async function actualizarProfile(value) {
-  console.log(value);
-  const name = document.getElementById('first_name').value;
-  const lastName = document.getElementById('last_name').value;
-  const age = document.getElementById('age').value;
-  const phone = document.getElementById('phone').value;
-  const address = document.getElementById('location').value;
+    console.log(value);
+    const name = document.getElementById('first_name').value;
+    const lastName = document.getElementById('last_name').value;
+    const age = document.getElementById('age').value;
+    const phone = document.getElementById('phone').value;
+    const address = document.getElementById('location').value;
 
-  await fetch(`/profile/${value}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name,
-      lastName,
-      age,
-      phone,
-      address,
-    }),
-  })
-    .then((response) => {
-      if (response) {
-        window.location.href = '/profile';
-      }
+    await fetch(`/profile/${value}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            name,
+            lastName,
+            age,
+            phone,
+            address,
+        }),
     })
+        .then((response) => {
+            if (response) {
+                window.location.href = '/profile';
+            }
+        })
 
-    .catch((error) => {
-      console.log(error);
-    });
+        .catch((error) => {
+            console.log(error);
+        });
 }
-
-

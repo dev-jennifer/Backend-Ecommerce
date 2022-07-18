@@ -2,10 +2,8 @@ const { middleware } = require('../utils/functions'),
   UserController = require('../controllers/user.controller'),
   router = require('express').Router(),
   passport = require('passport'),
-  // passportLocal = require('passport-local'),
   config = require('../utils/config.js'),
   jwt = require('jsonwebtoken');
-//LocalStrategy = passportLocal.Strategy;
 require('../passport/local-auth');
 
 class RouterUser {
@@ -14,7 +12,7 @@ class RouterUser {
   }
 
   start() {
-    // Function for generating jwt tokens
+
     const generateJwtToken = (user) => {
       const token = jwt.sign(user, config.JWT.SECRET, {
         expiresIn: '1d',
@@ -69,7 +67,7 @@ class RouterUser {
       passport.authenticate('google', { scope: ['email', 'profile'] })
     );
 
-    // This is the callback\redirect url after the OAuth login at Google.
+   
     router.get(
       '/auth/google/callback',
       passport.authenticate('google', {
@@ -109,8 +107,7 @@ class RouterUser {
       passport.authenticate('jwt', { session: false }),
       this.controlador.editProfile
     );
-    // This is the strategy setup for JWT so that we can use tokens instead of sessions.
-
+ 
     return router;
   }
 }

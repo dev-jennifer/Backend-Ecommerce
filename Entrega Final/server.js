@@ -8,29 +8,25 @@ const express = require('express'),
   cluster = require('cluster'),
   logger = require('./src/utils/loggers'),
   config = require('./src/utils/config'),
-  CONFIG_SERVER = require('./src/utils/configServer'),
   morgan = require('morgan'),
   path = require('path'),
   compression = require('compression'),
   exphbs = require('express-handlebars'),
-  cors = require('cors');
+  cors = require('cors'),
+  { Server: HttpServer } = require('http'),
+  { Server: IOServer } = require('socket.io');
 
-
-const app = express();
-const { Server: HttpServer } = require('http');
-const { Server: IOServer } = require('socket.io');
-const httpServer = new HttpServer(app);
-const io = new IOServer(httpServer);
+const app = express(),
+  httpServer = new HttpServer(app),
+  io = new IOServer(httpServer);
 
 const RouterProduct = require('./src/routes/products.router'),
   RouterCart = require('./src/routes/cart.router'),
   RouterOrder = require('./src/routes/order.router'),
   RouterUser = require('./src/routes/user.router'),
   RouterEmail = require('./src/routes/email.router'),
-  RouterViews = require('./src/routes/views.router');
-RouterChat = require('./src/routes/chat.router');
-
-// app.use(express.static(__dirname + '/public'));
+  RouterViews = require('./src/routes/views.router'),
+  RouterChat = require('./src/routes/chat.router');
 
 app.use(compression());
 app.use(morgan('tiny'));
@@ -68,7 +64,6 @@ if (config.SRV.entorno == 'development') {
   );
 }
 
-//----------COOKIES------------//
 app.use(cookieParser());
 const MongoStore = connectMongo.create({
   mongoUrl: config.MONGO_DB.MONGO_CONNECT.url,
@@ -85,7 +80,6 @@ app.use(
     cookie: { maxAge: oneDay },
   })
 );
-//----------------------//
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -94,20 +88,14 @@ app.use((req, res, next) => {
   app.locals.signinMessage = req.flash('signinMessage');
   app.locals.signupMessage = req.flash('signupMessage');
   app.locals.user = req.user;
-
   next();
 });
 app.use(function (req, res, next) {
   res.locals.session = req.session;
   next();
 });
-
 app.set('socketio', io);
-
 app.set('io', io);
-
-// pass in io to the relevant route
-const chat = require('./src/routes/chat.router')(io);
 
 //---------VIEWS----------///
 
@@ -118,27 +106,29 @@ app.use('/api/productos', new RouterProduct().start());
 app.use('/api/carrito', new RouterCart().start());
 app.use('/api/pedido', new RouterOrder().start());
 app.use('/template/email', new RouterEmail().start());
+app.use('/chat', RouterChat(io));
 app.use('/', new RouterUser().start());
-app.use('/chat', chat);
 
- 
+
 /* ---------------------- Servidor ----------------------*/
 
-if (CONFIG_SERVER.modoCluster && cluster.isPrimary) {
-  logger.info('CPUs:', CONFIG_SERVER.numeroCPUs);
+if (config.SERVER.modoCluster && cluster.isPrimary) {
+  logger.info('CPUs:', config.SERVER.numeroCPUs);
   logger.info(`Master ${process.pid} is running`);
 
-  for (let i = 0; i < CONFIG_SERVER.numeroCPUs; i++) {
+  for (let i = 0; i < config.SERVER.numeroCPUs; i++) {
     cluster.fork();
   }
 
   cluster.on('exit', (worker) => {
-    logger.info(`  ${worker.process.pid} cerrado`);
+    logger.info(`${worker.process.pid} cerrado`);
   });
 } else {
-  const server = httpServer.listen(CONFIG_SERVER.PORT, () => {
+  const server = httpServer.listen(config.SERVER.PORT, () => {
     logger.info(
-      `Servidor HTTP escuchado en puerto ${server.address().port}  - ${new Date().toLocaleString()}`
+      `Servidor HTTP escuchado en puerto ${
+        server.address().port
+      }  - ${new Date().toLocaleString()}`
     );
   });
   server.on('error', (error) => logger.error(`Error en servidor ${error}`));

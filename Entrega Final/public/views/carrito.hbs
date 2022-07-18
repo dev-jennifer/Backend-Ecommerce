@@ -15,13 +15,17 @@
     <tbody>
       {{> carritoDetalle}}
     </tbody>
+   
   </table>
-  </div>
 
+  </div>
+{{!-- <h5 style="text-align:center">  Total:${{total}}</h5> --}}
 <button onclick="borrarCarrito()">
   Borrar todo
 </button>
-    {{#if session.passport.user}}
+     
+    
+    {{#if ssession.passport}}
     <button onclick="comprar()">
   Continuar Compra
 </button>
@@ -29,8 +33,8 @@
     {{else}}
       <div class="form">
         <form>
-          <input name="email" id="email" type="email" placeholder="email" required />
-          <input name="address" id="address" type="text" placeholder="address" required/>
+          <input name="email" id="email" type="email" value="{{session.passport.user.email}}" placeholder="email" required />
+          <input name="address" id="address" type="text" value="{{session.passport.user.address}}" placeholder="address" required/>
           <input
             type="submit"
             onclick="actualizarCarrito()"

@@ -1,10 +1,13 @@
 const ProductsController = require('./products.controller');
 const CartController = require('./cart.controller');
-const os =require('os');
+const config = require('../utils/config');
+const APICustom = require('../classes/Error/customError');
+
 class RequestViews {
   constructor() {
     this.controladorProductos = new ProductsController();
     this.controladorCarrito = new CartController();
+    this.message = new APICustom();
   }
 
   indexPage = (req, res) => {
@@ -27,8 +30,8 @@ class RequestViews {
         cat: categorias,
         title: 'Productos',
       });
-    } catch {
-      next;
+    } catch (err) {
+      this.message.errorNotFound(err, `Producto no encontrado`);
     }
   };
 
@@ -40,8 +43,8 @@ class RequestViews {
 
     try {
       res.render('products', { productos: productos, cat: categorias });
-    } catch {
-      next;
+    } catch (err) {
+      this.message.errorNotFound(err, `Categoria no encontrado`);
     }
   };
 
@@ -51,7 +54,9 @@ class RequestViews {
       .then((product) => {
         res.render('productDetail', { producto: product });
       })
-      .catch(next);
+      .catch((err) => {
+        this.message.errorNotFound(err, `Producto no encontrado`);
+      });
   };
 
   editProductId = (req, res, next) => {
@@ -60,7 +65,9 @@ class RequestViews {
       .then((product) => {
         res.render('editProduct', { producto: product });
       })
-      .catch(next);
+      .catch((err) => {
+        this.message.errorNotFound(err, `Producto no encontrado`);
+      });
   };
 
   getCartView = async (req, res, next) => {
@@ -87,45 +94,57 @@ class RequestViews {
       producto: cartItem,
     });
   };
-
+  getCartEmpty = async (req, res) => {
+    const cartItem = [];
+    res.render('carrito', {
+      producto: cartItem,
+    });
+  };
   getOrderView = async (req, res) => {
-    let cart;
-    let cartItem;
-    const id = req.params.id;
-    const carrito = await this.controladorCarrito.getItemsInCart(id);
+    try {
+      let cart;
+      let cartItem;
+      const id = req.params.id;
+      const carrito = await this.controladorCarrito.getItemsInCart(id);
 
-    res.render('order', { title: 'Orden', producto: carrito.items });
+      res.render('order', { title: 'Orden', producto: carrito.items });
+    } catch (error) {
+      this.message.errorInternalServer(
+        err,
+        `Hubo un problema en generar orden`
+      );
+    }
   };
 
-  
-serverInfo= (req, res) => {
-	let argumentos= [];
-   process.argv.forEach((val, index) => {
-    argumentos+=`${index}: ${val}`;
-  });
- 
-  const folder = process.cwd();
-  const versionNode = process.version;
-  const processId = process.version;
-  const so = process.platform;
-  const memory = process.memoryUsage().rss;
-  const memoryRss = Math.round((memory / 1024 / 1024) * 100) / 100;
-  const pid = process.pid;
+  serverInfo = (req, res) => {
+    try {
+      let argumentos = [];
+      process.argv.forEach((val, index) => {
+        argumentos += `${index}: ${val}`;
+      });
 
+      const folder = process.cwd();
+      const versionNode = process.version;
+      const processId = process.version;
+      const so = process.platform;
+      const memory = process.memoryUsage().rss;
+      const memoryRss = Math.round((memory / 1024 / 1024) * 100) / 100;
+      const pid = process.pid;
 
-  res.render("info", {
-    argumentos: argumentos,
-    path: pid,
-    so: so,
-    processId: processId,
-    versionNode: versionNode,
-    folder: folder,
-    memory: memoryRss,
-  });
- 
-} 
-
- 
-
+      res.render('info', {
+        title: 'Informacion',
+        argumentos: argumentos,
+        path: pid,
+        so: so,
+        processId: processId,
+        versionNode: versionNode,
+        folder: folder,
+        memory: memoryRss,
+        config: config,
+      });
+    } catch (error) {
+      this.message.errorInternalServer(error, 'Error al visualizar datos');
+    }
+  };
 }
 module.exports = RequestViews;
