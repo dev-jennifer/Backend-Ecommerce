@@ -12,7 +12,7 @@ class RouterUser {
   }
 
   start() {
-
+    // Function for generating jwt tokens
     const generateJwtToken = (user) => {
       const token = jwt.sign(user, config.JWT.SECRET, {
         expiresIn: '1d',
@@ -67,7 +67,6 @@ class RouterUser {
       passport.authenticate('google', { scope: ['email', 'profile'] })
     );
 
-   
     router.get(
       '/auth/google/callback',
       passport.authenticate('google', {
@@ -84,7 +83,6 @@ class RouterUser {
       '/',
       passport.authenticate('jwt', {
         session: false,
-        failureRedirect: '/',
         successRedirect: '/productos',
       }),
       (req, res) => {
@@ -107,7 +105,7 @@ class RouterUser {
       passport.authenticate('jwt', { session: false }),
       this.controlador.editProfile
     );
- 
+
     return router;
   }
 }

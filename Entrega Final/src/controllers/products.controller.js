@@ -60,9 +60,7 @@ class ProductsController {
     getCategoriaId = async (req, res) => {
         const id = req.params.id;
         try {
-            res.status(200).json({
-                producto: await this.ProductsDAO.mostrarCategoria(id),
-            });
+            res.status(200).json({producto: await this.ProductsDAO.mostrarCategoria(id)});
         } catch (error) {
             this.message.errorNotFound(error, 'categoria id no encontrado');
         }

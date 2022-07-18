@@ -10,7 +10,6 @@ class CartController {
   constructor() {
     this.ProductsDAO = ProductDAOFactory.get();
     this.cartDAO = CartDAOFactory.get();
-    this.funciones = new CartDAOBase();
   }
   ///view///
   getItemsInCart = async (id) => {

@@ -1,9 +1,10 @@
 const bcrypt = require('bcrypt'),
   APICustom = require('../classes/Error/customError'),
   sendEmail = require('../notificaciones/emails/Registration/newUser'),
-  UserFactory = require('../classes/User/UserFactory.class')
+  UserFactory = require('../classes/User/UserFactory.class');
 //   { generateToken, auth } = require('../passport/support');
- const jwt = require('jsonwebtoken');
+//const jwt = require('jsonwebtoken');
+
 class UserController {
   constructor() {
     this.userDAO = UserFactory.get();
@@ -25,18 +26,17 @@ class UserController {
       });
     } catch (error) {
       const mensaje = 'Error al cerrar sesion';
-      res.render('error401', this.message.errorInternalServer(error, mensaje));
+      this.message.errorInternalServer(error, mensaje);
     }
   };
   register = async (req, email, password, done) => {
     try {
       const user = await this.userDAO.mostrarEmail(email);
-
+      console.log('U', user);
       if (user) {
+         console.log("aqui1")
         return done(
-          null,
-          false,
-          req.flash('signupMessage', 'The Email is already Taken.')
+          null,false,req.flash('signupMessage', 'The Email is already Taken.')
         );
       } else {
         req.body.email = email;
@@ -58,12 +58,11 @@ class UserController {
           avatar: req.file.filename,
           membershipID: 2,
         };
-
+        console.log('newUserRegister', newUserRegister);
         await this.userDAO.guardar(newUserRegister);
         done(null, newUserRegister, sendEmail(newUserRegister));
       }
     } catch (error) {
-      
       const mensaje = 'Error al crear usuario';
       this.message.errorInternalServer(error, mensaje);
     }

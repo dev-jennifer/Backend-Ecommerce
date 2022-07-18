@@ -3,7 +3,6 @@ const os = require('os');
 
 dotenv.config({
   silent: process.env.NODE_ENV === 'production',
-     
 });
 
 module.exports = {
@@ -31,10 +30,10 @@ module.exports = {
     WHATSAPP_ADMIN: process.env.WHATSAPP_ADMIN,
     WHATSAPP_FROM: process.env.WHATSAPP_FROM,
   },
-  SRV: {
-    persistencia: 'mongodb',
-  },
 
+  SRV: {
+    persistencia: process.env.PERSISTENCIA || 'mongodb',
+  },
   FACEBOOK: {
     FACE_APP_ID: process.env.FACEBOOK_APP_ID,
     FACE_APP_SECRET: process.env.FACEBOOK_APP_SECRET,
@@ -46,10 +45,10 @@ module.exports = {
   },
   SERVER: {
     numeroCPUs: process.env.NRO_CPU_MAX || os.cpus().length,
-    PORT: parseInt(process.env.PORT) || 8081,
-    modoCluster: process.env.MODO_CLUSTER == 'CLUSTER',
-    entorno: process.env.NODE_ENV,
-    logger: 'DEV'
- 
+    PORT: parseInt(process.env.PORT) || 8080,
+    modoCluster: process.env.MODO_CLUSTER,
+    logger: 'DEV',
+    entorno: process.env.NODE_ENV || 'development'
+    
   },
 };

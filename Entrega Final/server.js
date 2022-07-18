@@ -12,13 +12,13 @@ const express = require('express'),
   path = require('path'),
   compression = require('compression'),
   exphbs = require('express-handlebars'),
-  cors = require('cors'),
-  { Server: HttpServer } = require('http'),
-  { Server: IOServer } = require('socket.io');
+  cors = require('cors');
 
-const app = express(),
-  httpServer = new HttpServer(app),
-  io = new IOServer(httpServer);
+const app = express();
+const { Server: HttpServer } = require('http');
+const { Server: IOServer } = require('socket.io');
+const httpServer = new HttpServer(app);
+const io = new IOServer(httpServer);
 
 const RouterProduct = require('./src/routes/products.router'),
   RouterCart = require('./src/routes/cart.router'),
@@ -30,6 +30,7 @@ const RouterProduct = require('./src/routes/products.router'),
 
 app.use(compression());
 app.use(morgan('tiny'));
+
 
 app.use('/uploads', express.static('uploads'));
 
@@ -52,23 +53,24 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 /****  Configurando el cors de forma dinamica */
-if (config.SRV.entorno == 'development') {
+if (config.SERVER.entorno == 'development') {
   app.use(cors());
 } else {
   app.use(
     cors({
-      origin: 'http://localhost:8080',
+      origin: `http://localhost:${config.SERVER.PORT}`,
       optionsSucessStatus: 200,
-      methods: 'GET, PUT, POST',
+      methods: 'GET, PUT, POST, DELETE',
     })
   );
 }
-
 app.use(cookieParser());
+
 const MongoStore = connectMongo.create({
   mongoUrl: config.MONGO_DB.MONGO_CONNECT.url,
-  ttl: 30000,
+  ttl: 30000
 });
+ 
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(
   session({
@@ -90,6 +92,7 @@ app.use((req, res, next) => {
   app.locals.user = req.user;
   next();
 });
+
 app.use(function (req, res, next) {
   res.locals.session = req.session;
   next();
@@ -100,16 +103,15 @@ app.set('io', io);
 //---------VIEWS----------///
 
 app.use('/', new RouterViews().start());
+ const chat = require('./src/routes/chat.router')(io);
 
 //---------ROUTER----------///
 app.use('/api/productos', new RouterProduct().start());
 app.use('/api/carrito', new RouterCart().start());
 app.use('/api/pedido', new RouterOrder().start());
 app.use('/template/email', new RouterEmail().start());
-app.use('/chat', RouterChat(io));
 app.use('/', new RouterUser().start());
-
-
+app.use('/chat', chat);
 /* ---------------------- Servidor ----------------------*/
 
 if (config.SERVER.modoCluster && cluster.isPrimary) {
