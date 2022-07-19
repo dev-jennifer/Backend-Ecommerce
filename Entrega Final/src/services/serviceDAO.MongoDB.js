@@ -48,8 +48,7 @@ class ServiceDAOMongoDB {
       await this.conn.connect();
       return await this.coleccion.deleteOne({ [condicion]: id });
     } catch (error) {
-       this.message.errorInternalServer(error,  `Error al eliminar id ${id}`);
-         
+      this.message.errorInternalServer(error, `Error al eliminar id ${id}`);
     } finally {
       this.conn.disconnect();
       logger.info(`Elemento elimindado id: ${id}`);
@@ -58,14 +57,14 @@ class ServiceDAOMongoDB {
 
   mostrarId = async (id) => {
     const client = await this.conn.connect().catch((err) => {
-       this.message.errorServer(error, `Error al conectar`);
+      this.message.errorServer(error, `Error al conectar`);
     });
     if (client) {
       try {
         let doc = await this.coleccion.findOne({ _id: id });
         return doc;
       } catch (error) {
-       this.message.errorInternalServer(error, `Error al mostrar id`);
+        this.message.errorInternalServer(error, `Error al mostrar id`);
       } finally {
         this.conn.disconnect();
       }
@@ -73,15 +72,16 @@ class ServiceDAOMongoDB {
   };
 
   mostrarEmail = async (email) => {
+ 
     const client = await this.conn.connect().catch((err) => {
-     this.message.errorServer(error, `Error al conectar`);
+      this.message.errorServer(error, `Error al conectar`);
     });
     if (client) {
       try {
         let doc = await this.coleccion.findOne({ email: email });
         return doc;
       } catch (error) {
-         this.message.errorInternalServer(error, `Error al mostrar email`);
+        this.message.errorInternalServer(error, `Error al mostrar email`);
       } finally {
         this.conn.disconnect();
       }
@@ -89,31 +89,32 @@ class ServiceDAOMongoDB {
   };
 
   mostrarByEmail = async (id) => {
+
     const client = await this.conn.connect().catch((err) => {
-       this.message.errorServer(error, `Error al conectar`);
+      this.message.errorServer(error, `Error al conectar`);
     });
     if (client) {
       try {
         let doc = await this.coleccion.find({ 'usuario.email': { $eq: id } });
         return doc;
       } catch (error) {
-        this.message.errorInternalServer(error, `Error al mostrar email por chat`);
+        this.message.errorInternalServer(
+          error,
+          `Error al mostrar email por chat`
+        );
       } finally {
         this.conn.disconnect();
       }
     }
   };
- 
+
   mostrarCategoria = async (id) => {
     try {
       await this.conn.connect();
       let doc = await this.coleccion.find({ categoria: id });
       return doc;
     } catch (error) {
-      this.message.errorInternalServer(
-        error,
-        `Error al mostrar categoria`
-      );
+      this.message.errorInternalServer(error, `Error al mostrar categoria`);
     }
   };
 
@@ -123,7 +124,10 @@ class ServiceDAOMongoDB {
       let cat = await this.coleccion.distinct('categoria');
       return cat;
     } catch (error) {
- this.message.errorInternalServer(error, `Error al mostrar todas categorias`);
+      this.message.errorInternalServer(
+        error,
+        `Error al mostrar todas categorias`
+      );
     } finally {
       this.conn.disconnect();
     }
@@ -131,8 +135,7 @@ class ServiceDAOMongoDB {
 
   actualizar = async (id, body) => {
     const client = await this.conn.connect().catch((err) => {
-     this.message.errorServer(error, `Error al conectar`);
- 
+      this.message.errorServer(error, `Error al conectar`);
     });
     if (client) {
       try {
@@ -140,10 +143,7 @@ class ServiceDAOMongoDB {
 
         return doc;
       } catch (error) {
-        this.message.errorInternalServer(
-          error,
-          `Error al actualizar`
-        );
+        this.message.errorInternalServer(error, `Error al actualizar`);
         return {
           status: 0,
           data: error,
@@ -154,17 +154,17 @@ class ServiceDAOMongoDB {
     }
   };
 
-  actualizarChat = async (email, body) => {
+  actualizarPorEmail= async (email, body) => {
     try {
       await this.conn.connect();
- 
+
       let doc = await this.coleccion.updateOne(
         { email: email },
         { $set: body }
       );
       return doc;
     } catch (error) {
-           this.message.errorInternalServer(error, `Error al actualizar`);
+      this.message.errorInternalServer(error, `Error al actualizar`);
     } finally {
       this.conn.disconnect();
     }

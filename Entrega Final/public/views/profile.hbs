@@ -1,7 +1,8 @@
  <section class="user-profile">
   <div class="container">
   <div class="row">
-    <div class="col-sm-12"><h1>Perfil de usuario</h1></div>
+    <div class="col-sm-12">
+      <h1>Perfil de usuario</h1></div>
     <div class="row">
       <div class="col-sm-3">
         <div class="text-center">
@@ -13,25 +14,21 @@
                {{#if user.picture}}
                    <img alt="profile" class="avatar img-circle img-thumbnail" src="{{user.picture}}"/> 
                 {{else}}
-               {{#if user.avatar}}
-             <img  alt="profile"  class="avatar img-circle img-thumbnail"  src="./uploads/{{user.avatar}}"/>
+               {{#if usuario.avatar}}
+             <img  alt="profile"  class="avatar img-circle img-thumbnail"  src="./uploads/{{usuario.avatar}}"/>
               {{/if}}
           {{/if}}{{/if}}
 
-
-          {{!-- <h6>Upload a different photo...</h6>
-          <input type="file" class="text-center center-block file-upload" /> --}}
+ 
         </div>
       </div>
       <!--/col-3-->
       <div class="col-sm-9">
-
-
-
-        <div class="tab-content">
-         {{#if user}}
  
-          <form class="form"  id="registrationForm" data-id={{id}}>
+        <div class="tab-content">
+         {{#if usuario}}
+ 
+          <form class="form"  id="registrationForm" data-id={{usuario.id}}>
             <div class="form-group">
            
               <div class="col-sm-12">
@@ -41,7 +38,7 @@
                   class="form-control"
                   name="first_name"
                   id="first_name"
-                 value="{{user.name}}"
+                 value="{{usuario.name}}"
                />
               </div>
  
@@ -52,7 +49,7 @@
                   class="form-control"
                   name="last_name"
                   id="last_name"
-                  value="{{user.lastName}}"
+                  value="{{usuario.lastName}}"
                 />
               </div>
             </div>
@@ -64,19 +61,19 @@
                   class="form-control"
                   name="number"
                   id="age"
-                  value=  "{{user.age}}"
+                  value=  "{{usuario.age}}"
                 />
               </div>
  
               <div class="col-sm-12">
                 <label for="phone"><h4>Phone</h4></label>
-                  <input id="phone" type="tel" name="phone" value="{{user.phone}}" />
+                  <input id="phone" type="tel" name="phone" value="{{usuario.phone}}" />
                  
               </div>
   
               <div class="col-sm-12">
                 <label for="email"><h4>Email</h4></label>
-                <p>{{user.email}}</p>
+                <p>{{usuario.email}}</p>
                   
               </div>
             </div>
@@ -87,11 +84,11 @@
                   type="email"
                   class="form-control"
                   id="location"
-                  value="{{user.address}}" />
+                  value="{{usuario.address}}" />
               </div>
 
          
-            <a class="btn btn-primary" onclick="actualizarProfile('{{user._id}}')">
+            <a class="btn btn-primary" onclick="actualizarProfile('{{usuario.email}}')">
               Actualizar
             </a>
 

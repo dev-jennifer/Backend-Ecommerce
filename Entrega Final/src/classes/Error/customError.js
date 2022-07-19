@@ -1,7 +1,14 @@
 const logger = require('../../utils/loggers');
 
 class APICustom {
-  constructor() {}
+  constructor() {
+
+    (this.OK = 200),
+      (this.BAD_REQUEST = 400),
+      (this.NOT_FOUND = 404),
+      (this.INTERNAL_SERVER = 500);
+
+  }
    
   errorNotFound = (error, mensaje) => {
     logger.error(error, mensaje);

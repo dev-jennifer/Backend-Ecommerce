@@ -2,18 +2,21 @@ const bcrypt = require('bcrypt'),
   APICustom = require('../classes/Error/customError'),
   sendEmail = require('../notificaciones/emails/Registration/newUser'),
   UserFactory = require('../classes/User/UserFactory.class');
-//   { generateToken, auth } = require('../passport/support');
-//const jwt = require('jsonwebtoken');
 
 class UserController {
   constructor() {
     this.userDAO = UserFactory.get();
     this.message = new APICustom();
-  }
+  }  
+  renderProfile = async (req, res) => {
 
-  renderProfile = (req, res) => {
-    const user = req.user._json ? req.user._json : req.user;
-    res.render('profile', { user: user });
+    const email = req.user.email ? req.user.email : req.user._json.email;
+    try {
+      const usuario = await this.userDAO.mostrarEmail(email);
+      res.render('profile', { usuario: usuario.toJSON() , title:"Perfil"});
+    } catch (error) {
+      this.message.errorInternalServer(error, 'error al obtener perfik');
+    }
   };
 
   renderLogOut = (req, res, next) => {
@@ -32,12 +35,11 @@ class UserController {
   register = async (req, email, password, done) => {
     try {
       const user = await this.userDAO.mostrarEmail(email);
-      console.log('U', user);
+
       if (user) {
-         console.log("aqui1")
-        return done(
-          null,false,req.flash('signupMessage', 'The Email is already Taken.')
-        );
+        done(null, false, {
+          message: 'The Email is already Taken',
+        });
       } else {
         req.body.email = email;
         password = bcrypt.hashSync(
@@ -58,7 +60,7 @@ class UserController {
           avatar: req.file.filename,
           membershipID: 2,
         };
-        console.log('newUserRegister', newUserRegister);
+
         await this.userDAO.guardar(newUserRegister);
         done(null, newUserRegister, sendEmail(newUserRegister));
       }
@@ -75,11 +77,19 @@ class UserController {
 
   editProfile = async (req, res) => {
     const id = req.params.id;
-    const body = req.body;
+
+    const nuevoDatos = {
+      name: req.body.name,
+      lastName: req.body.lastName,
+      address: req.body.address,
+      age: req.body.age,
+      phone: req.body.phone,
+    };
 
     try {
-      await this.userDAO.actualizar(id, body);
-      res.status(200).send('Perfil actualizado');
+      const newUser = await this.userDAO.actualizarPorEmail(id,  nuevoDatos );
+      console.log('Nuevo datos', newUser);
+      res.status(200).json({ Perfil_actualizado: newUser });
     } catch (error) {
       const mensaje = 'Error al editar el perfil';
       this.message.errorInternalServer(error, mensaje);
@@ -89,22 +99,21 @@ class UserController {
   login = async (req, email, password, done) => {
     try {
       const user = await this.userDAO.mostrarEmail(email);
-
       if (!user) {
-        return done(null, false, req.flash('signinMessage', 'No User Found'));
+        done(null, false, {
+          message: 'No existe el correo registrado',
+        });
+      } else {
+        bcrypt.compare(password, user.password, function (err, result) {
+          if (result == true) {
+            return done(null, user);
+          } else {
+            done(null, false, {
+              message: 'Contraseña incorrecta',
+            });
+          }
+        });
       }
-
-      bcrypt.compare(password, user.password, function (err, result) {
-        if (result == true) {
-          return done(null, user);
-        } else {
-          return done(
-            null,
-            false,
-            req.flash('signinMessage', 'Incorrect Password')
-          );
-        }
-      });
     } catch (error) {
       const mensaje = 'Error al iniciar sesion';
       this.message.errorInternalServer(error, mensaje);

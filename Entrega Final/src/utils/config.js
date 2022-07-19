@@ -14,6 +14,7 @@ module.exports = {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       },
+      secret: process.env.SECRET_MONGO,
     },
   },
   JWT: { SECRET: process.env.PRIVATE_KEY_JWT },
@@ -46,9 +47,8 @@ module.exports = {
   SERVER: {
     numeroCPUs: process.env.NRO_CPU_MAX || os.cpus().length,
     PORT: parseInt(process.env.PORT) || 8080,
-    modoCluster: process.env.MODO_CLUSTER,
+    modoCluster: process.env.MODO_CLUSTER == 'CLUSTER',
     logger: 'DEV',
-    entorno: process.env.NODE_ENV || 'development'
-    
+    entorno: process.env.NODE_ENV || 'development',
   },
 };

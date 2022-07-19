@@ -1,9 +1,12 @@
+const logger = require('../utils/loggers');
+
 const { middleware } = require('../utils/functions'),
   UserController = require('../controllers/user.controller'),
   router = require('express').Router(),
   passport = require('passport'),
   config = require('../utils/config.js'),
   jwt = require('jsonwebtoken');
+
 require('../passport/local-auth');
 
 class RouterUser {
@@ -12,7 +15,7 @@ class RouterUser {
   }
 
   start() {
-    // Function for generating jwt tokens
+
     const generateJwtToken = (user) => {
       const token = jwt.sign(user, config.JWT.SECRET, {
         expiresIn: '1d',
@@ -24,7 +27,7 @@ class RouterUser {
       '/signup',
       middleware,
       passport.authenticate('local-signup', {
-        failureFlash: true,
+        failureFlash: true 
       }),
       (req, res) => {
         const token = generateJwtToken(req.user);
@@ -36,12 +39,17 @@ class RouterUser {
     router.post(
       '/signin',
       passport.authenticate('local-signin', {
-        failureFlash: true,
+        failureFlash: true 
+ 
       }),
       (req, res) => {
-        const token = generateJwtToken(req.user.toJSON());
-        res.cookie('jwt', token);
-        res.redirect('/productos');
+        try {
+          const token = generateJwtToken(req.user.toJSON());
+          res.cookie('jwt', token);
+           res.redirect('/productos');
+        } catch (err) {
+          logger.error('ERROR', err);
+        }
       }
     );
 
@@ -83,7 +91,7 @@ class RouterUser {
       '/',
       passport.authenticate('jwt', {
         session: false,
-        successRedirect: '/productos',
+  
       }),
       (req, res) => {
         res.render('index', { user: req.user });
@@ -94,7 +102,6 @@ class RouterUser {
       '/profile',
       passport.authenticate('jwt', {
         session: false,
-        failureRedirect: '/',
       }),
       this.controlador.renderProfile
     );
