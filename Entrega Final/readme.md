@@ -14,13 +14,7 @@ Express, JavaScript, MongoDB, Compression,Passport, JsonWebToken,Handlebars,Twil
 
 ## 🚀 Como ejecutar el proyecto 🚀
 
-Para poder correr el proyecto debemos clonarlo e instalar las dependencias, esto lo podemos hacer de la siguiente manera:
-
-```shell
-git clone https://github.com/JoaquinDecima/coderhouse-js-ecommerce
-cd coderhouse-js-ecommerce
-npm i
-```
+Para poder correr el proyecto debemos clonarlo
 
 Luego debemos poder nuestras prorpias credecianles en el `.env` para eso podemos copiar el `.env.example` que nos muestra las credenciales que necesitamos.
 
