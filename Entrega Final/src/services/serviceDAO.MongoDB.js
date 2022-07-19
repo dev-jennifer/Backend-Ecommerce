@@ -72,7 +72,6 @@ class ServiceDAOMongoDB {
   };
 
   mostrarEmail = async (email) => {
- 
     const client = await this.conn.connect().catch((err) => {
       this.message.errorServer(error, `Error al conectar`);
     });
@@ -89,7 +88,6 @@ class ServiceDAOMongoDB {
   };
 
   mostrarByEmail = async (id) => {
-
     const client = await this.conn.connect().catch((err) => {
       this.message.errorServer(error, `Error al conectar`);
     });
@@ -134,27 +132,20 @@ class ServiceDAOMongoDB {
   };
 
   actualizar = async (id, body) => {
-    const client = await this.conn.connect().catch((err) => {
-      this.message.errorServer(error, `Error al conectar`);
-    });
-    if (client) {
-      try {
-        let doc = await this.coleccion.updateOne({ _id: id }, { $set: body });
+    try {
+      await this.conn.connect();
 
-        return doc;
-      } catch (error) {
-        this.message.errorInternalServer(error, `Error al actualizar`);
-        return {
-          status: 0,
-          data: error,
-        };
-      } finally {
-        this.conn.disconnect();
-      }
+      let doc = await this.coleccion.updateOne({ _id: id }, { $set: body });
+      this.message.infoSimple('****Actualizado Exitoso****');
+      return doc;
+    } catch (error) {
+      this.message.errorInternalServer(error, `Error al actualizar`);
+    } finally {
+      // this.conn.disconnect();
     }
   };
 
-  actualizarPorEmail= async (email, body) => {
+  actualizarPorEmail = async (email, body) => {
     try {
       await this.conn.connect();
 
@@ -162,6 +153,7 @@ class ServiceDAOMongoDB {
         { email: email },
         { $set: body }
       );
+      this.message.infoSimple('****Actualizado Exitoso****');
       return doc;
     } catch (error) {
       this.message.errorInternalServer(error, `Error al actualizar`);

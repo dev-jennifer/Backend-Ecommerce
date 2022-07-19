@@ -1,6 +1,5 @@
 ///PRODUCTOS
 async function detail(value) {
-
   await fetch(`/api/productos/${value}`, { method: 'GET' })
     .then(function (response) {
       if (response.ok) {
@@ -101,7 +100,7 @@ function cart() {
   let idCart;
   localStorage.getItem('my_token')
     ? (idCart = window.localStorage.getItem('my_token'))
-    : (idCart = 0);
+    : (idCart = '');
   window.location.href = `/carrito/${idCart}`;
 }
 
@@ -118,19 +117,11 @@ async function actualizarCarrito() {
       email,
     }),
   })
-    .then((response) => {
-
-      if (response) {
-        window.location.href = `/api/pedido/${idCart}`;
-      }
-    })
-
-    .catch((error) => {
-      console.log(error);
+    .then(async () => {
+      await fetch(`/pedido/${idCart}`, { method: 'GET' });
     });
 }
 async function deleteItemCart(idProducto) {
-
   const idCart = window.localStorage.getItem('my_token');
   await fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
     method: 'DELETE',
@@ -163,7 +154,6 @@ async function borrarCarrito() {
 
 async function comprar() {
   const idCart = window.localStorage.getItem('my_token');
-  console.log('ID', idCart);
   window.location.href = `/api/pedido/${idCart}`;
 }
 
@@ -255,8 +245,6 @@ async function actualizarProfile(value) {
       address,
     }),
   })
-
-
     .then((response) => {
       if (response) {
         window.location.href = '/profile';

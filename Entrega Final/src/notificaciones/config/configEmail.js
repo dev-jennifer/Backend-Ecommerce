@@ -1,16 +1,17 @@
+const logger = require('../../utils/loggers');
 const nodemailer = require('nodemailer');
 const request = require('request');
 const CONFIG = require('../../utils/config');
 
-function send(templateFile,  subject, info) {
-  console.log('DATA', info);
+function send(templateFile, subject, info) {
+
   let options = {
     uri: `http://localhost:8080/template/email/${templateFile}`,
     method: 'POST',
-    json: info
+    json: info,
   };
   request(options, async function (error, response, body) {
-    if (error) console.log(error);
+    if (error) logger.error('Error al enviar email', error);
     let transporter = nodemailer.createTransport({
       service: 'gmail',
       host: 'smtp.gmail.com',
@@ -29,8 +30,8 @@ function send(templateFile,  subject, info) {
       html: body,
     };
     await transporter.sendMail(mailOptions, function (error, info) {
-      if (error) console.log(error);
-      console.log('info', info);
+      if (error) logger.error('Error al enviar email', error);
+      logger.info('Email Enviado', info);
     });
   });
 }

@@ -107,8 +107,7 @@ app.use('/api/carrito', new RouterCart().start());
 app.use('/api/pedido', new RouterOrder().start());
 app.use('/template/email', new RouterEmail().start());
 app.use('/', new RouterUser().start());
-const chat = require('./src/routes/chat.router')(io);
-app.use('/chat', chat);
+app.use('/chat', RouterChat(io));
 
  
 

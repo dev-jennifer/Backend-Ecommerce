@@ -60,7 +60,7 @@ npm start
 
 ---
 
-## Usuario Administrador de ejemplo 
+## Usuario Administrador
 
 EMAIL =  admin@test.com
 PASSWORD = 123456

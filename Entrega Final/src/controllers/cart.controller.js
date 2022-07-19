@@ -1,24 +1,26 @@
-const CartDTO = require('../classes/Cart/CartDTO.class');
-const CartDAOBase = require('../models/DAOs/cart');
-const CartDAOFactory = require('../classes/Cart/CartDAOFactory.class'),
+const { rmSync } = require('fs');
+const CartDTO = require('../classes/Cart/CartDTO.class'),
+  CartDAOFactory = require('../classes/Cart/CartDAOFactory.class'),
   ProductDAOFactory = require('../classes/Products/ProductDAOFactory.class'),
-  logger = require('../utils/loggers');
-// uuidv1 = require('uuidv1'),
-// session_id = uuidv1();
+  APICustom = require('../classes/Error/customError');
 
 class CartController {
   constructor() {
     this.ProductsDAO = ProductDAOFactory.get();
     this.cartDAO = CartDAOFactory.get();
+    this.message = new APICustom();
   }
+
   ///view///
   getItemsInCart = async (id) => {
     try {
       let cart = await this.cartDAO.mostrarId(id);
-
       return cart;
-    } catch {
-      console.log('Error');
+    } catch (err) {
+      this.message.errorInternalServer(
+        err,
+        ' No se ha podido encontrar items en carrito'
+      );
     }
   };
 
@@ -41,10 +43,8 @@ class CartController {
       res.json({
         cart: cart,
       });
-      console.log('CART original', cart);
-    } catch (error) {
-      logger.error('Error al guardar carrito', error);
-      res.status(400).send('Status: Error al guardar carrito');
+    } catch (err) {
+      this.message.errorInternalServer(err, 'Error al guardar carrito');
     }
   };
 
@@ -69,18 +69,12 @@ class CartController {
         list = [];
       }
       res.status(200).json({ producto: list, cartID: idCart });
-      // res.render('carrito', {
-      //   producto: list,
-      //   cartID: idCart,
-      //   error: false,
-      // });
     } catch (error) {
-      logger.error('Error al obtener al carrito', error);
-      res.status(400).send('Status: Error al obtener al  carrito');
       res.render('carrito', {
         producto: [],
         error: true,
       });
+      this.message.errorInternalServer(err, 'Error al obtener al carrito');
     }
   };
 
@@ -119,28 +113,25 @@ class CartController {
       await this.cartDAO.actualizar(idCart, cart);
 
       res.status(200).send(cart);
-    } catch (error) {
-      logger.error('Error al agregar al carrito', error);
-      res.status(400).send('Status: Error al agregar al  carrito');
+    } catch (err) {
+      this.message.errorInternalServer(err, 'Error al agregar al carrito');
     }
   };
 
   editCart = async (req, res) => {
-    console.log('AQUI');
-    const idCart = req.params.id;
-    const body = req.body;
-    console.log('idCart', idCart);
-        console.log('body', body);
+    const id = req.params.id;
+    const nuevoDatos = {
+      buyerID: req.body.email,
+      shippingAddress: req.body.address,
+    };
     try {
-      let cart = await this.cartDAO.mostrarId(idCart);
- 
-      cart.buyerID = body.email;
-      cart.shippingAddress = body.address;
-      console.log('CART', cart);
-       await this.cartDAO.actualizar(id, cart);
-    } catch {
-      res.status(400).send('Status: No se ha podido actualizar');
-    }
+        await this.cartDAO.actualizar(id, nuevoDatos);
+    } catch (error) {
+      this.message.errorInternalServer(
+        error,
+        'No se ha podido actualizar carrito'
+      );
+    }   
   };
 
   getCartOrder = async (id) => {
@@ -148,9 +139,11 @@ class CartController {
       const cartComplete = await this.cartDAO.mostrarId(id);
 
       return cartComplete;
-    } catch (error) {
-      logger.error('Error al obtener orden del carrito', error);
-      res.status(400).send('Status: rror al obtener orden del carrito');
+    } catch (err) {
+      this.message.errorInternalServer(
+        err,
+        'Error al obtener orden del carrito'
+      );
     }
   };
   deleteCart = async (req, res) => {
@@ -165,8 +158,7 @@ class CartController {
 
       res.status(200).send(carritoVacio);
     } catch (error) {
-      logger.error('Error al borrar carrito', error);
-      res.status(400).send('Status: Error al borrar carrito');
+      this.message.errorInternalServer(error, 'Error al borrar carrito');
     }
   };
 
@@ -197,8 +189,7 @@ class CartController {
         res.status(404).send('No se encontro el item');
       }
     } catch (error) {
-      logger.error('Error al borrar item del carrito', error);
-      res.status(400).send('Status: error al borrar item  del carrito');
+      this.message.errorInternalServer(error, 'Error al borrar item carrito');
     }
   };
 }
