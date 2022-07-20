@@ -24,13 +24,16 @@ class CartController {
     }
   };
 
+
   postCart = async (req, res) => {
+    let buyerEmail = req.user ? req.user.email : '';
+    let address = req.user ? req.user.address : '';
     try {
       const items = [];
-      const buyerID = '';
+      const buyerID = buyerEmail;
       const total = 0;
       const timestamps = new Date().toLocaleString();
-      const shippingAddress = '';
+      const shippingAddress = address;
 
       const carritoGuardado = new CartDTO(
         shippingAddress,
@@ -40,6 +43,7 @@ class CartController {
         timestamps
       );
       const cart = await this.cartDAO.guardar(carritoGuardado);
+
       res.json({
         cart: cart,
       });
@@ -124,14 +128,16 @@ class CartController {
       buyerID: req.body.email,
       shippingAddress: req.body.address,
     };
+
     try {
-        await this.cartDAO.actualizar(id, nuevoDatos);
+      const cart = await this.cartDAO.actualizar(id, nuevoDatos);
+      res.status(200).send(cart);
     } catch (error) {
       this.message.errorInternalServer(
         error,
         'No se ha podido actualizar carrito'
       );
-    }   
+    }
   };
 
   getCartOrder = async (id) => {

@@ -11,9 +11,9 @@ class RequestViews {
   }
 
   indexPage = (req, res) => {
-    res.render('index', { title: 'Inicio'});
+    res.render('index', { title: 'Inicio' });
   };
- 
+
   newProduct = (req, res) => {
     res.render('addProduct', { title: 'Producto' });
   };
@@ -88,6 +88,7 @@ class RequestViews {
     }
     res.render('carrito', {
       producto: cartItem,
+      title: 'Carrito',
     });
   };
   getCartEmpty = async (req, res) => {
@@ -96,17 +97,42 @@ class RequestViews {
       producto: cartItem,
     });
   };
-  getOrderView = async (req, res) => {
-    try {
-      let cart;
-      let cartItem;
-      const id = req.params.id;
-      const carrito = await this.controladorCarrito.getItemsInCart(id);
 
-      res.render('order', { title: 'Orden', producto: carrito.items });
+  getOrderView = async (req, res) => {
+    const id = req.params.id;
+    let cart;
+    let cartItem;
+
+    try {
+      const carrito = await this.controladorCarrito.getItemsInCart(id);
+      if (carrito) {
+        cartItem = carrito.items.map(
+          (item) =>
+            (cart = {
+              nombre: item.nombre,
+              foto: item.foto,
+              precio: item.precio,
+              cantidad: item.cantidad,
+              subtotal: item.cantidad * item.precio,
+              itemId: item.itemId,
+            })
+        );
+        res.render('order', {
+          title: 'Orden',
+          total: carrito.total,
+          email: carrito.buyerID,
+          address: carrito.shippingAddress,
+          producto: cartItem,
+        });
+      } else {
+       this.message.errorInternalServer(
+         error,
+         `Hubo un problema en generar orden`
+       );
+      }
     } catch (error) {
       this.message.errorInternalServer(
-        err,
+        error,
         `Hubo un problema en generar orden`
       );
     }

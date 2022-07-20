@@ -9,7 +9,7 @@ class RouterOrder {
 
   start() {
     router.get('/gracias', this.controlador.renderThanks);
-    router.get('/:id', this.controlador.getCartOrder);
+    router.get('/:id', this.controlador.getOrderById);
     router.post('/:id', this.controlador.postOrder);
     return router;
   }

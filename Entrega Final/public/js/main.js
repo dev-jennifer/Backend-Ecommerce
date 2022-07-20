@@ -110,17 +110,23 @@ async function actualizarCarrito() {
   const email = document.getElementById('email').value;
 
   await fetch(`/api/carrito/${idCart}`, {
-    method: 'PUT',
+    method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       address,
       email,
     }),
   })
-    .then(async () => {
-      await fetch(`/pedido/${idCart}`, { method: 'GET' });
+    .then(function (response) {
+      if (response) {
+        window.location.href = `/pedido/${idCart}`;
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
     });
 }
+
 async function deleteItemCart(idProducto) {
   const idCart = window.localStorage.getItem('my_token');
   await fetch(`/api/carrito/${idCart}/productos/${idProducto}`, {
@@ -152,10 +158,8 @@ async function borrarCarrito() {
     });
 }
 
-async function comprar() {
-  const idCart = window.localStorage.getItem('my_token');
-  window.location.href = `/api/pedido/${idCart}`;
-}
+ 
+
 
 /* ---------------------- Register ----------------------*/
 var fileTag = document.getElementById('avatar'),
@@ -166,6 +170,8 @@ fileTag
     })
   : '';
 
+
+  
 function changeImage(input) {
   var reader;
 
@@ -180,13 +186,39 @@ function changeImage(input) {
   }
 }
 
+
 /* ---------------------- Order ----------------------*/
+ function checkOrder() {
+  let email = document.getElementById('email').value;
+  let name = document.getElementById('name').value;
+  let lastName = document.getElementById('lastName').value;
+  let address = document.getElementById('address').value;
+  let phone = document.getElementById('phone').value;
+
+  if (
+    (email != '') |
+    (name != '') |
+    (lastName != '') |
+    (address != '') |
+    (phone != '')
+  ) {
+    document.getElementById('submit').disabled = false;
+    document.getElementById('message').innerHTML = ' ';
+  } else {
+    document.getElementById('submit').disabled = true;
+    document.getElementById('message').innerHTML = 'Campos incompletos';
+  }
+ }
+
+
+
 async function actualizarOrder() {
   let email = document.getElementById('email').value;
   let name = document.getElementById('name').value;
   let lastName = document.getElementById('lastName').value;
   let address = document.getElementById('address').value;
   let phone = document.getElementById('phone').value;
+ 
 
   const idCart = window.localStorage.getItem('my_token');
   const data = fetch(`/api/pedido/${idCart}`, {

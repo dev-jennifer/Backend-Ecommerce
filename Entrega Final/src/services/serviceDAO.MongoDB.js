@@ -1,8 +1,5 @@
-//const DAO = require('../DAOs/DAO.class');
 const APICustom = require('../classes/Error/customError');
 const MongoDBClient = require('../classes/MongoDBClient.class');
-
-const logger = require('../utils/loggers');
 
 class ServiceDAOMongoDB {
   constructor(nombreColeccion) {
@@ -21,12 +18,12 @@ class ServiceDAOMongoDB {
       } else {
         response = docs.map((doc) => doc);
       }
+      this.message.infoSimple(`****Elemento listados ${response.length}****`);
       return response;
     } catch (error) {
       this.message.errorInternalServer(error, `Error al obtener mostrar todos`);
     } finally {
       //   this.conn.disconnect();
-      logger.info(`Elementos listados ${response.length}`);
     }
   };
 
@@ -34,75 +31,70 @@ class ServiceDAOMongoDB {
     try {
       await this.conn.connect();
       const newObj = this.coleccion.create(body);
+      this.message.infoSimple('****Elemento guardado****');
       return newObj;
     } catch (error) {
       this.message.errorInternalServer(error, `Error al guardar`);
     } finally {
       //    this.conn.disconnect();
-      logger.info(`Elemento guardado`);
     }
   };
 
   eliminar = async (condicion, id) => {
     try {
       await this.conn.connect();
-      return await this.coleccion.deleteOne({ [condicion]: id });
+      const elemento = await this.coleccion.deleteOne({ [condicion]: id });
+      this.message.infoSimple(`Elemento elimindado id: ${id}`);
+
+      return elemento;
     } catch (error) {
       this.message.errorInternalServer(error, `Error al eliminar id ${id}`);
     } finally {
       this.conn.disconnect();
-      logger.info(`Elemento elimindado id: ${id}`);
     }
   };
 
   mostrarId = async (id) => {
-    const client = await this.conn.connect().catch((err) => {
-      this.message.errorServer(error, `Error al conectar`);
-    });
-    if (client) {
-      try {
-        let doc = await this.coleccion.findOne({ _id: id });
-        return doc;
-      } catch (error) {
-        this.message.errorInternalServer(error, `Error al mostrar id`);
-      } finally {
-        this.conn.disconnect();
-      }
+    try {
+      await this.conn.connect();
+      let doc = await this.coleccion.findOne({ _id: id });
+      this.message.infoSimple('****Mostrar por ID****');
+      return doc;
+    } catch (error) {
+      this.message.errorInternalServer(error, `Error al mostrar id`);
+    } finally {
+      this.conn.disconnect();
     }
   };
 
   mostrarEmail = async (email) => {
-    const client = await this.conn.connect().catch((err) => {
-      this.message.errorServer(error, `Error al conectar`);
-    });
-    if (client) {
-      try {
-        let doc = await this.coleccion.findOne({ email: email });
-        return doc;
-      } catch (error) {
-        this.message.errorInternalServer(error, `Error al mostrar email`);
-      } finally {
-        this.conn.disconnect();
-      }
+    try {
+      await this.conn.connect();
+      let doc = await this.coleccion.find({ email: email });
+
+      return doc;
+    } catch (error) {
+      this.message.errorInternalServer(error, `Error al mostrar email`);
+    } finally {
+      this.message.infoSimple('****Mostrar por Email****');
+      this.conn.disconnect();
     }
   };
 
   mostrarByEmail = async (id) => {
-    const client = await this.conn.connect().catch((err) => {
-      this.message.errorServer(error, `Error al conectar`);
-    });
-    if (client) {
-      try {
-        let doc = await this.coleccion.find({ 'usuario.email': { $eq: id } });
-        return doc;
-      } catch (error) {
-        this.message.errorInternalServer(
-          error,
-          `Error al mostrar email por chat`
-        );
-      } finally {
-        this.conn.disconnect();
-      }
+    try {
+      await this.conn.connect();
+      let doc = await this.coleccion.find({ 'usuario.email': { $eq: id } });
+
+      this.message.infoSimple('****Mostrar por Email CHAT****');
+      return doc;
+    } catch (error) {
+      this.message.errorInternalServer(
+        error,
+        `Error al mostrar email por chat`
+      );
+    } finally {
+      this.conn.disconnect();
     }
   };
 
@@ -110,6 +102,7 @@ class ServiceDAOMongoDB {
     try {
       await this.conn.connect();
       let doc = await this.coleccion.find({ categoria: id });
+      this.message.infoSimple('****Se muestran por categoria****');
       return doc;
     } catch (error) {
       this.message.errorInternalServer(error, `Error al mostrar categoria`);
@@ -120,6 +113,7 @@ class ServiceDAOMongoDB {
     try {
       await this.conn.connect();
       let cat = await this.coleccion.distinct('categoria');
+      this.message.infoSimple('****Se muestran todas las categorias****');
       return cat;
     } catch (error) {
       this.message.errorInternalServer(

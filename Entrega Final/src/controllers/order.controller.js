@@ -1,3 +1,4 @@
+const APICustom = require('../classes/Error/customError');
 const msgSend = require('../notificaciones/config/msjConfig'),
   newOrderEmail = require('../notificaciones/emails/Order/newOrder'),
   UserController = require('../controllers/user.controller'),
@@ -10,54 +11,51 @@ class OrderController {
   constructor() {
     this.user = new UserController();
     this.cart = new CartController();
+    this.message = new APICustom();
   }
   renderThanks = (req, res) => {
     res.render('gracias');
   };
 
-  getCartOrder = async (req, res) => {
-    const idCart = req.params.id;
-    const cart = await this.cart.getCartOrder(idCart);
+  getOrderById = async (req, res) => {
+    const id = req.params.id;
+    try {
+      const cart = await this.cart.getCartOrder(id);
 
-    res.render('order', { title: 'Orden', producto: cart.items });
+      res.render('order', { title: 'Orden', producto: cart.items });
+    } catch (error) {
+      this.message.errorInternalServer(error, 'Error al guardar la orden');
+    }
   };
 
   postOrder = async (req, res, done) => {
-    const idCart = req.params.id;
+    const id = req.params.id;
     const body = req.body;
-    try {
-      const cart = await this.cart.getCartOrder(idCart);
-      const newOrder = {
-        buyerID: body.email,
-        name: body.name,
-        phone: body.phone,
-        items: cart.items,
-        total: cart.total,
-        timestamps: new Date(),
-      };
 
-      await OrdenDAO.guardar(newOrder)
+    const cart = await this.getCartOrder(id);
 
-        .then((order) => {
-          newOrderEmail(order);
+    const newOrder = {
+      buyerID: body.email,
+      name: body.name,
+      phone: body.phone,
+      items: cart.items,
+      total: cart.total,
+      timestamps: new Date(),
+    };
 
-          this.user.existPassport(newOrder.buyerID).then(() => {
-            //    msgSend(newOrder.phone, order);
-          });
-        })
+    await OrdenDAO.guardar(newOrder)
 
-        .catch((err) => {
-          // const errorCustom = new CustomError(
-          //   500,
-          //   'Error al guardar orden',
-          //   err
-          // );
-          logger.error(errorCustom);
+      .then((order) => {
+        newOrderEmail(order);
+
+        this.user.existPassport(newOrder.buyerID).then(() => {
+          //    msgSend(newOrder.phone, order);
         });
-    } catch (error) {
-      // const errorCustom = new CustomError(500, 'Error al guardar orden', error);
-      logger.error(errorCustom);
-    }
+      })
+
+      .catch((err) => {
+        this.message.errorInternalServer(err, 'Error al guardar la orden');
+      });
   };
 }
 

@@ -127,6 +127,7 @@ passport.deserializeUser(async (user, done) => {
     const userDetail = await userController.existPassport(
       user.email ? user.email : user._json.email
     );
+    console.log("U", userDetail)
     done(null, userDetail);
   } catch (error) {
     logger.error('error in deserializeUser', error);

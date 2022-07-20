@@ -1,12 +1,39 @@
 <div class="form">
- <form action="/order" method="post" role="form" enctype="multipart/form-data" enctype="multipart/form-data">
-  <input id="email" name="email" value="{{user.email}}" placeholder="email" required/>
-  <input name="name" id="name" type="text" value="{{user.name}}" placeholder="name" required />
-  <input name="lastName" id="lastName" type="text" value="{{user.lastName}}" placeholder="lastName" />
-  <input name="address" id="address" type="text" value="{{user.address}}" placeholder="address" />
-  <input name="phone" id="phone" type="text" value="{{user.phone}}" placeholder="phone" />
-<a class="btn btn-warning" onclick="actualizarOrder()">
+  <form id="form-id" name="pedido" enctype="multipart/form-data">
+    <label for="email">
+      <h4>
+        Email*
+      </h4>
+    </label>
+    <input id="email" name="email" value="{{email}}" placeholder="email" onChange="checkOrder()" required />
+    <label for="name">
+      <h4>
+        Nombre
+      </h4>
+      <input name="name" id="name" type="text" value="{{user.name}}" placeholder="name" onChange="checkOrder()"
+        required />
+      <label for="lastName">
+        <h4>
+          Apellido
+        </h4>
+        <input name="lastName" id="lastName" type="text" value="{{user.lastName}}" onChange="checkOrder()"
+          placeholder="lastName" />
+        <label for="Address">
+          <h4>
+            Direccion*
+          </h4>
+          <input name="address" id="address" type="text" value="{{address}}" onChange="checkOrder()"
+            placeholder="address" required />
+          <label for="email">
+            <h4>
+              Telefono*
+            </h4>
+            <input name="phone" id="phone" type="text" value="{{user.phone}}" onChange="checkOrder()"
+              placeholder="+541131472562" required />
+            <div id="message"></div>
+          <button  name="submit" id="submit" class="btn btn-warning" onclick="actualizarOrder()" disabled>
   Finalizar Orden
 </a>
-</form>
+
+  </form>
 </div>

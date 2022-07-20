@@ -1,5 +1,4 @@
 <h1>Carrito </h1>
- 
 {{#if producto}}
 <div class="vh-100 d-flex justify-content-center align-items-center">
   <table class="table">
@@ -15,41 +14,25 @@
     <tbody>
       {{> carritoDetalle}}
     </tbody>
-   
+
   </table>
 
-  </div>
-{{!-- <h5 style="text-align:center">  Total:${{total}}</h5> --}}
+</div>
+
 <button onclick="borrarCarrito()">
   Borrar todo
 </button>
-     
-    
-    {{#if ssession.passport}}
-    <button onclick="comprar()">
-  Continuar Compra
-</button>
 
-    {{else}}
-      <div class="form">
-        <form>
-          <input name="email" id="email" type="email" value="{{session.passport.user.email}}" placeholder="email" required />
-          <input name="address" id="address" type="text" value="{{session.passport.user.address}}" placeholder="address" required/>
-          <input
-            type="submit"
-            onclick="actualizarCarrito()"
-            value="Continuar Compra"
-            id="submit"
-          />
-        </form>
-      </div>
-    {{/if}}
-
-
-
+ 
+<div class="form">
+  <form>
+    <input name="email" id="email" type="email" value="{{req.user.email}}" placeholder="email" required />
+    <input name="address" id="address" type="text" placeholder="address" required />
+    <input type="submit" onclick="actualizarCarrito()" value="Continuar Compra" id="submit" />
+  </form>
+</div>
+ 
 {{else}}
-
-
 <h2>No hay productos en carrito</h2>
 
 {{/if}}
