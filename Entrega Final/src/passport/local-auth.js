@@ -111,11 +111,13 @@ passport.use(
 );
 passport.serializeUser(function (user, done) {
   try {
+
     done(null, {
       name: user.given_name ? user.given_name : user.name,
       email: user.email ? user.email : user.emails[0].value,
       membership: user.membershipID ? user.membershipID : 2,
     });
+        console.log("SE",user);
   } catch (error) {
     logger.error('error in deserializeUser', error);
     done(error);
@@ -124,10 +126,10 @@ passport.serializeUser(function (user, done) {
 
 passport.deserializeUser(async (user, done) => {
   try {
+    logger.info("****SESSIONES*******")
     const userDetail = await userController.existPassport(
       user.email ? user.email : user._json.email
     );
-    console.log("U", userDetail)
     done(null, userDetail);
   } catch (error) {
     logger.error('error in deserializeUser', error);

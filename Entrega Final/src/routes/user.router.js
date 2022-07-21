@@ -7,7 +7,7 @@ const { middleware } = require('../utils/functions'),
   config = require('../utils/config.js'),
   jwt = require('jsonwebtoken');
 
-require('../passport/local-auth');
+
 
 class RouterUser {
   constructor() {
@@ -15,7 +15,7 @@ class RouterUser {
   }
 
   start() {
-
+require('../passport/local-auth');
     const generateJwtToken = (user) => {
       const token = jwt.sign(user, config.JWT.SECRET, {
         expiresIn: '1d',

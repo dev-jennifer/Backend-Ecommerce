@@ -3,15 +3,14 @@ const msgSend = require('../notificaciones/config/msjConfig'),
   newOrderEmail = require('../notificaciones/emails/Order/newOrder'),
   UserController = require('../controllers/user.controller'),
   CartController = require('../controllers/cart.controller'),
-  logger = require('../utils/loggers.js'),
   OrderFactory = require('../classes/Order/OrderFactory.class.js');
 
-const OrdenDAO = OrderFactory.get();
 class OrderController {
   constructor() {
+    this.OrdenDAO = OrderFactory.get();
     this.user = new UserController();
-    this.cart = new CartController();
     this.message = new APICustom();
+    this.controladorCarrito = new CartController();
   }
   renderThanks = (req, res) => {
     res.render('gracias');
@@ -29,34 +28,41 @@ class OrderController {
   };
 
   postOrder = async (req, res, done) => {
-    const id = req.params.id;
-    const body = req.body;
+    try {
+      const id = req.params.id;
+      const body = req.body;
 
-    const cart = await this.getCartOrder(id);
+      const cart = await this.controladorCarrito.getItemsInCart(id);
 
-    const newOrder = {
-      buyerID: body.email,
-      name: body.name,
-      phone: body.phone,
-      items: cart.items,
-      total: cart.total,
-      timestamps: new Date(),
-    };
+      const buyerID = body.email;
+      const name = body.name;
+      const phone = body.phone;
+      const shippingAddress = body.address;
+      const items = cart.items;
+      const total = cart.total;
+      const timestamps = new Date().toLocaleString();
 
-    await OrdenDAO.guardar(newOrder)
+      const newOrder = {
+        buyerID: buyerID,
+        name: name,
+        phone: phone,
+        shippingAddress: shippingAddress,
+        items: items,
+        total: total,
+        timestamps: timestamps,
+      };
 
-      .then((order) => {
-        newOrderEmail(order);
+      const orden = await this.OrdenDAO.guardar(newOrder);
+      console.log('orden', orden);
+      if (orden) {
+        newOrderEmail(orden);
+            msgSend(orden.phone, orden);
 
-        this.user.existPassport(newOrder.buyerID).then(() => {
-          //    msgSend(newOrder.phone, order);
-        });
-      })
-
-      .catch((err) => {
-        this.message.errorInternalServer(err, 'Error al guardar la orden');
-      });
+        res.status(200).send(orden);
+      }
+    } catch (err) {
+      this.message.errorInternalServer(err, 'Error al guardar la orden');
+    }
   };
 }
-
 module.exports = OrderController;

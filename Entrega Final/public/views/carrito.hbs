@@ -23,15 +23,21 @@
   Borrar todo
 </button>
 
+ {{#if user}}
+ <a href="/pedido/{{idCart}}" class="btn">Generar Orden</a>
  
+</button>
+ {{else}}
 <div class="form">
-  <form>
-    <input name="email" id="email" type="email" value="{{req.user.email}}" placeholder="email" required />
+  <form  >
+    <input name="email" id="email" type="email"  placeholder="email" required />
     <input name="address" id="address" type="text" placeholder="address" required />
     <input type="submit" onclick="actualizarCarrito()" value="Continuar Compra" id="submit" />
   </form>
 </div>
- 
+
+
+ {{/if}}
 {{else}}
 <h2>No hay productos en carrito</h2>
 

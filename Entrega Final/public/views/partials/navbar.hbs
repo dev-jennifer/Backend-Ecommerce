@@ -13,7 +13,7 @@
           Todos Productos
         </a>
       </li>
-      {{#when session.passport.user.membership 'eq' 1 }}
+      {{#when user.membership 'eq' 1 }}
         <li class="nav-item">
           <a class="nav-link" id="add" href="/productos/nuevo">
             Nuevo Productos 
@@ -34,8 +34,8 @@
 </li>
    </ul>
       <ul class="nav navbar-nav navbar-right">
-      {{#if session.passport}}
-       <li class="nav-item"><span>Hola,{{session.passport.user.email}} </span>
+      {{#if user}}
+       <li class="nav-item"><span>Hola,{{ user.email}} </span>
         <li class="nav-item">
           <a class="nav-link" id="logout" href="/profile">
             Perfil

@@ -4,8 +4,7 @@ const express = require('express'),
   passport = require('passport'),
   cookieParser = require('cookie-parser'),
   session = require('express-session'),
-    MongoStore = require('connect-mongo'),
-   
+  MongoStore = require('connect-mongo'),
   cluster = require('cluster'),
   logger = require('./src/utils/loggers'),
   config = require('./src/utils/config'),
@@ -26,15 +25,18 @@ const RouterProduct = require('./src/routes/products.router'),
   RouterOrder = require('./src/routes/order.router'),
   RouterUser = require('./src/routes/user.router'),
   RouterEmail = require('./src/routes/email.router'),
-  RouterViews = require('./src/routes/views.router'),
-  RouterChat = require('./src/routes/chat.router');
-
+  RouterViews = require('./src/routes/views.router');
+const chat = require('./src/routes/chat.router')(io);
+app.use(function (req, res, next) {
+  console.log('handling request for: ' + req.url);
+  next();
+});
 
 app.use(compression());
 app.use(morgan('tiny'));
 
 app.use('/uploads', express.static('uploads'));
-
+app.use(express.static('public'));
 app.engine(
   '.hbs',
   exphbs.engine({
@@ -46,7 +48,6 @@ app.engine(
 );
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname, 'public/views'));
-app.use(express.static('public'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -71,45 +72,40 @@ app.use(
   session({
     store: MongoStore.create({
       mongoUrl: config.MONGO_DB.MONGO_CONNECT.url,
-      mongoOptions: config.MONGO_DB.MONGO_CONNECT.options,
+      ttl: 120,
     }),
     secret: config.MONGO_DB.MONGO_CONNECT.secret,
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // one day
+    },
   })
 );
-
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(flash());
-
-app.use((req, res, next) => {
-  app.locals.user = req.user;
-  next();
-});
-
-app.use(function (req, res, next) {
-  res.locals.session = req.session;
-  next();
-});
- 
 
 app.set('socketio', io);
 app.set('io', io);
 
-//---------VIEWS----------///
-
-app.use('/', new RouterViews().start());
-
-//---------ROUTER----------///
+//---------Rutas evito sessiones----------///
 app.use('/api/productos', new RouterProduct().start());
+app.use('/template/email', new RouterEmail().start());
+app.use('/chat', chat);
 app.use('/api/carrito', new RouterCart().start());
 app.use('/api/pedido', new RouterOrder().start());
-app.use('/template/email', new RouterEmail().start());
-app.use('/', new RouterUser().start());
-app.use('/chat', RouterChat(io));
 
- 
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+app.use((req, res, next) => {
+  res.locals.user = req.user;
+  next();
+});
+
+//---------VIEWS----------///
+app.use('/', new RouterViews().start());
+
+//users
+app.use('/', new RouterUser().start());
 
 /* ---------------------- Servidor ----------------------*/
 
@@ -132,5 +128,6 @@ if (config.SERVER.modoCluster && cluster.isPrimary) {
       }  - ${new Date().toLocaleString()}`
     );
   });
+
   server.on('error', (error) => logger.error(`Error en servidor ${error}`));
 }

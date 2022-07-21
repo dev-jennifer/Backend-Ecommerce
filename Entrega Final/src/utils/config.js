@@ -13,6 +13,8 @@ module.exports = {
       options: {
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        keepAlive: true, 
+        keepAliveInitialDelay: 300000 
       },
       secret: process.env.SECRET_MONGO,
     },

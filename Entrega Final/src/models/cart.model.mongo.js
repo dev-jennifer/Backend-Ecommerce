@@ -16,7 +16,7 @@ const CartSchema = mongoose.Schema({
         min: 1,
         default: 1,
       },
-      precio: Number,
+      precio: Number
     },
   ],
   total: {
@@ -25,7 +25,7 @@ const CartSchema = mongoose.Schema({
     default: 0,
   },
   shippingAddress: String,
-  timestamps: String
+  timestamps: String,
 });
 
 const CartModel = mongoose.model('cart', CartSchema);

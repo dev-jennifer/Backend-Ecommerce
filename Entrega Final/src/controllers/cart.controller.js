@@ -24,7 +24,7 @@ class CartController {
     }
   };
 
-
+  
   postCart = async (req, res) => {
     let buyerEmail = req.user ? req.user.email : '';
     let address = req.user ? req.user.address : '';
@@ -123,15 +123,19 @@ class CartController {
   };
 
   editCart = async (req, res) => {
-    const id = req.params.id;
-    const nuevoDatos = {
-      buyerID: req.body.email,
-      shippingAddress: req.body.address,
-    };
-
     try {
+      const id = req.params.id;
+
+      const nuevoDatos = {
+        buyerID: req.body.email,
+        shippingAddress: req.body.address,
+      };
+
       const cart = await this.cartDAO.actualizar(id, nuevoDatos);
+      console.log('CART', cart);
       res.status(200).send(cart);
+
+      //   res.redirect(`../pedido/${id}`);
     } catch (error) {
       this.message.errorInternalServer(
         error,

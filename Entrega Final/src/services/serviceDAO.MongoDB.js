@@ -8,6 +8,7 @@ class ServiceDAOMongoDB {
     this.message = new APICustom();
   }
 
+
   mostrarTodos = async () => {
     let response;
     try {
@@ -28,17 +29,19 @@ class ServiceDAOMongoDB {
   };
 
   guardar = async (body) => {
+ 
     try {
       await this.conn.connect();
-      const newObj = this.coleccion.create(body);
-      this.message.infoSimple('****Elemento guardado****');
+      const newObj = await this.coleccion.create(body);
       return newObj;
     } catch (error) {
       this.message.errorInternalServer(error, `Error al guardar`);
     } finally {
+       this.message.infoSimple('****Elemento guardado****');
       //    this.conn.disconnect();
     }
   };
+
 
   eliminar = async (condicion, id) => {
     try {
@@ -50,7 +53,7 @@ class ServiceDAOMongoDB {
     } catch (error) {
       this.message.errorInternalServer(error, `Error al eliminar id ${id}`);
     } finally {
-      this.conn.disconnect();
+   //   this.conn.disconnect();
     }
   };
 
@@ -63,21 +66,21 @@ class ServiceDAOMongoDB {
     } catch (error) {
       this.message.errorInternalServer(error, `Error al mostrar id`);
     } finally {
-      this.conn.disconnect();
+    //  this.conn.disconnect();
     }
   };
 
   mostrarEmail = async (email) => {
     try {
       await this.conn.connect();
-      let doc = await this.coleccion.find({ email: email });
-
+      let doc = await this.coleccion.findOne({ email: email });
       return doc;
     } catch (error) {
       this.message.errorInternalServer(error, `Error al mostrar email`);
+ 
     } finally {
       this.message.infoSimple('****Mostrar por Email****');
-      this.conn.disconnect();
+    //  this.conn.disconnect();
     }
   };
 
@@ -87,14 +90,17 @@ class ServiceDAOMongoDB {
       let doc = await this.coleccion.find({ 'usuario.email': { $eq: id } });
 
       this.message.infoSimple('****Mostrar por Email CHAT****');
+         
       return doc;
     } catch (error) {
       this.message.errorInternalServer(
         error,
         `Error al mostrar email por chat`
+        
       );
-    } finally {
-      this.conn.disconnect();
+      
+    }  finally{
+ //       this.conn.disconnect();
     }
   };
 
@@ -121,7 +127,7 @@ class ServiceDAOMongoDB {
         `Error al mostrar todas categorias`
       );
     } finally {
-      this.conn.disconnect();
+  //    this.conn.disconnect();
     }
   };
 
@@ -130,12 +136,13 @@ class ServiceDAOMongoDB {
       await this.conn.connect();
 
       let doc = await this.coleccion.updateOne({ _id: id }, { $set: body });
-      this.message.infoSimple('****Actualizado Exitoso****');
+
       return doc;
     } catch (error) {
       this.message.errorInternalServer(error, `Error al actualizar`);
     } finally {
-      // this.conn.disconnect();
+         this.message.infoSimple('****Actualizado Exitoso****');
+    //   this.conn.disconnect();
     }
   };
 
@@ -152,7 +159,7 @@ class ServiceDAOMongoDB {
     } catch (error) {
       this.message.errorInternalServer(error, `Error al actualizar`);
     } finally {
-      this.conn.disconnect();
+ //     this.conn.disconnect();
     }
   };
 }

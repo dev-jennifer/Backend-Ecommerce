@@ -7,13 +7,12 @@ class UserController {
   constructor() {
     this.userDAO = UserFactory.get();
     this.message = new APICustom();
-  }  
+  }
   renderProfile = async (req, res) => {
-
     const email = req.user.email ? req.user.email : req.user._json.email;
     try {
       const usuario = await this.userDAO.mostrarEmail(email);
-      res.render('profile', { usuario: usuario.toJSON() , title:"Perfil"});
+      res.render('profile', { usuario: usuario.toJSON(), title: 'Perfil' });
     } catch (error) {
       this.message.errorInternalServer(error, 'error al obtener perfik');
     }
@@ -87,7 +86,7 @@ class UserController {
     };
 
     try {
-      const newUser = await this.userDAO.actualizarPorEmail(id,  nuevoDatos );
+      const newUser = await this.userDAO.actualizarPorEmail(id, nuevoDatos);
       console.log('Nuevo datos', newUser);
       res.status(200).json({ Perfil_actualizado: newUser });
     } catch (error) {
@@ -104,10 +103,14 @@ class UserController {
           message: 'No existe el correo registrado',
         });
       } else {
+        console.log('password', password);
+        console.log('password', user.password);
         bcrypt.compare(password, user.password, function (err, result) {
           if (result == true) {
+            console.log('result', result);
             return done(null, user);
           } else {
+            console.log('result1', result);
             done(null, false, {
               message: 'Contraseña incorrecta',
             });

@@ -6,19 +6,23 @@ const APICustom = require('./Error/customError'),
 class MongoDBClient {
   constructor() {
     this.connected = false;
-    this.url = config.MONGO_DB.MONGO_CONNECT.url;
     this.client = mongoose;
     this.message = new APICustom();
   }
 
   connect = async () => {
     try {
-      await this.client.connect(
-        config.MONGO_DB.MONGO_CONNECT.url,
-        config.MONGO_DB.MONGO_CONNECT.options
-      );
-      logger.info('Base de datos conectada');
-      return (this.connected = true);
+      if (this.connected == true) {
+        logger.info('----Conexion en curso-----');
+      } 
+       if (this.connected == false) { 
+        await this.client.connect(
+          config.MONGO_DB.MONGO_CONNECT.url,
+          config.MONGO_DB.MONGO_CONNECT.options
+        );
+        logger.info('Base de datos conectada');
+        return (this.connected = true);
+      }
     } catch (error) {
       this.message.errorServer(error, 'Error al conectarse a mongodb');
     }

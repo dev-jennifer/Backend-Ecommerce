@@ -2,11 +2,13 @@ const ProductsController = require('./products.controller');
 const CartController = require('./cart.controller');
 const config = require('../utils/config');
 const APICustom = require('../classes/Error/customError');
+const UserController = require('./user.controller');
 
 class RequestViews {
   constructor() {
     this.controladorProductos = new ProductsController();
     this.controladorCarrito = new CartController();
+    this.controladorUser = new UserController();
     this.message = new APICustom();
   }
 
@@ -88,6 +90,7 @@ class RequestViews {
     }
     res.render('carrito', {
       producto: cartItem,
+      idCart:id,
       title: 'Carrito',
     });
   };
@@ -99,10 +102,11 @@ class RequestViews {
   };
 
   getOrderView = async (req, res) => {
+    console.log("GET ORDER")
     const id = req.params.id;
     let cart;
     let cartItem;
-
+ 
     try {
       const carrito = await this.controladorCarrito.getItemsInCart(id);
       if (carrito) {
@@ -117,18 +121,29 @@ class RequestViews {
               itemId: item.itemId,
             })
         );
+        let userData = await this.controladorUser.existPassport(carrito.email);
+        if (!userData) {
+          userData = {
+            name: '',
+            lastName: '',
+            phone: '',
+          };
+        }
+ 
+         
         res.render('order', {
           title: 'Orden',
           total: carrito.total,
           email: carrito.buyerID,
           address: carrito.shippingAddress,
           producto: cartItem,
+          userInfo: userData,
         });
       } else {
-       this.message.errorInternalServer(
-         error,
-         `Hubo un problema en generar orden`
-       );
+        this.message.errorInternalServer(
+          "error",
+          `Hubo un problema en generar orden`
+        );
       }
     } catch (error) {
       this.message.errorInternalServer(

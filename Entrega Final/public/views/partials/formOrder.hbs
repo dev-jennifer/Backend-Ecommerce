@@ -5,18 +5,18 @@
         Email*
       </h4>
     </label>
-    <input id="email" name="email" value="{{email}}" placeholder="email" onChange="checkOrder()" required />
+    <input id="email" name="email" value="{{req.session.passport.email}}" placeholder="email" onChange="checkOrder()" required />
     <label for="name">
       <h4>
         Nombre
       </h4>
-      <input name="name" id="name" type="text" value="{{user.name}}" placeholder="name" onChange="checkOrder()"
+      <input name="name" id="name" type="text" value="{{userData.name}}" placeholder="name" onChange="checkOrder()"
         required />
       <label for="lastName">
         <h4>
           Apellido
         </h4>
-        <input name="lastName" id="lastName" type="text" value="{{user.lastName}}" onChange="checkOrder()"
+        <input name="lastName" id="lastName" type="text" value="{{userData.lastName}}" onChange="checkOrder()"
           placeholder="lastName" />
         <label for="Address">
           <h4>
@@ -28,12 +28,12 @@
             <h4>
               Telefono*
             </h4>
-            <input name="phone" id="phone" type="text" value="{{user.phone}}" onChange="checkOrder()"
+            <input name="phone" id="phone" type="text" value="{{userData.phone}}" onChange="checkOrder()"
               placeholder="+541131472562" required />
             <div id="message"></div>
-          <button  name="submit" id="submit" class="btn btn-warning" onclick="actualizarOrder()" disabled>
-  Finalizar Orden
-</a>
+            <button name="submit" id="submit" type="submit" class="btn btn-warning" onclick="actualizarOrder()" disabled>
+              Finalizar Orden
+              </a>
 
   </form>
 </div>

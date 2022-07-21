@@ -158,9 +158,6 @@ async function borrarCarrito() {
     });
 }
 
- 
-
-
 /* ---------------------- Register ----------------------*/
 var fileTag = document.getElementById('avatar'),
   preview = document.getElementById('preview');
@@ -170,8 +167,6 @@ fileTag
     })
   : '';
 
-
-  
 function changeImage(input) {
   var reader;
 
@@ -186,9 +181,8 @@ function changeImage(input) {
   }
 }
 
-
 /* ---------------------- Order ----------------------*/
- function checkOrder() {
+function checkOrder() {
   let email = document.getElementById('email').value;
   let name = document.getElementById('name').value;
   let lastName = document.getElementById('lastName').value;
@@ -208,9 +202,7 @@ function changeImage(input) {
     document.getElementById('submit').disabled = true;
     document.getElementById('message').innerHTML = 'Campos incompletos';
   }
- }
-
-
+}
 
 async function actualizarOrder() {
   let email = document.getElementById('email').value;
@@ -218,10 +210,9 @@ async function actualizarOrder() {
   let lastName = document.getElementById('lastName').value;
   let address = document.getElementById('address').value;
   let phone = document.getElementById('phone').value;
- 
 
   const idCart = window.localStorage.getItem('my_token');
-  const data = fetch(`/api/pedido/${idCart}`, {
+  await fetch(`/api/pedido/${idCart}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -231,15 +222,23 @@ async function actualizarOrder() {
       address,
       phone,
     }),
-  });
-
-  await fetch(`/api/carrito/${idCart}`, {
-    method: 'DELETE',
   })
-    .then(() => localStorage.removeItem('my_token'))
-    .finally(() => (window.location.href = `/api/pedido/gracias`))
+    .then(function (response) {
+      if (response) {
+        fetch(`/api/carrito/${idCart}`, {
+          method: 'DELETE',
+        });
+        window.location.href = `/api/pedido/gracias`;
+      }
+    })
+
     .catch((error) => {
       console.log(error);
+    })
+
+    .finally(() => {
+      window.location.href = `/api/pedido/gracias`;
+      localStorage.removeItem('my_token');
     });
 }
 
@@ -285,3 +284,4 @@ async function actualizarProfile(value) {
 
     .catch((error) => {});
 }
+
