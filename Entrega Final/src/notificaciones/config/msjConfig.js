@@ -1,3 +1,4 @@
+const e = require('connect-flash');
 const twilio = require('twilio');
 const CONFIG = require('../../utils/config');
 const client = twilio(CONFIG.TWILO.ACCOUNT_SID, CONFIG.TWILO.AUTH_TOKEN);
@@ -22,6 +23,7 @@ async function msgSend(number, order) {
         body: `Nuevo Pedido nº${order.id}  - ${order.buyerID} `,
       })
       .then((message) => logger.warn('SID', message.sid))
+      .catch((err)=> logger.error('Error Twilo',err))
       .done();
   } catch (e) {
     logger.error('SMS admin', e);

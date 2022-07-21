@@ -12,7 +12,8 @@ const express = require('express'),
   path = require('path'),
   compression = require('compression'),
   exphbs = require('express-handlebars'),
-  cors = require('cors');
+  cors = require('cors'),
+  mongoose = require('mongoose');
 const os = require('os');
 const app = express();
 const { Server: HttpServer } = require('http');
@@ -26,11 +27,8 @@ const RouterProduct = require('./src/routes/products.router'),
   RouterUser = require('./src/routes/user.router'),
   RouterEmail = require('./src/routes/email.router'),
   RouterViews = require('./src/routes/views.router');
+
 const chat = require('./src/routes/chat.router')(io);
-app.use(function (req, res, next) {
-  console.log('handling request for: ' + req.url);
-  next();
-});
 
 app.use(compression());
 app.use(morgan('tiny'));
@@ -86,13 +84,6 @@ app.use(
 app.set('socketio', io);
 app.set('io', io);
 
-//---------Rutas evito sessiones----------///
-app.use('/api/productos', new RouterProduct().start());
-app.use('/template/email', new RouterEmail().start());
-app.use('/chat', chat);
-app.use('/api/carrito', new RouterCart().start());
-app.use('/api/pedido', new RouterOrder().start());
-
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -106,6 +97,19 @@ app.use('/', new RouterViews().start());
 
 //users
 app.use('/', new RouterUser().start());
+app.use('/api/productos', new RouterProduct().start());
+app.use('/template/email', new RouterEmail().start());
+app.use('/chat', chat);
+app.use('/api/carrito', new RouterCart().start());
+app.use('/api/pedido', new RouterOrder().start());
+
+// If the Node process ends, close the Mongoose connection
+process.on('SIGINT', function () {
+  mongoose.connection.close(function () {
+    logger.info('Mongoose disconnected on app termination');
+    process.exit(0);
+  });
+});
 
 /* ---------------------- Servidor ----------------------*/
 

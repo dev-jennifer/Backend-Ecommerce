@@ -8,7 +8,6 @@ class ServiceDAOMongoDB {
     this.message = new APICustom();
   }
 
-
   mostrarTodos = async () => {
     let response;
     try {
@@ -19,17 +18,16 @@ class ServiceDAOMongoDB {
       } else {
         response = docs.map((doc) => doc);
       }
-      this.message.infoSimple(`****Elemento listados ${response.length}****`);
+
       return response;
     } catch (error) {
       this.message.errorInternalServer(error, `Error al obtener mostrar todos`);
     } finally {
-      //   this.conn.disconnect();
+      this.message.infoSimple(`****Elemento listados ${response.length}****`);
     }
   };
 
   guardar = async (body) => {
- 
     try {
       await this.conn.connect();
       const newObj = await this.coleccion.create(body);
@@ -37,23 +35,20 @@ class ServiceDAOMongoDB {
     } catch (error) {
       this.message.errorInternalServer(error, `Error al guardar`);
     } finally {
-       this.message.infoSimple('****Elemento guardado****');
-      //    this.conn.disconnect();
+      this.message.infoSimple('****Elemento guardado****');
     }
   };
-
 
   eliminar = async (condicion, id) => {
     try {
       await this.conn.connect();
       const elemento = await this.coleccion.deleteOne({ [condicion]: id });
-      this.message.infoSimple(`Elemento elimindado id: ${id}`);
 
       return elemento;
     } catch (error) {
       this.message.errorInternalServer(error, `Error al eliminar id ${id}`);
     } finally {
-   //   this.conn.disconnect();
+      this.message.infoSimple(`Elemento elimindado id: ${id}`);
     }
   };
 
@@ -61,12 +56,12 @@ class ServiceDAOMongoDB {
     try {
       await this.conn.connect();
       let doc = await this.coleccion.findOne({ _id: id });
-      this.message.infoSimple('****Mostrar por ID****');
+
       return doc;
     } catch (error) {
       this.message.errorInternalServer(error, `Error al mostrar id`);
     } finally {
-    //  this.conn.disconnect();
+      this.message.infoSimple('****Mostrar por ID****');
     }
   };
 
@@ -77,10 +72,8 @@ class ServiceDAOMongoDB {
       return doc;
     } catch (error) {
       this.message.errorInternalServer(error, `Error al mostrar email`);
- 
     } finally {
       this.message.infoSimple('****Mostrar por Email****');
-    //  this.conn.disconnect();
     }
   };
 
@@ -89,18 +82,14 @@ class ServiceDAOMongoDB {
       await this.conn.connect();
       let doc = await this.coleccion.find({ 'usuario.email': { $eq: id } });
 
-      this.message.infoSimple('****Mostrar por Email CHAT****');
-         
       return doc;
     } catch (error) {
       this.message.errorInternalServer(
         error,
         `Error al mostrar email por chat`
-        
       );
-      
-    }  finally{
- //       this.conn.disconnect();
+    } finally {
+      this.message.infoSimple('****Mostrar por Email CHAT****');
     }
   };
 
@@ -108,10 +97,12 @@ class ServiceDAOMongoDB {
     try {
       await this.conn.connect();
       let doc = await this.coleccion.find({ categoria: id });
-      this.message.infoSimple('****Se muestran por categoria****');
+
       return doc;
     } catch (error) {
       this.message.errorInternalServer(error, `Error al mostrar categoria`);
+    } finally {
+      this.message.infoSimple('****Se muestran por categoria****');
     }
   };
 
@@ -119,7 +110,7 @@ class ServiceDAOMongoDB {
     try {
       await this.conn.connect();
       let cat = await this.coleccion.distinct('categoria');
-      this.message.infoSimple('****Se muestran todas las categorias****');
+
       return cat;
     } catch (error) {
       this.message.errorInternalServer(
@@ -127,7 +118,7 @@ class ServiceDAOMongoDB {
         `Error al mostrar todas categorias`
       );
     } finally {
-  //    this.conn.disconnect();
+      this.message.infoSimple('****Se muestran todas las categorias****');
     }
   };
 
@@ -141,8 +132,7 @@ class ServiceDAOMongoDB {
     } catch (error) {
       this.message.errorInternalServer(error, `Error al actualizar`);
     } finally {
-         this.message.infoSimple('****Actualizado Exitoso****');
-    //   this.conn.disconnect();
+      this.message.infoSimple('****Actualizado Exitoso****');
     }
   };
 
@@ -154,12 +144,12 @@ class ServiceDAOMongoDB {
         { email: email },
         { $set: body }
       );
-      this.message.infoSimple('****Actualizado Exitoso****');
+
       return doc;
     } catch (error) {
       this.message.errorInternalServer(error, `Error al actualizar`);
     } finally {
- //     this.conn.disconnect();
+      this.message.infoSimple('****Actualizado Exitoso****');
     }
   };
 }

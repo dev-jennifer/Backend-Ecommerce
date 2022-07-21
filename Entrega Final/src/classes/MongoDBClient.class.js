@@ -5,35 +5,30 @@ const APICustom = require('./Error/customError'),
 
 class MongoDBClient {
   constructor() {
-    this.connected = false;
+
     this.client = mongoose;
     this.message = new APICustom();
   }
 
   connect = async () => {
     try {
-      if (this.connected == true) {
-        logger.info('----Conexion en curso-----');
-      } 
-       if (this.connected == false) { 
+      //Conectado
+      if (this.client.connection.readyState == 1) {
+        logger.info('***Conexion en curso****');
+      }
+      //Desconectado
+      if (this.client.connection.readyState == 0) {
         await this.client.connect(
           config.MONGO_DB.MONGO_CONNECT.url,
           config.MONGO_DB.MONGO_CONNECT.options
         );
-        logger.info('Base de datos conectada');
-        return (this.connected = true);
+        const timeID = Date.now();
+        logger.info(`Base de datos conectada  ${timeID}`);
       }
+
+    
     } catch (error) {
       this.message.errorServer(error, 'Error al conectarse a mongodb');
-    }
-  };
-  disconnect = async () => {
-    try {
-      await this.client.connection.close();
-      this.connected = false;
-      logger.info('Base de datos desconectada');
-    } catch (error) {
-      this.message.errorServer(error, 'Error al desconectarse a mongodb');
     }
   };
 }
