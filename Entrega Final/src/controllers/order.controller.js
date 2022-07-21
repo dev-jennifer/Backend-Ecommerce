@@ -53,7 +53,7 @@ class OrderController {
       };
 
       const orden = await this.OrdenDAO.guardar(newOrder);
-      console.log('orden', orden);
+ 
       if (orden) {
         newOrderEmail(orden);
             msgSend(orden.phone, orden);

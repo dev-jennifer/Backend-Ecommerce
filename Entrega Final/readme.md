@@ -1,5 +1,5 @@
 # 🏪 eCommerce 🏪
-------FALTA TERMINAR LA ORDEN Y CHAT , ESTOY SOLUCIONANDO ERRORES ------
+------FALTA TERMINAR CHAT  ------
 Este eCommerce fue desarrollado para el curso de CoderHouse con el nombre **Programación Backend** 
 
 --

@@ -102,7 +102,7 @@ class RequestViews {
   };
 
   getOrderView = async (req, res) => {
-    console.log("GET ORDER")
+ 
     const id = req.params.id;
     let cart;
     let cartItem;

@@ -14,7 +14,6 @@ const express = require('express'),
   exphbs = require('express-handlebars'),
   cors = require('cors'),
   mongoose = require('mongoose');
-const os = require('os');
 const app = express();
 const { Server: HttpServer } = require('http');
 const { Server: IOServer } = require('socket.io');
@@ -30,11 +29,10 @@ const RouterProduct = require('./src/routes/products.router'),
 
 const chat = require('./src/routes/chat.router')(io);
 
+
 app.use(compression());
 app.use(morgan('tiny'));
-
 app.use('/uploads', express.static('uploads'));
-app.use(express.static('public'));
 app.engine(
   '.hbs',
   exphbs.engine({
@@ -46,12 +44,11 @@ app.engine(
 );
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname, 'public/views'));
-
+app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 /****  Configurando el cors de forma dinamica */
 if (config.SERVER.entorno == 'development') {
   app.use(cors());
@@ -64,15 +61,14 @@ if (config.SERVER.entorno == 'development') {
     })
   );
 }
-
 app.use(cookieParser());
 app.use(
   session({
     store: MongoStore.create({
       mongoUrl: config.MONGO_DB.MONGO_CONNECT.url,
-      ttl: 120,
+      ttl: 3600,
     }),
-    secret: config.MONGO_DB.MONGO_CONNECT.secret,
+     secret: config.MONGO_DB.MONGO_CONNECT.secret,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -81,27 +77,29 @@ app.use(
   })
 );
 
-app.set('socketio', io);
-app.set('io', io);
-
 app.use(passport.initialize());
 app.use(passport.session());
+
 app.use(flash());
 app.use((req, res, next) => {
   res.locals.user = req.user;
+  res.locals.session = req.session;
   next();
 });
 
-//---------VIEWS----------///
+app.set('socketio', io);
+app.set('io', io);
+
+
 app.use('/', new RouterViews().start());
 
-//users
 app.use('/', new RouterUser().start());
 app.use('/api/productos', new RouterProduct().start());
 app.use('/template/email', new RouterEmail().start());
 app.use('/chat', chat);
 app.use('/api/carrito', new RouterCart().start());
 app.use('/api/pedido', new RouterOrder().start());
+
 
 // If the Node process ends, close the Mongoose connection
 process.on('SIGINT', function () {
@@ -110,7 +108,7 @@ process.on('SIGINT', function () {
     process.exit(0);
   });
 });
-
+ 
 /* ---------------------- Servidor ----------------------*/
 
 if (config.SERVER.modoCluster && cluster.isPrimary) {

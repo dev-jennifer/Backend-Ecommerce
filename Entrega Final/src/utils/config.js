@@ -10,10 +10,13 @@ module.exports = {
     MONGO_CONNECT: {
       // db: process.env.DB_NAME
       url: process.env.MONGOURL,
+
       options: {
         useNewUrlParser: true,
-        useUnifiedTopology: true
+        useUnifiedTopology: true,
+        maxPoolSize: 10,
       },
+       
       secret: process.env.SECRET_MONGO,
     },
   },

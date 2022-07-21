@@ -13,6 +13,7 @@ class ProductsController {
         const productos = docs.map((p) => {
             return new ProductDTO(p);
         });
+       
         return productos;
     };
 
@@ -43,18 +44,23 @@ class ProductsController {
     getProducts = async (req, res) => {
         try {
             res.status(200).json({ product: await this.productsAll() });
+
+       
         } catch (error) {
             this.message.errorNotFound(error, 'productos no encontrado');
         }
     };
-
+    
     getProductId = async (req, res) => {
         const id = req.params.id;
         try {
+
             res.status(200).json({ producto: await this.productId(id) });
         } catch (error) {
             this.message.errorNotFound(error, 'producto no encontrado');
         }
+
+        
     };
 
     getCategoriaId = async (req, res) => {

@@ -111,17 +111,17 @@ passport.use(
 );
 passport.serializeUser(function (user, done) {
   try {
-
     done(null, {
-      name: user.given_name ? user.given_name : user.name,
+      name: user.givenName ? user.givenName : user.name,
       email: user.email ? user.email : user.emails[0].value,
       membership: user.membershipID ? user.membershipID : 2,
     });
-        console.log("SE",user);
+ 
   } catch (error) {
     logger.error('error in deserializeUser', error);
     done(error);
   }
+ 
 });
 
 passport.deserializeUser(async (user, done) => {

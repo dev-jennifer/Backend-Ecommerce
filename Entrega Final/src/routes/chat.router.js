@@ -15,7 +15,7 @@ module.exports = (io) => {
     });
 
     socket.on('mensajeNuevo', async (msg) => {
-      console.log('nuevo', msg);
+ 
       await ChatDAOFactory.get()
         .guardar(msg)
 

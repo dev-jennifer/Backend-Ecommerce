@@ -87,7 +87,7 @@ class UserController {
 
     try {
       const newUser = await this.userDAO.actualizarPorEmail(id, nuevoDatos);
-      console.log('Nuevo datos', newUser);
+ 
       res.status(200).json({ Perfil_actualizado: newUser });
     } catch (error) {
       const mensaje = 'Error al editar el perfil';
@@ -103,14 +103,13 @@ class UserController {
           message: 'No existe el correo registrado',
         });
       } else {
-        console.log('password', password);
-        console.log('password', user.password);
+    
         bcrypt.compare(password, user.password, function (err, result) {
           if (result == true) {
-            console.log('result', result);
+ 
             return done(null, user);
           } else {
-            console.log('result1', result);
+   
             done(null, false, {
               message: 'Contraseña incorrecta',
             });

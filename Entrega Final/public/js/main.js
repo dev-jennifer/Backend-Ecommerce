@@ -4,12 +4,10 @@ async function detail(value) {
     .then(function (response) {
       if (response.ok) {
         window.location.href = `/productos/${value}`;
-      } else {
-        console.log('Erorr');
-      }
+      } 
     })
     .catch(function (error) {
-      console.log(error);
+     // console.log(error);
     });
 }
 
@@ -33,7 +31,7 @@ async function edit(value) {
       }
     })
     .catch(function (error) {
-      console.log(error);
+    //  console.log(error);
     });
 }
 
@@ -64,7 +62,7 @@ async function actualizar(value) {
     })
 
     .catch((error) => {
-      console.log(error);
+   //   console.log(error);
     });
 }
 
@@ -123,7 +121,7 @@ async function actualizarCarrito() {
       }
     })
     .catch(function (error) {
-      console.log(error);
+    //  console.log(error);
     });
 }
 
@@ -138,7 +136,7 @@ async function deleteItemCart(idProducto) {
       }
     })
     .catch(function (error) {
-      console.log(error);
+   //   console.log(error);
     });
 }
 
@@ -149,12 +147,11 @@ async function borrarCarrito() {
   })
     .then(function (response) {
       if (response) {
-        console.log('Carrito Eliminado');
         window.location.href = `/carrito/${idCart}`;
       }
     })
     .catch(function (error) {
-      console.log(error);
+   //   console.log(error);
     });
 }
 
@@ -233,7 +230,7 @@ async function actualizarOrder() {
     })
 
     .catch((error) => {
-      console.log(error);
+    //  console.log(error);
     })
 
     .finally(() => {
@@ -258,7 +255,6 @@ function check_pass() {
 }
 
 async function actualizarProfile(value) {
-  console.log(value);
   const name = document.getElementById('first_name').value;
   const lastName = document.getElementById('last_name').value;
   const age = document.getElementById('age').value;

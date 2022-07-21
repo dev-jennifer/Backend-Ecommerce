@@ -2,7 +2,7 @@ const send = require('../../config/configEmail');
 
 //email to admin
 function newOrderEmail(resultado) {
-  console.log("resultadoEmail", resultado)
+ 
   const templateFile = 'templateOrder',
     subject = `Nuevo pedido de  ${resultado.buyerID}- ${resultado.name}`,
     info = {

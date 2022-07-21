@@ -44,12 +44,7 @@ function enviarMensaje() {
 // });
 
 socket.on('mensajes', (data) => {
-  // const denormalizedHolding = normalizr.denormalize(
-  //   normalizedHolding.result,
-  //   schemaMensajes,
-  //   normalizedHolding.entities
-  // );
-  console.log('test', data);
+ 
   let constMensajeHtml = '';
 
   data.mensajes.map((msg) => {

@@ -132,7 +132,7 @@ class CartController {
       };
 
       const cart = await this.cartDAO.actualizar(id, nuevoDatos);
-      console.log('CART', cart);
+ 
       res.status(200).send(cart);
 
       //   res.redirect(`../pedido/${id}`);
