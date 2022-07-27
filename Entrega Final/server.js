@@ -7,28 +7,31 @@ const express = require('express'),
   MongoStore = require('connect-mongo'),
   cluster = require('cluster'),
   logger = require('./src/utils/loggers'),
-  config = require('./src/utils/config'),
   morgan = require('morgan'),
   path = require('path'),
   compression = require('compression'),
   exphbs = require('express-handlebars'),
   cors = require('cors'),
-  mongoose = require('mongoose');
+  mongoose = require('mongoose'),
+  cookie = require('cookie'),
+  config = require('./src/utils/config');
+
+
 const app = express();
 const { Server: HttpServer } = require('http');
 const { Server: IOServer } = require('socket.io');
 const httpServer = new HttpServer(app);
 const io = new IOServer(httpServer);
+ 
 
 const RouterProduct = require('./src/routes/products.router'),
   RouterCart = require('./src/routes/cart.router'),
   RouterOrder = require('./src/routes/order.router'),
   RouterUser = require('./src/routes/user.router'),
   RouterEmail = require('./src/routes/email.router'),
-  RouterViews = require('./src/routes/views.router');
-
-const chat = require('./src/routes/chat.router')(io);
-
+  RouterViews = require('./src/routes/views.router'),
+  RouterChat = require('./src/routes/chat.router'),
+ chatSocket = require('./src/controllers/chatSocket');
 
 app.use(compression());
 app.use(morgan('tiny'));
@@ -61,14 +64,21 @@ if (config.SERVER.entorno == 'development') {
     })
   );
 }
-app.use(cookieParser());
+
+const mongooseSessionStore = MongoStore.create({
+  mongoUrl: config.MONGO_DB.MONGO_CONNECT.url,
+  ttl: 3600,
+});
+
+const COOKIE_NAME = 'sid';
+const COOKIE_SECRET = config.MONGO_DB.MONGO_CONNECT.secret;
+
+app.use(cookieParser(COOKIE_SECRET));
 app.use(
   session({
-    store: MongoStore.create({
-      mongoUrl: config.MONGO_DB.MONGO_CONNECT.url,
-      ttl: 3600,
-    }),
-     secret: config.MONGO_DB.MONGO_CONNECT.secret,
+    name: COOKIE_NAME,
+    store: mongooseSessionStore,
+    secret: COOKIE_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -87,8 +97,41 @@ app.use((req, res, next) => {
   next();
 });
 
-app.set('socketio', io);
-app.set('io', io);
+
+
+io.use(function (socket, next) {
+  try {
+    var data = socket.handshake || socket.request;
+    if (!data.headers.cookie) {
+      return next(new Error('Missing cookie headers'));
+    }
+    // console.log('cookie header ( %s )', JSON.stringify(data.headers.cookie));
+    var cookies = cookie.parse(data.headers.cookie);
+    //console.log('cookies parsed ( %s )', JSON.stringify(cookies));
+    if (!cookies[COOKIE_NAME]) {
+      return next(new Error('Missing cookie ' + COOKIE_NAME));
+    }
+    var sid = cookieParser.signedCookie(cookies[COOKIE_NAME], COOKIE_SECRET);
+    if (!sid) {
+      return next(new Error('Cookie signature is not valid'));
+    }
+    console.log('session ID ( %s )', sid);
+    data.sid = sid;
+    mongooseSessionStore.get(sid, function (err, session) {
+      if (err) return next(err);
+      if (!session) return next(new Error('session not found'));
+      //  console.log("AIO", session)
+      data.session = session;
+      data.id = sid;
+      next();
+    });
+  } catch (err) {
+    console.error(err.stack);
+    next(new Error('Internal server error'));
+  }
+});
+
+chatSocket(io);
 
 
 app.use('/', new RouterViews().start());
@@ -96,10 +139,9 @@ app.use('/', new RouterViews().start());
 app.use('/', new RouterUser().start());
 app.use('/api/productos', new RouterProduct().start());
 app.use('/template/email', new RouterEmail().start());
-app.use('/chat', chat);
+app.use('/chat', new RouterChat().start());
 app.use('/api/carrito', new RouterCart().start());
 app.use('/api/pedido', new RouterOrder().start());
-
 
 // If the Node process ends, close the Mongoose connection
 process.on('SIGINT', function () {
@@ -108,7 +150,8 @@ process.on('SIGINT', function () {
     process.exit(0);
   });
 });
- 
+
+
 /* ---------------------- Servidor ----------------------*/
 
 if (config.SERVER.modoCluster && cluster.isPrimary) {

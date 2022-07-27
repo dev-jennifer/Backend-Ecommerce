@@ -1,43 +1,35 @@
-<div class="jumbotron jumbotron-fluid">
-  <div class="container">
-    <h2 style="color: blue">
-      Centro de Mensajes
-    </h2>
-    <div id="title"></div>
-    <form onsubmit="enviarMensaje()">
-      <div class="form-group">
-        <input
-          id="email"
-          placeholder="email"
-          className="form-control"
-          type="email"
-          name="email"
-          required
-        />
-      </div>
-      <div class="form-group">
-        <input
-          id="nombre"
-          placeholder="nombre"
-          className="form-control"
-          type="text"
-          name="nombre"
-          required
-        />
-      </div>
-      <div class="form-group">
-        <input
-          id="textoMensaje"
-          placeholder="texto"
-          className="form-control"
-          type="text"
-          name="textoMensaje"
-        />
-      </div>
-
-      <input type="submit" value="Enviar" />
+<div class="chat-container">
+  <header class="chat-header">
+    <h1>
+      Chat
+    </h1>
+  </header>
+  <main class="chat-main">
+    <div class="chat-sidebar">
+       {{#when session.passport.user.membership 'eq' 1 }}
+     <p>Seleccione el usuario a enviar mensaje</p>
+       <div class="user_List"><select id="userList"></select></div>
+      {{/when}}
+      <button class="btn2" onclick="storeDetails()">
+        Conectar
+      </button>
+    </div>
+    <div class="chat-messages">
+      <div class="message"></div>
+    </div>
+  </main>
+  <div class="chat-form-container">
+    <form id="chat-form">
+      <input
+        id="msg"
+        type="text"
+        placeholder="Enter Message"
+        required
+        autocomplete="off"
+      />
+      <button class="btn">
+        Enviar
+      </button>
     </form>
-
-    <div id="contenedorMensaje"></div>
   </div>
 </div>

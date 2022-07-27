@@ -1,7 +1,6 @@
 # 🏪 eCommerce 🏪
-------FALTA TERMINAR CHAT  ------
 Este eCommerce fue desarrollado para el curso de CoderHouse con el nombre **Programación Backend** 
-
+Implementa chat a traves de Socket entre cliente y Vendedor.
 --
 
 ## 📁 Datos del proyecto 📁
@@ -36,6 +35,7 @@ SECRET_ID=sample
 TEST_EMAIL =sample
 PASS_EMAIL =sample
 ADMIN_EMAIL=sample
+CHAT_ADMIN_EMAIL=sample
 
 ## Twilo
 ACCOUNT_SID=sample

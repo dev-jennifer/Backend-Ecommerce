@@ -16,7 +16,7 @@ module.exports = {
         useUnifiedTopology: true,
         maxPoolSize: 10,
       },
-       
+
       secret: process.env.SECRET_MONGO,
     },
   },
@@ -26,6 +26,7 @@ module.exports = {
     TEST_EMAIL: process.env.TEST_EMAIL,
     PASS_EMAIL: process.env.PASS_EMAIL,
     ADMIN_EMAIL: process.env.ADMIN_EMAIL,
+    CHAT_ADMIN_EMAIL: process.env.CHAT_ADMIN_EMAIL,
   },
   TWILO: {
     AUTH_TOKEN: process.env.AUTH_TOKEN,

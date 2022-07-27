@@ -57,7 +57,7 @@ class UserController {
           address: req.body.address,
           age: req.body.age,
           avatar: req.file.filename,
-          membershipID: 2,
+          membershipID: 2 //no admin por defecto
         };
 
         await this.userDAO.guardar(newUserRegister);
@@ -87,7 +87,7 @@ class UserController {
 
     try {
       const newUser = await this.userDAO.actualizarPorEmail(id, nuevoDatos);
- 
+
       res.status(200).json({ Perfil_actualizado: newUser });
     } catch (error) {
       const mensaje = 'Error al editar el perfil';
@@ -103,13 +103,10 @@ class UserController {
           message: 'No existe el correo registrado',
         });
       } else {
-    
         bcrypt.compare(password, user.password, function (err, result) {
           if (result == true) {
- 
             return done(null, user);
           } else {
-   
             done(null, false, {
               message: 'Contraseña incorrecta',
             });
@@ -120,6 +117,122 @@ class UserController {
       const mensaje = 'Error al iniciar sesion';
       this.message.errorInternalServer(error, mensaje);
     }
+  };
+
+  //CHAT
+  addChannel = function (req, res, next) {
+    const channelToAdd = req.body.createInput;
+    const username = req.user.username;
+
+    User.findOne({ username }, function (err, user) {
+      if (err) {
+        res.send({
+          error: err,
+        });
+        return next(err);
+      }
+
+      if (!user) {
+        return res.status(422).json({
+          error: 'Could not find user.',
+        });
+      }
+
+      // This prevents the user from joining duplicate channels
+      if (user.usersChannels.indexOf(channelToAdd) == -1) {
+        user.usersChannels.push(channelToAdd);
+      } else {
+        return res.status(422).json({
+          error: 'Already joined that channel.',
+        });
+      }
+
+      user.save(function (err, updatedUser) {
+        if (err) {
+          res.send({
+            error: err,
+          });
+          return next(err);
+        }
+
+        res.status(200).json({
+          message: 'Successfully joined channel.',
+          channels: user.usersChannels,
+        });
+      });
+    });
+  };
+
+  // Takes a channel name and username
+  // If a user is found, it looks through the user's usersChannel array
+  // The request channel to remove is filtered from the array and the user's info is saved again
+  // Returns the new usersChannel array in the json response
+  removeChannel = function (req, res, next) {
+    const channelName = req.body.channel;
+    const username = req.user.username;
+
+    User.findOne({ username }, function (err, user) {
+      if (err) {
+        res.send({
+          error: err,
+        });
+        return next(err);
+      }
+
+      if (!user) {
+        return res.status(422).json({
+          error: 'Could not find user.',
+        });
+      }
+
+      // Removes the channel that was requested
+      const removedChannel = user.usersChannels.filter(function (channel) {
+        return channel !== channelName;
+      });
+
+      user.usersChannels = removedChannel;
+
+      user.save(function (err, updatedUser) {
+        if (err) {
+          res.send({
+            error: err,
+          });
+          return next(err);
+        }
+
+        res.status(200).json({
+          message: `Removed channel: ${channelName}`,
+          updatedChannels: user.usersChannels,
+        });
+      });
+    });
+  };
+
+  // Given a username
+  // Looks through Users for the username
+  // If it can find a user, it returns all their current userChannels in a json response
+  getChannels = function (req, res, next) {
+    const username = req.user.username;
+
+    User.findOne({ username }, function (err, user) {
+      if (err) {
+        res.send({
+          error: err,
+        });
+        return next(err);
+      }
+
+      if (!user) {
+        return res.status(422).json({
+          error: 'Could not find user.',
+        });
+      }
+
+      res.status(200).json({
+        message: 'Here are the users channels',
+        usersChannels,
+      });
+    });
   };
 }
 

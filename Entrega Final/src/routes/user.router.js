@@ -5,9 +5,8 @@ const { middleware } = require('../utils/functions'),
   router = require('express').Router(),
   passport = require('passport'),
   config = require('../utils/config.js'),
-  jwt = require('jsonwebtoken');
-
-
+  jwt = require('jsonwebtoken'),
+  requireAuth = passport.authenticate('jwt', { session: false });
 
 class RouterUser {
   constructor() {
@@ -15,7 +14,7 @@ class RouterUser {
   }
 
   start() {
-require('../passport/local-auth');
+    require('../passport/local-auth');
     const generateJwtToken = (user) => {
       const token = jwt.sign(user, config.JWT.SECRET, {
         expiresIn: '1d',
@@ -27,7 +26,7 @@ require('../passport/local-auth');
       '/signup',
       middleware,
       passport.authenticate('local-signup', {
-        failureFlash: true 
+        failureFlash: true,
       }),
       (req, res) => {
         const token = generateJwtToken(req.user);
@@ -39,14 +38,13 @@ require('../passport/local-auth');
     router.post(
       '/signin',
       passport.authenticate('local-signin', {
-        failureFlash: true 
- 
+        failureFlash: true,
       }),
       (req, res) => {
         try {
           const token = generateJwtToken(req.user.toJSON());
           res.cookie('jwt', token);
-           res.redirect('/productos');
+          res.redirect('/productos');
         } catch (err) {
           logger.error('ERROR', err);
         }
@@ -87,31 +85,14 @@ require('../passport/local-auth');
       }
     );
 
-    router.get(
-      '/',
-      passport.authenticate('jwt', {
-        session: false,
-  
-      }),
-      (req, res) => {
-        res.render('index', { user: req.user });
-      }
-    );
+    router.get('/', requireAuth, (req, res) => {
+      res.render('index', { user: req.user });
+    });
 
-    router.get(
-      '/profile',
-      passport.authenticate('jwt', {
-        session: false,
-      }),
-      this.controlador.renderProfile
-    );
-
+    router.get('/profile', requireAuth, this.controlador.renderProfile);
     router.get('/logout', this.controlador.renderLogOut);
-    router.put(
-      '/profile/:id',
-      passport.authenticate('jwt', { session: false }),
-      this.controlador.editProfile
-    );
+    router.put('/profile/:id', requireAuth, this.controlador.editProfile);
+
 
     return router;
   }

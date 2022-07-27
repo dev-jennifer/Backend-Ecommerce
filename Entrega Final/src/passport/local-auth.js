@@ -116,7 +116,9 @@ passport.serializeUser(function (user, done) {
       email: user.email ? user.email : user.emails[0].value,
       membership: user.membershipID ? user.membershipID : 2,
     });
+  
  
+   
   } catch (error) {
     logger.error('error in deserializeUser', error);
     done(error);

@@ -1,14 +1,29 @@
-const { ChatDAOMongoDB } = require('../../DAOs/DAOMongo'),
+const {
+    ConversationsDAOMongoDB,
+    ChannelDAOMongoDB,
+    MessageDAOMongoDB,
+  } = require('../../DAOs/DAOMongo'),
   config = require('../../utils/config');
 
-class ChatDAOFactory {
+class UserOnlineFactory {
   static get() {
     switch (config.SRV.persistencia) {
       case 'mongodb':
-        return new ChatDAOMongoDB();
+        return new ConversationsDAOMongoDB();
       default:
-        return new ChatDAOMongoDB();
+        return new ConversationsDAOMongoDB();
     }
   }
 }
-module.exports = ChatDAOFactory;
+ 
+class MessageDAOFactory {
+  static get() {
+    switch (config.SRV.persistencia) {
+      case 'mongodb':
+        return new MessageDAOMongoDB();
+      default:
+        return new MessageDAOMongoDB();
+    }
+  }
+}
+module.exports = { MessageDAOFactory, UserOnlineFactory };

@@ -1,16 +1,50 @@
 const mongoose = require('mongoose');
+const ObjectID = mongoose.Schema.Types.ObjectId;
 
-const ChatSchema = mongoose.Schema({
-  usuario: {
-      email: { type: String, require: true },
-      nombre: { type: String, require: false },
-    },
-  
-  tipo: { type: String, require: true },
-  textoMsj: { type: String, require: false },
-  fecha: String,
+/////Conversation
+const UserOnlineSchema = mongoose.Schema({
+  socketID: {
+    type: String,
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  membership: {
+    type: String,
+  },
+});
+ 
+//Messages
+
+const MessageSchema = mongoose.Schema({
+  name: {
+    type: String,
+  },
+
+  from: {
+    type: String,
+  },
+  to: {
+    type: String,
+  },
+  message: {
+    type: String,
+  },
+  date: {
+    type: String,
+  },
+  time: {
+    type: String,
+  },
 });
 
-const ChatModel = mongoose.model('mensajes', ChatSchema);
+const ConversationModel = mongoose.model('User_Online', UserOnlineSchema);
+const MessageModel = mongoose.model('Message', MessageSchema);
 
-module.exports = ChatModel;
+module.exports = { ConversationModel,  MessageModel };

@@ -5,7 +5,6 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true,
     unique: true,
- 
   },
   password: {
     type: String,
@@ -24,6 +23,7 @@ const UserSchema = mongoose.Schema({
   phone: { type: String, require: false },
   avatar: { type: String, require: false },
   membershipID: { type: Number, require: false },
+
 });
 
 const UserModel = mongoose.model('user', UserSchema);

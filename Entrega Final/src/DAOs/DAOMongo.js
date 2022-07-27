@@ -1,9 +1,14 @@
-const ServiceDAOMongoDB = require('../services/serviceDAO.MongoDB'),
+const ServiceDAOMongoDB = require('../services/serviceDAO.MongoDB');
+const ServiceDAOChatMongoDB = require('../services/serviceDAOChat.MongoDB'),
   ProductModel = require('../models/products.model.mongo'),
   CartModel = require('../models/cart.model.mongo'),
   OrderModel = require('../models/order.model.mongo'),
   UserModel = require('../models/user.model.mongo'),
-  ChatModel=require('../models/chat.model.mongo')
+  {
+    ConversationModel,
+    ChannelModel,
+    MessageModel,
+  } = require('../models/chat.model.mongo');
 
 class ProductosDAOMongoDB extends ServiceDAOMongoDB {
   constructor() {
@@ -23,21 +28,34 @@ class OrderDAOMongoDB extends ServiceDAOMongoDB {
   }
 }
 
-class ChatDAOMongoDB extends ServiceDAOMongoDB {
-  constructor() {
-    super(ChatModel);
-  }
-}
-
 class UserDAOMongoDB extends ServiceDAOMongoDB {
   constructor() {
     super(UserModel);
   }
 }
+
+class ConversationsDAOMongoDB extends ServiceDAOChatMongoDB {
+  constructor() {
+    super(ConversationModel);
+  }
+}
+class ChannelDAOMongoDB extends ServiceDAOChatMongoDB {
+  constructor() {
+    super(ChannelModel);
+  }
+}
+class MessageDAOMongoDB extends ServiceDAOChatMongoDB {
+  constructor() {
+    super(MessageModel);
+  }
+}
+
 module.exports = {
   ProductosDAOMongoDB,
   CartDAOMongoDB,
   OrderDAOMongoDB,
   UserDAOMongoDB,
-  ChatDAOMongoDB,
+  ConversationsDAOMongoDB,
+  ChannelDAOMongoDB,
+  MessageDAOMongoDB,
 };

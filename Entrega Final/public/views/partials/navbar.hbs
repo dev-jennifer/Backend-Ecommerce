@@ -32,15 +32,16 @@
           Carrito
         </a>
       </li>
-
+  {{#if session.passport.user}}
       <li class="nav-item">
-        <a class="nav-link" id="add" href="/chat">
+        <a class="nav-link" id="add"  href="/chat">
           Chat
         </a>
       </li>
+        {{/if}}
     </ul>
 
-  {{#if session}}
+  {{#if session.passport.user}}
     <ul class="nav navbar-nav navbar-right">
       <li class="nav-item">
         <span>

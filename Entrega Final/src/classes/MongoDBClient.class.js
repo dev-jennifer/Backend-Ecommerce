@@ -22,7 +22,7 @@ class MongoDBClient {
             config.MONGO_DB.MONGO_CONNECT.url,
             config.MONGO_DB.MONGO_CONNECT.options
           )
-          
+
           .then((db) => {
             const timeID = Date.now();
             logger.info(`Base de datos conectada  ${timeID}`);
@@ -42,6 +42,7 @@ class MongoDBClient {
       process.exit(1);
     }
   };
-}
 
+  
+}
 module.exports = MongoDBClient;
