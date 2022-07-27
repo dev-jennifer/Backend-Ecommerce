@@ -8,7 +8,15 @@ Implementa chat a traves de Socket entre cliente y Vendedor.
 * **Version de Node:**  v16.14.2
 * **Tecnologias Utilizadas:**
 Express, JavaScript, MongoDB, Compression,Passport, JsonWebToken,Handlebars,Twilio,Nodemailer,Bootstrap,SocketIO
-* **URL de muestra:** *No Disponible*
+
+
+## Usuario Administrador
+
+EMAIL =  admin@test.com
+PASSWORD = 123456
+
+Este usuario esta configurado por defecto para el chat, a excepción que se aclare en .env otro correo y modifique permisos base de datos para que sea administrador (membershipID = 1).
+Por defecto al registrar un nuevo usuario tiene membershipID 2.
 
 
 ## 🚀 Como ejecutar el proyecto 🚀
@@ -60,7 +68,4 @@ npm start
 
 ---
 
-## Usuario Administrador
 
-EMAIL =  admin@test.com
-PASSWORD = 123456

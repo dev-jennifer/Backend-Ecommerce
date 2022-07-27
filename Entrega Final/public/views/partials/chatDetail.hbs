@@ -3,17 +3,20 @@
     <h1>
       Chat
     </h1>
+
+    {{#when session.passport.user.membership "eq" 1}}
+      <p>
+        Seleccione el usuario a enviar mensaje
+      </p>
+      <div class="user_List">
+        <select id="userList"></select>
+      </div>
+    {{/when}}
+    <button class="btn2" onclick="storeDetails()">
+      Conectar
+    </button>
   </header>
-  <main class="chat-main">
-    <div class="chat-sidebar">
-       {{#when session.passport.user.membership 'eq' 1 }}
-     <p>Seleccione el usuario a enviar mensaje</p>
-       <div class="user_List"><select id="userList"></select></div>
-      {{/when}}
-      <button class="btn2" onclick="storeDetails()">
-        Conectar
-      </button>
-    </div>
+  <main class="chat-main" id="messageContainer">
     <div class="chat-messages">
       <div class="message"></div>
     </div>
@@ -23,11 +26,11 @@
       <input
         id="msg"
         type="text"
-        placeholder="Enter Message"
+        placeholder="Ingrese Mensaje"
         required
         autocomplete="off"
       />
-      <button class="btn">
+      <button class="btn" id="btnSend">
         Enviar
       </button>
     </form>

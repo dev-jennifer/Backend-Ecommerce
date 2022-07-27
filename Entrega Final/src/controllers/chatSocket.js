@@ -21,7 +21,7 @@ exports = module.exports = function (io) {
         ' authenticated and is now connected.'
     );
 
-    //////
+
     socket.on('chatMessage', async (data) => {
       if (user.membership == 2) {
         data.toUser = config.EMAIL.CHAT_ADMIN_EMAIL;
@@ -50,6 +50,7 @@ exports = module.exports = function (io) {
         .catch((err) => logger.error(err));
     });
 
+    
     socket.on('userDetails', async (data) => {
 
       let onlineUser = {
@@ -92,9 +93,6 @@ exports = module.exports = function (io) {
         .catch((err) => logger.error(err));
     });
 
-
-
-    
 
     let userID = socket.id;
     socket.on('disconnect', async () => {

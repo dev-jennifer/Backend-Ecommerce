@@ -5,9 +5,16 @@ const { username, room } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
 });
 
+document.getElementById('messageContainer').style.display = 'none';
+document.getElementById('msg').disabled = true;
+document.getElementById('btnSend').disabled = true;
+
 function storeDetails() {
   let toUser;
   let element = document.querySelectorAll('.chat-messages');
+  document.getElementById('msg').disabled = false;
+  document.getElementById('btnSend').disabled = false;
+  document.getElementById('messageContainer').style.display = 'block';
   socket.emit('userDetails', { toUser });
 }
 
