@@ -1,7 +1,6 @@
 # 🏪 eCommerce 🏪
 Este eCommerce fue desarrollado para el curso de CoderHouse con el nombre **Programación Backend** 
-Implementa chat a traves de Socket entre cliente y Vendedor.
---
+
 
 ## 📁 Datos del proyecto 📁
 
