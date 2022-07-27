@@ -1,6 +1,6 @@
 # 🏪 eCommerce 🏪
 Este eCommerce fue desarrollado para el curso de CoderHouse con el nombre **Programación Backend** 
-Implementa chat a traves de Socket entre cliente y Vendedor.
+
 --
 
 ## 📁 Datos del proyecto 📁
@@ -8,6 +8,7 @@ Implementa chat a traves de Socket entre cliente y Vendedor.
 * **Version de Node:**  v16.14.2
 * **Tecnologias Utilizadas:**
 Express, JavaScript, MongoDB, Compression,Passport, JsonWebToken,Handlebars,Twilio,Nodemailer,Bootstrap,SocketIO
+**Implementa chat a traves de Socket entre cliente y tienda.
 * **URL de muestra:** *No Disponible*
 
 
