@@ -18,6 +18,14 @@ Este usuario esta configurado por defecto para el chat, a excepción que se acla
 Por defecto al registrar un nuevo usuario tiene membershipID 2.
 
 
+## Chat a tienda
+
+Si el usuario se conecta y la tienda no esta online, el chat se guardara en base de datos para ser leido al conectarse.
+Los usuarios online y mensajes tiene respaldo en MongoDB.
+El usuario solo tiene posibilidad de enviar un chat a la tienda.
+El chat de la tienda para responder selecciona el usuario que desea.
+
+
 ## 🚀 Como ejecutar el proyecto 🚀
 
 Para poder correr el proyecto debemos clonarlo
